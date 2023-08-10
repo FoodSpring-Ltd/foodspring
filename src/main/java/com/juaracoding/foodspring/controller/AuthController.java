@@ -20,11 +20,11 @@ public class AuthController {
 
     @GetMapping(value = "/login")
     public String login() {
-        return "login-page";
+        return "auth/login-page";
     }
 
     @GetMapping(value = "/register")
     public String register() {
-        return "register-page";
+        return "auth/register-page";
     }
 }

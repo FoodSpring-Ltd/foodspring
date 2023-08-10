@@ -1,0 +1,64 @@
+<div th:fragment="login-form" class="card" xmlns:th="http://www.w3.org/1999/xhtml">
+  <div class="modal-header">
+    <strong class="modal-title" id="sign-in-title">
+      Masuk
+    </strong>
+  </div>
+
+  <div class="modal-body p-4">
+
+    <form method="POST" action="https://www.dicoding.com/login?" accept-charset="UTF-8" role="form" class="auth-form-v3 js-captcha-form" autocomplete="off" data-captcha-action="login"><input name="_token" type="hidden" value="EZB3BLGPaaVG8Nkkl8h9X24R6eiUB1hgusqE3QIw">
+
+      <div class="form-group">
+        <input class="form-control dcd-default-form font-weight-medium auth-form-v3__first-input" placeholder="Email" autocomplete="off" name="login_email" type="email" fdprocessedid="eohdj">
+      </div>
+
+      <div class="form-group">
+        <div class="input-group mb-2">
+          <input id="login-password" class="auth-form-v3__password-input form-control dcd-default-form font-weight-medium" placeholder="Password" autocomplete="off" required="" name="login_password" type="password" value="" fdprocessedid="sma8br">
+        </div>
+
+        <div class="text-right">
+          <a href="https://www.dicoding.com/passwordreset" class="small font-weight-600 ml-auto dcd-link">Lupa Password?</a>
+        </div>
+      </div>
+
+      <div class="form-group mb-4">
+        <button type="submit" class="dcd-btn dcd-btn-primary w-100" data-label="Masuk" fdprocessedid="cj76ar">Masuk</button>
+      </div>
+
+      <div class="my-3">
+        <div class="d-flex mb-4">
+          <div class="col-5 px-0">
+            <hr>
+          </div>
+          <div class="col-5 px-0">
+            <hr>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="text-center mt-3">
+        Belum punya akun? Ayo
+        <a class="dcd-link font-weight-600" href="https://www.dicoding.com/registration">daftar</a>
+      </div>
+
+      <hr class="mt-4 mb-3">
+
+      <div class="text-center">
+        <small>
+          Dengan melakukan login, Anda setuju dengan <a href="https://www.dicoding.com/termsofuse">syarat &amp; ketentuan FoodSpring</a>.
+        </small>
+
+        <div class="small mt-2">
+          This site is protected by reCAPTCHA and the Google
+          <a href="https://policies.google.com/privacy">Privacy Policy</a> and
+          <a href="https://policies.google.com/terms">Terms of Service</a> apply.
+        </div>
+      </div>
+
+    </form>
+
+  </div>
+</div>

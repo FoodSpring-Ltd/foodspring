@@ -1,0 +1,35 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+ overflow-x: hidden;
+}
+.card-container {
+  padding: 0 10px 0 10px;
+}
+
+.welcome-container {
+  background-color: grey;
+  text-align: center;
+  color: white;
+  padding: 10px 5px 10px 5px;
+  margin-bottom: 1rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.welcome-container h3 {
+  font-size: 1.5rem;
+}
+
+.card-container {
+ width: 100%;
+ display: flex;
+ gap: 2%;
+ justify-content: left;
+ align-item: center;
+ padding: 10px 5px 10px 5px;
+
+}

@@ -1,15 +1,15 @@
 <div th:fragment="login-form" class="card" xmlns:th="http://www.w3.org/1999/xhtml">
-  <div class="modal-header">
-    <strong class="modal-title" id="sign-in-title">
+  <div class="card-header">
+    <strong class="card-title" id="sign-in-title">
       Masuk
     </strong>
   </div>
 
-  <div class="modal-body p-4">
+  <div class="card-body p-4">
 
     <form method="POST" action="https://www.dicoding.com/login?" accept-charset="UTF-8" role="form" class="auth-form-v3 js-captcha-form" autocomplete="off" data-captcha-action="login"><input name="_token" type="hidden" value="EZB3BLGPaaVG8Nkkl8h9X24R6eiUB1hgusqE3QIw">
 
-      <div class="form-group">
+      <div class="form-group mb-3">
         <input class="form-control dcd-default-form font-weight-medium auth-form-v3__first-input" placeholder="Email" autocomplete="off" name="login_email" type="email" fdprocessedid="eohdj">
       </div>
 
@@ -23,16 +23,13 @@
         </div>
       </div>
 
-      <div class="form-group mb-4">
-        <button type="submit" class="dcd-btn dcd-btn-primary w-100" data-label="Masuk" fdprocessedid="cj76ar">Masuk</button>
+      <div class="form-group mb-2">
+        <button type="submit" class="btn btn-dark col-12 login-button" data-label="Masuk">Masuk</button>
       </div>
 
       <div class="my-3">
-        <div class="d-flex mb-4">
-          <div class="col-5 px-0">
-            <hr>
-          </div>
-          <div class="col-5 px-0">
+        <div class="d-flex mb-2">
+          <div class="col-12 px-0">
             <hr>
           </div>
         </div>
@@ -41,14 +38,14 @@
 
       <div class="text-center mt-3">
         Belum punya akun? Ayo
-        <a class="dcd-link font-weight-600" href="https://www.dicoding.com/registration">daftar</a>
+        <a class="dcd-link font-weight-600" th:href="@{/auth/register}"><strong>Register</strong></a>
       </div>
 
       <hr class="mt-4 mb-3">
 
       <div class="text-center">
         <small>
-          Dengan melakukan login, Anda setuju dengan <a href="https://www.dicoding.com/termsofuse">syarat &amp; ketentuan FoodSpring</a>.
+          Dengan melakukan login, Anda setuju dengan <a href="" data-bs-toggle="modal" data-bs-target="#termAndCondition">syarat &amp; ketentuan FoodSpring</a>.
         </small>
 
         <div class="small mt-2">
@@ -60,5 +57,59 @@
 
     </form>
 
+  </div>
+
+
+  <!-- Modal -->
+  <div class="modal fade" id="termAndCondition" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="exampleModalLabel">Food Spring Co., Ltd.</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <h1>Terms and Conditions</h1>
+
+          <h2>Introduction</h2>
+          <p>
+            Welcome to the Food and Beverage Self-Ordering Web Application <strong>FoodSpring</strong>. By using the App, you agree
+            to
+            comply with and be bound by these Terms and Conditions.
+          </p>
+
+          <h2>Acceptance of Terms</h2>
+          <p>
+            By accessing or using the App, you acknowledge that you have read, understood, and agree to be bound by
+            these
+            Terms and Conditions.
+          </p>
+
+          <h2>Use of the App</h2>
+          <p>
+            The App allows you to order food and beverages from participating restaurants. You agree to use the App
+            for
+            lawful purposes only and in a manner consistent with these Terms and Conditions.
+          </p>
+
+          <h2>Privacy</h2>
+          <p>
+            We are committed to protecting your privacy. Please review our <a th:href="@{''}">Privacy
+            Policy</a> to understand how we collect, use, and disclose your personal information.
+          </p>
+
+          <!-- Add more terms and conditions content as needed -->
+
+          <h2>Contact Us</h2>
+          <p>
+            If you have any questions about these Terms and Conditions, please contact us at
+            <a href="mailto:help@foodspring.co.id">help@foodspring.co.id</a>.
+          </p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" data-bs-dismiss="modal" aria-label="Close">CLOSE</button>
+        </div>
+      </div>
+    </div>
   </div>
 </div>

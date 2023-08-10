@@ -33,3 +33,9 @@ body {
  padding: 10px 5px 10px 5px;
 
 }
+
+.manage {
+ background-color: #04d4f0;
+ color: white;
+ font-weight: bold;
+}

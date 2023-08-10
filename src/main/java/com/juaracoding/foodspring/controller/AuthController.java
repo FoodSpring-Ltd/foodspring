@@ -22,4 +22,9 @@ public class AuthController {
     public String login() {
         return "login-page";
     }
+
+    @GetMapping(value = "/register")
+    public String register() {
+        return "register-page";
+    }
 }

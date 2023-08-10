@@ -1,0 +1,46 @@
+<div th:fragment="register-form" class="card col-6" xmlns:th="http://www.w3.org/1999/xhtml">
+  <div class="card-header">
+    <strong class="card-title" id="sign-up-title">
+      Register
+    </strong>
+  </div>
+
+  <div class="card-body p-4">
+
+    <form method="POST" action="/" accept-charset="UTF-8" role="form" class="auth-form-v3 js-captcha-form" autocomplete="off" data-captcha-action="register"><input name="_token" type="hidden" value="EZB3BLGPaaVG8Nkkl8h9X24R6eiUB1hgusqE3QIw">
+
+      <div class="form-group mb-3">
+        <input class="form-control dcd-default-form font-weight-medium auth-form-v3__first-input" placeholder="FullName" autocomplete="off" name="reg_fullname" type="text">
+      </div>
+      <div class="form-group mb-3">
+        <input class="form-control dcd-default-form font-weight-medium auth-form-v3__first-input" placeholder="Email" autocomplete="off" name="reg_email" type="email">
+      </div>
+      <div class="form-group mb-3">
+        <input class="form-control dcd-default-form font-weight-medium auth-form-v3__first-input" placeholder="Password" autocomplete="off" name="reg_pass" type="password">
+      </div>
+      <div class="form-group mb-3">
+        <input class="form-control dcd-default-form font-weight-medium auth-form-v3__first-input" placeholder="Phone Number" autocomplete="off" name="reg_phone" type="text">
+      </div>
+
+      <div class="form-group mb-2">
+        <button type="submit" class="btn btn-dark col-12 login-button" data-label="Masuk">Register</button>
+      </div>
+
+      <div class="my-3">
+        <div class="d-flex mb-2">
+          <div class="col-12 px-0">
+            <hr>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="text-center mt-3">
+        Sudah punya akun? Ayo
+        <a class="dcd-link font-weight-600" th:href="@{/auth/login}"><strong>Login</strong></a>
+      </div>
+
+    </form>
+
+  </div>
+</div>

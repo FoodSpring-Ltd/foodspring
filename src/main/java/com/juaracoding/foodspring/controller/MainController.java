@@ -11,15 +11,20 @@ Version 1.0
 */
 
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import java.util.Objects;
 
 @Controller
 @RequestMapping("/")
 public class MainController {
 
     @GetMapping(value = "")
-    public String home() {
+    public String home(@RequestParam(value = "sortBy", required = false) String sortBy, Model model) {
+        model.addAttribute("selectedSort", sortBy);
         return "main/view-products";
     }
 }

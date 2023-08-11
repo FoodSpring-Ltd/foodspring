@@ -6,8 +6,8 @@
 
 .home-container {
  display: flex;
-
 }
+
 .product-container {
  display: flex;
  flex-wrap: wrap;
@@ -15,8 +15,84 @@
  justify-content: center;
  align-items: center;
  padding: 10px;
+ flex: 90%;
 }
 
+.sort-container {
+  display: flex;
+  flex: 10%;
+  padding-right: 90px;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.filter-category {
+   display: flex;
+   flex: 20%;
+   flex-direction: column;
+   padding: 10px;
+}
+
+.list-group-item {
+  cursor: pointer;
+}
+
+.form-check-input {
+  cursor: pointer;
+}
+
+.btn-filter {
+    background-color: #04d4f0;
+    border: none;
+    height: 35px;
+    color: white;
+    border-radius: 0 0 5px 5px;
+    text-transform: uppercase;
+    font-weight: 700;
+
+    &:hover {
+      opacity: 0.7;
+    }
+}
+
+.right-section {
+ display: flex;
+ flex-direction: column;
+ flex: 80%;
+ padding-top: 30px;
+}
+
+.btn-custom {
+display: flex;
+align-items: center;
+justify-content: space-between;
+width: 180px;
+height: 40px;
+padding: 10px;
+cursor: pointer;
+border: 1px solid lightgrey;
+ background-color: white;
+ border-radius: 6px;
+ &:hover {
+   border: 1px solid #04d4f0;
+ }
+}
+
+.btn-custom p {
+ flex: 1;
+ margin-top: 15px;
+ padding-top: 2px;
+}
+.btn-custom ul {
+ flex: 1;
+}
+
+.dropdown-item.active {
+  background-color: #04d4f0;
+}
+.dropdown-menu {
+ width: 150px;
+}
 .card-item {
   flex: 1;
 }

@@ -1,8 +1,21 @@
 .register-container {
- display: flex;
- align-items: center;
- justify-content: center;
- width: 100vw;
- height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100vw;
+  height: 100vh;
+}
 
+.register-button {
+margin-top: 0.5em;
+  background-color: #04d4f0;
+  border: none;
+  height: 35px;
+  color: white;
+  text-transform: uppercase;
+  font-weight: 700;
+
+  &:hover {
+    opacity: 0.7;
+  }
 }

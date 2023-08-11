@@ -23,17 +23,18 @@
 }
 
 .card-container {
- width: 100%;
- display: flex;
- gap: 2%;
- justify-content: left;
- align-items: center;
- padding: 10px 5px 10px 5px;
+  width: 100%;
+  display: flex;
+  gap: 2%;
+  justify-content: left;
+  align-items: center;
+  padding: 10px 5px 10px 5px;
 
 }
 
 .manage {
- background-color: #04d4f0;
- color: white;
- font-weight: bold;
+  background-color: #04d4f0;
+  color: white;
+  font-weight: bold;
 }
+

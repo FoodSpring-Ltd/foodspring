@@ -22,4 +22,8 @@ public class AdminController {
     public String adminHome() {
         return "admin/adminHome";
     }
+    @GetMapping(value = "/dashboard/category")
+    public String categoryDashboard() {
+        return "admin/category-dashboard";
+    }
 }

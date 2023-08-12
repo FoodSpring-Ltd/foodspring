@@ -1,0 +1,16 @@
+.cat-dash-container {
+ display: flex;
+ flex-direction: column;
+ align-items: center;
+ justify-content: center;
+ padding: 60px;
+}
+
+.cat-table {
+ flex: 90%;
+ width: 100%;
+}
+
+.btn-container {
+  flex: 10%;
+}

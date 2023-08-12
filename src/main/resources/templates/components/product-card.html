@@ -1,5 +1,5 @@
 <div th:fragment="product-card" class="card card-sm">
-  <img src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxleHBsb3JlLWZlZWR8Mnx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=60" class="card-img-top" alt="food_1">
+  <img src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxleHBsb3JlLWZlZWR8Mnx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=60" class="card-img-top" alt="food_1" th:onclick="'redirectToProductDetail(' + ${productId} + ')'">
   <div class="card-body bg-transparent hover:bg-primary" th:onclick="'redirectToProductDetail(' + ${productId} + ')'">
     <h5 class="card-title" th:text="${name}">Salad buah italia</h5>
    <div class="card-text-wrapper mb-2">

@@ -19,12 +19,19 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.util.Objects;
 
 @Controller
-@RequestMapping("/")
+@RequestMapping("")
 public class MainController {
 
-    @GetMapping(value = "")
+    @GetMapping(value = "/")
     public String home(@RequestParam(value = "sortBy", required = false) String sortBy, Model model) {
         model.addAttribute("selectedSort", sortBy);
+        model.addAttribute("productId", 1);
         return "main/view-products";
+    }
+
+    @GetMapping(value = "/product/detail")
+    public String productDetail(@RequestParam(value = "id") Integer id, Model model) {
+        model.addAttribute("productId", id);
+        return "main/product-details";
     }
 }

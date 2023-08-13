@@ -1,0 +1,20 @@
+.bubble {
+    display: inline-block;
+    background-color: #007bff;
+    color: white;
+    padding: 5px 10px;
+    margin: 5px;
+    border-radius: 20px;
+    cursor: pointer;
+}
+
+#input-container {
+    margin-bottom: 10px;
+}
+
+.add-product-form {
+  display: flex;
+  padding: 40px;
+  align-items: center;
+  justify-content: center;
+}

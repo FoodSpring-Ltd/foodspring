@@ -36,4 +36,20 @@ public class AdminController {
         model.addAttribute("currentPage", page == null ? 1 : page);
         return "admin/category-dashboard";
     }
+
+    @GetMapping(value = "/dashboard/product")
+    public String productDashboard(@RequestParam(value = "page", required = false) Integer page,
+                                    @RequestParam(value = "limit", required = false) Integer limit,
+                                    Model model) {
+        model.addAttribute("selectedRow", limit);
+        model.addAttribute("totalPages", 10);
+        model.addAttribute("currentPage", page == null ? 1 : page);
+        return "admin/product-dashboard";
+    }
+
+    @GetMapping(value = "/dashboard/product/add")
+    public String addProductForm() {
+        return "admin/add-product";
+    }
+
 }

@@ -1,8 +1,8 @@
-<div th:fragment="product-card" class="card card-sm">
+<div th:fragment="product-card" class="card" xmlns:th="http://www.w3.org/1999/xhtml">
   <img src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxleHBsb3JlLWZlZWR8Mnx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=60" class="card-img-top" alt="food_1" th:onclick="'redirectToProductDetail(' + ${productId} + ')'">
-  <div class="card-body bg-transparent hover:bg-primary" th:onclick="'redirectToProductDetail(' + ${productId} + ')'">
-    <h5 class="card-title" th:text="${name}">Salad buah italia</h5>
-   <div class="card-text-wrapper mb-2">
+  <div class="card-body bg-transparent" th:onclick="'redirectToProductDetail(' + ${productId} + ')'">
+    <h5 class="card-title" th:text="${name}?:'[250 gr] Salad buah italia Salad buah italia Salad buah italia' "></h5>
+    <div class="card-text-wrapper mb-2">
      <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.Some quick example text to build on the card title and make up the bulk of the card's content.Some quick example text to build on the card title and make up the bulk of the card's content.</p>
    </div>
     <div class="status-price">

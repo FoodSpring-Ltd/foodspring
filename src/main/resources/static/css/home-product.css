@@ -101,18 +101,15 @@ border: 1px solid lightgrey;
 }
 
 .status-price {
+flex: 10%;
   display: flex;
   align-items: center;
   justify-content: space-between;
-}
-
-.card-sm {
-  max-width: 200px;
-  background-color: white;
-  overflow: hidden;
+  margin-bottom: 0;
 }
 
 .card-text-wrapper {
+
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
@@ -155,7 +152,10 @@ border: 1px solid lightgrey;
 
 .card {
   flex: 1;
-  min-width: 200px;
+  min-width: 180px;
+  max-width: 180px;
+  overflow: hidden;
+  height: 345px;
   background-color: white;
   &:hover {
     cursor: pointer;
@@ -168,9 +168,29 @@ border: 1px solid lightgrey;
 
 }
 
+.card-body {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
 .card-title {
+flex: 10%;
   font-size: 0.8rem;
   font-weight: 600;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  text-align: justify;
+  word-break: break-all;
+
+  @supports (-webkit-line-clamp: 2) {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: initial;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+  }
 }
 
 .card-text {

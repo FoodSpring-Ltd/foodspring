@@ -11,8 +11,12 @@ Version 1.0
 */
 
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import java.util.Objects;
 
 @Controller
 @RequestMapping(value = "/admin")
@@ -22,8 +26,14 @@ public class AdminController {
     public String adminHome() {
         return "admin/adminHome";
     }
+
     @GetMapping(value = "/dashboard/category")
-    public String categoryDashboard() {
+    public String categoryDashboard(@RequestParam(value = "page", required = false) Integer page,
+                                    @RequestParam(value = "limit", required = false) Integer limit,
+                                    Model model) {
+        model.addAttribute("selectedRow", limit);
+        model.addAttribute("totalPages", 10);
+        model.addAttribute("currentPage", page == null ? 1 : page);
         return "admin/category-dashboard";
     }
 }

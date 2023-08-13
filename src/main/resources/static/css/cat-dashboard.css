@@ -13,4 +13,40 @@
 
 .btn-container {
   flex: 10%;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 15px;
+}
+
+.cat-paginate {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.row-container {
+ display: flex;
+   align-items: center;
+   justify-content: flex-end;
+}
+
+.btn-custom {
+display: flex;
+align-items: center;
+justify-content: space-between;
+width: 130px;
+height: 40px;
+padding: 10px;
+cursor: pointer;
+border: 1px solid lightgrey;
+ background-color: white;
+ border-radius: 6px;
+ &:hover {
+   border: 1px solid #04d4f0;
+ }
+}
+
+.btn-custom p{
+margin-top: 10px;
 }

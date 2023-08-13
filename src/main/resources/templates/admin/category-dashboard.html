@@ -8,12 +8,45 @@
     <link th:href="@{/css/cat-dashboard.css}" rel="stylesheet">
     <link th:href="@{/css/navbar-top.css}" rel="stylesheet">
     <title>Category Dashboard</title>
+    <script>
+    function submitCategoryForm() {
+        // Get the form element by its ID
+        var categoryForm = document.getElementById("categoryForm");
+
+        // Submit the form
+        categoryForm.submit();
+    }
+    function submitUpdateForm() {
+     // Get the form element by its ID
+        var catUpdateForm = document.getElementById("catUpdateForm");
+
+        // Submit the form
+        catUpdateForm.submit();
+    }
+
+    function openModal(id) {
+        const categoryUpdateIdField = document.getElementById("category-update-id");
+        categoryUpdateIdField.value = id;
+    }
+
+</script>
 </head>
 <body>
 <div class="cat-dashboard">
     <div class="cat-dash-container">
         <div class="btn-container">
-            <a href="#" class="btn btn-primary">Add Category</a>
+            <div class="row-container dropdown">
+                <div class="btn-custom dropdown-toggle" id="dropdownMenuButtonRow" data-bs-toggle="dropdown"
+                     aria-expanded="false">
+                    <p th:text="${selectedRow == null} ? 'Row Per Page' : ${selectedRow}"></p>
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButtonRow">
+                        <li><a th:classappend="${selectedRow == 10}? 'active' : ''" class="dropdown-item" th:attr="data-row=${10}, data-page=${currentPage}" th:onclick="setSelectedRow(this)">10</a></li>
+                        <li><a th:classappend="${selectedRow == 20}? 'active' : ''" class="dropdown-item"  th:attr="data-row=${20}, data-page=${currentPage}" th:onclick="setSelectedRow(this)">20</a></li>
+                        <li><a th:classappend="${selectedRow == 30}? 'active' : ''" class="dropdown-item" th:attr="data-row=${30}, data-page=${currentPage}" th:onclick="setSelectedRow(this)">30</a></li>
+                    </ul>
+                </div>
+            </div>
+            <a href="#" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#categoryFormModal">Add Category</a>
         </div>
         <div class="cat-table">
           <table border="1" class="table table-bordered table-hover table-striped table-responsive-md">
@@ -31,7 +64,7 @@
               <td style="text-align: center">1</td>
               <td>Dessert</td>
               <td style="text-align: center">
-                <a href="" type="button" class="btn btn-primary">Edit</a>
+                <a href="" type="button" class="btn btn-primary" th:attr="data-id=${1}" th:onclick="openModal(this.getAttribute('data-id'))" data-bs-toggle="modal" data-bs-target="#catUpdateFormModal">Edit</a>
               </td>
               <td style="text-align: center">
                 <a href="" type="button" class="btn btn-danger">Delete</a>
@@ -40,12 +73,82 @@
             <!-- Add more rows here if needed -->
             </tbody>
           </table>
-
+            <div class="table-pagination">
+               <div class="cat-paginate">
+                   <div th:replace="~{components/pagination-bar :: pagination-bar}"></div>
+               </div>
+            </div>
         </div>
+    </div>
+    <div class="modal fade" id="catUpdateFormModal" tabindex="-1" aria-labelledby="categoryFormModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="catUpdateFormModalLabel">Update Category</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form method="get" action="/" id="catUpdateForm">
+                        <div class="mb-3">
+                            <label for="category-update-id" class="col-form-label">ID:</label>
+                            <input type="text" class="form-control" id="category-update-id" disabled>
+                        </div>
+                        <div class="mb-3">
+                            <label for="category-name" class="col-form-label">Category Name:</label>
+                            <input type="text" class="form-control" id="category-update-name">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" th:onclick="submitUpdateForm()">Update</button>
+                </div>
+
+
+            </div>
+        </div>
+
+    </div>
+    <div class="modal fade" id="categoryFormModal" tabindex="-1" aria-labelledby="categoryFormModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="categoryFormModalLabel">New Category</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form method="get" action="/" id="categoryForm">
+                        <div class="mb-3">
+                            <label for="category-name" class="col-form-label">Category Name:</label>
+                            <input type="text" class="form-control" id="category-name">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" th:onclick="submitCategoryForm()">Submit</button>
+                </div>
+
+
+            </div>
+        </div>
+
     </div>
 </div>
 
+<script>
+     function setSelectedRow(link) {
+        var selectedRowValue = link.getAttribute('data-row');
+        var pageValue = link.getAttribute('data-page');
+        link.classList.add('active');
+        var dropdownButton = document.getElementById('dropdownMenuButtonRow');
 
+        var newUrl = new URL(window.location.href);
+        newUrl.searchParams.set('page', pageValue);
+        newUrl.searchParams.set('limit', selectedRowValue);
+        window.location.href = newUrl.toString();
+    }
+</script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
         integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
         crossorigin="anonymous"></script>

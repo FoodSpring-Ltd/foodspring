@@ -11,7 +11,7 @@
 </head>
 <body>
 <div class="main-page">
-    <div th:replace="components/navbar-top :: navbar-top"></div>
+    <div th:replace="~{components/navbar-top :: navbar-top}"></div>
     <div class="home-container">
         <div class="filter-category">
             <h3>Category</h3>
@@ -64,17 +64,17 @@
                 </div>
             </div>
             <div class="product-container">
-                <div th:replace="components/product-card :: product-card(name='Salad Korea Indah')"></div>
-                <div th:replace="components/product-card :: product-card(name='Salad Korea Indah')"></div>
-                <div th:replace="components/product-card :: product-card(name='Salad Korea Indah')"></div>
-                <div th:replace="components/product-card :: product-card(name='Salad Korea Indah')"></div>
-                <div th:replace="components/product-card :: product-card(name='Salad Korea Indah')"></div>
-                <div th:replace="components/product-card :: product-card(name='Salad Korea Indah')"></div>
-                <div th:replace="components/product-card :: product-card(name='Salad Korea Indah')"></div>
-                <div th:replace="components/product-card :: product-card(name='Salad Korea Indah')"></div>
-                <div th:replace="components/product-card :: product-card(name='Salad Korea Indah')"></div>
-                <div th:replace="components/product-card :: product-card(name='Salad Korea Indah')"></div>
-                <div th:replace="components/product-card :: product-card(name='Salad Korea Indah')"></div>
+                <div th:replace="~{components/product-card :: product-card}"></div>
+                <div th:replace="~{components/product-card :: product-card(name='Salad Korea Indah')}"></div>
+                <div th:replace="~{components/product-card :: product-card(name='Salad Korea Indah')}"></div>
+                <div th:replace="~{components/product-card :: product-card(name='Salad Korea Indah')}"></div>
+                <div th:replace="~{components/product-card :: product-card(name='Salad Korea Indah')}"></div>
+                <div th:replace="~{components/product-card :: product-card(name='Salad Korea Indah')}"></div>
+                <div th:replace="~{components/product-card :: product-card(name='Salad Korea Indah')}"></div>
+                <div th:replace="~{components/product-card :: product-card(name='Salad Korea Indah')}"></div>
+                <div th:replace="~{components/product-card :: product-card(name='Salad Korea Indah')}"></div>
+                <div th:replace="~{components/product-card :: product-card(name='Salad Korea Indah')}"></div>
+                <div th:replace="~{components/product-card :: product-card(name='Salad Korea Indah')}"></div>
             </div>
 
         </div>

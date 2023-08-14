@@ -180,8 +180,7 @@ flex: 10%;
   font-weight: 600;
   white-space: nowrap;
   text-overflow: ellipsis;
-  text-align: justify;
-  word-break: break-all;
+  word-break: keep-all;
 
   @supports (-webkit-line-clamp: 2) {
     overflow: hidden;

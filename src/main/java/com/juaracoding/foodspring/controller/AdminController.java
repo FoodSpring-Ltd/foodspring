@@ -47,9 +47,13 @@ public class AdminController {
         return "admin/product-dashboard";
     }
 
-    @GetMapping(value = "/dashboard/product/add")
+    @GetMapping(value = "/dashboard/product/add-product-form")
     public String addProductForm() {
-        return "admin/add-product";
+        return "admin/add-product-form";
     }
 
+    @GetMapping(value = "/dashboard/product/update-product-form")
+    public String updateProductForm() {
+        return "admin/update-product-form";
+    }
 }

@@ -7,21 +7,50 @@
 
   <div class="card-body p-4">
 
-    <form method="POST" action="/" accept-charset="UTF-8" role="form" class="auth-form-v3 js-captcha-form" autocomplete="off" data-captcha-action="register"><input name="_token" type="hidden" value="EZB3BLGPaaVG8Nkkl8h9X24R6eiUB1hgusqE3QIw">
+    <form method="POST" th:object="${usr}" th:action="@{/api/v1/auth/register}" accept-charset="UTF-8" role="form" class="auth-form-v3 js-captcha-form" autocomplete="off" data-captcha-action="register"><input name="_token" type="hidden" value="EZB3BLGPaaVG8Nkkl8h9X24R6eiUB1hgusqE3QIw">
 
       <div class="form-group mb-3">
-        <input class="form-control dcd-default-form font-weight-medium auth-form-v3__first-input" placeholder="FullName" autocomplete="off" name="reg_fullname" type="text">
+        <input class="form-control dcd-default-form font-weight-medium auth-form-v3__first-input" th:field="*{username}" placeholder="Username" autocomplete="on" name="username" type="text">
+        <ul>
+          <li th:each="err : ${#fields.errors('username')}" th:text="${err}" class="error" />
+        </ul>
       </div>
       <div class="form-group mb-3">
-        <input class="form-control dcd-default-form font-weight-medium auth-form-v3__first-input" placeholder="Email" autocomplete="off" name="reg_email" type="email">
+        <input class="form-control dcd-default-form font-weight-medium auth-form-v3__first-input" th:field="*{firstName}" placeholder="FirstName" autocomplete="on" name="firstName" type="text">
+        <ul>
+          <li th:each="err : ${#fields.errors('firstName')}" th:text="${err}" class="error" />
+        </ul>
       </div>
       <div class="form-group mb-3">
-        <input class="form-control dcd-default-form font-weight-medium auth-form-v3__first-input" placeholder="Password" autocomplete="off" name="reg_pass" type="password">
+        <input class="form-control dcd-default-form font-weight-medium auth-form-v3__first-input" th:field="*{lastName}" placeholder="LastName" autocomplete="on"  name="lastName" type="text">
+        <ul>
+          <li th:each="err : ${#fields.errors('lastName')}" th:text="${err}" class="error" />
+        </ul>
       </div>
       <div class="form-group mb-3">
-        <input class="form-control dcd-default-form font-weight-medium auth-form-v3__first-input" placeholder="Phone Number" autocomplete="off" name="reg_phone" type="text">
+        <input class="form-control dcd-default-form font-weight-medium auth-form-v3__first-input" th:field="*{email}" placeholder="Email" autocomplete="on" name="email" type="email">
+        <ul>
+          <li th:each="err : ${#fields.errors('email')}" th:text="${err}" class="error" />
+        </ul>
       </div>
-
+      <div class="form-group mb-3">
+        <input class="form-control dcd-default-form font-weight-medium auth-form-v3__first-input" th:field="*{phone}" placeholder="Phone" autocomplete="on" name="phone" type="text">
+        <ul>
+          <li th:each="err : ${#fields.errors('phone')}" th:text="${err}" class="error" />
+        </ul>
+      </div>
+      <div class="form-group mb-3">
+        <input class="form-control dcd-default-form font-weight-medium auth-form-v3__first-input" th:field="*{password}" placeholder="Password" autocomplete="off" name="password" type="password">
+        <ul>
+          <li th:each="err : ${#fields.errors('password')}" th:text="${err}" class="error" />
+        </ul>
+      </div>
+      <div class="form-group mb-3">
+        <input class="form-control dcd-default-form font-weight-medium auth-form-v3__first-input" th:field="*{birthDay}" placeholder="Birthday" autocomplete="off" name="birthDay" type="date">
+        <ul>
+          <li th:each="err : ${#fields.errors('birthDay')}" th:text="${err}" class="error" />
+        </ul>
+      </div>
       <div class="form-group mb-2">
         <button type="submit" class="rounded col-12 register-button" data-label="Register">Register</button>
       </div>
@@ -37,7 +66,7 @@
 
       <div class="text-center mt-3">
         Sudah punya akun? Ayo
-        <a class="dcd-link font-weight-600" th:href="@{/auth/login}"><strong>Login</strong></a>
+        <a class="dcd-link font-weight-600" th:href="@{/login}"><strong>Login</strong></a>
       </div>
 
     </form>

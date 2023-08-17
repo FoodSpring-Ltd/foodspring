@@ -1,0 +1,45 @@
+const hasil = document.querySelector(".hasil");
+const form = document.querySelector("form");
+
+form.addEventListener("submit", async function (event) {
+  event.preventDefault();
+
+  let json = {};
+  let allElem = event.target.elements;
+  // allElem.sort();
+  for (var i = 0; i < allElem.length; i++) {
+    if (allElem[i].name) {
+      if (allElem[i].value) {
+        //ini buat button
+        console.log(allElem[i].multiple);
+        if (allElem[i].multiple) {
+          let resultOptions = [];
+          for (var o = 0; o < allElem[i].options.length; o++) {
+            let key = allElem[i].options[o].dataset.name;
+            allElem[i].options[o].selected
+              ? resultOptions.push({ [key]: allElem[i].options[o].value })
+              : null;
+          }
+          json[allElem[i].name] = resultOptions;
+        } else {
+          json[allElem[i].name] = allElem[i].value;
+        }
+      }
+    }
+  }
+
+  const rawResponse = await fetch(
+    "https://jsonplaceholder.typicode.com/todos",
+    {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(json),
+    }
+  );
+  const content = await rawResponse;
+
+  console.log(content);
+});

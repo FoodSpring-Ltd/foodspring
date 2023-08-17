@@ -57,7 +57,12 @@ public class Product {
     private Double price;
 
     @OneToMany
+    @JoinColumn(name = "ProductId", referencedColumnName = "ProductId")
     private List<Variant> variants;
+
+    @OneToMany
+    @JoinColumn(name = "ProductId", referencedColumnName = "ProductId")
+    private List<CartItem> cartItems;
 
     @ManyToOne
     @OnDelete(action = OnDeleteAction.SET_NULL)
@@ -68,9 +73,6 @@ public class Product {
     @OnDelete(action = OnDeleteAction.SET_NULL)
     @JoinColumn(name = "DiscountId")
     private Discount discount;
-
-    @ManyToMany(mappedBy = "products")
-    private List<Cart> carts;
 
     @Column(name = "CreatedAt", columnDefinition = "datetime2 default getdate()")
     @CreationTimestamp

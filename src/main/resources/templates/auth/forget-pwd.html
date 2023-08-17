@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link th:href="@{/styles/style.css}" rel="stylesheet" />
+    <link th:href="@{/styles/error.css}" rel="stylesheet" />
+    <link th:href="@{/styles/login.css}" rel="stylesheet" />
+    <title>SET PASSWORD</title>
+</head>
+<body>
+<!--<div th:replace="header/navheader::navapalah"></div>-->
+<div class="container">
+    <div class="wrapper">
+        <form th:action="@{/api/authz/v1/cfpwd}" th:object = "${forgetpwd}" method="POST">
+            <!--            <form th:action="@{/api/school/v1/students/{id} (id=${student.id})}" th:object = "${student}" method="POST">-->
+            <h1>Set Password</h1>
+            <div th:if="${#fields.hasErrors('global')}" class="error-box error-danger" >
+                <p th:each="err : ${#fields.errors('global')}" th:text="${err}"  />
+            </div>
+
+            <div>
+                <input type="hidden" th:field = "*{email}" name="email" id="email"/>
+            </div>
+
+            <div>
+                <label for="newPassword">Password Baru :</label>
+                <input type="password" th:field = "*{newPassword}" name="newPassword" id="newPassword" />
+                <ul>
+                    <li th:each="err : ${#fields.errors('newPassword')}" th:text="${err}" class="error" />
+                </ul>
+            </div>
+
+            <div>
+                <label for="confirmPassword">Konfirmasi Password Baru :</label>
+                <input type="password" th:field = "*{confirmPassword}" name="newPassword" id="confirmPassword" />
+                <ul>
+                    <li th:each="err : ${#fields.errors('confirmPassword')}" th:text="${err}" class="error" />
+                </ul>
+            </div>
+
+            <div>
+                <button class="btn-block" type="submit">Kirim</button>
+            </div>
+
+        </form>
+    </div>
+</div>
+</body>
+</html>

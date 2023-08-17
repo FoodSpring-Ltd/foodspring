@@ -2,7 +2,7 @@ spring:
   datasource:
     url: jdbc:sqlserver://ALPHAONE\\SQLEXPRESS:55054;databaseName=FoodSpring;schema=FoodSpring;encrypt=true;trustServerCertificate=true;
     username: hakim
-    password: hakim
+    password: 29fd98b9c9d2abdd6a65b3b779456239
     driverClassName: com.microsoft.sqlserver.jdbc.SQLServerDriver
   jpa:
     hibernate:
@@ -15,6 +15,12 @@ spring:
         default_schema: FoodSpring
         format_sql: true
     show-sql: true
+  session:
+    store-type: jdbc
+    jdbc:
+      initialize-schema: always
+      schema: classpath:data/schema-sqlserver.sql
+      table-name: FoodSpring.Spring_Session
 
 springdoc:
   api-docs:
@@ -23,4 +29,9 @@ springdoc:
     path: /swagger-ui.html
 
 server:
-  port: 8000
+  port: 8080
+  servlet:
+    session:
+      timeout: 300
+  error:
+    path: /error

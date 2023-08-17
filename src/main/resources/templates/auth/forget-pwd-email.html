@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link th:href="@{/styles/style.css}" rel="stylesheet" />
+    <link th:href="@{/styles/error.css}" rel="stylesheet" />
+    <link th:href="@{/styles/login.css}" rel="stylesheet" />
+    <title>INPUT EMAIL FORGET PASSWORD</title>
+</head>
+<body>
+<div class="container">
+    <div class="wrapper">
+        <form th:action="@{/api/authz/v1/forgetpwd}" th:object = "${forgetpwd}" method="POST">
+            <!--            <form th:action="@{/api/school/v1/students/{id} (id=${student.id})}" th:object = "${student}" method="POST">-->
+            <h1>Input Email</h1>
+            <div th:if="${#fields.hasErrors('global')}" class="error-box error-danger" >
+                <p th:each="err : ${#fields.errors('global')}" th:text="${err}"  />
+            </div>
+            <div>
+                <label for="email">Input Email:</label>
+                <input type="text" th:field = "*{email}" name="token" id="email"/>
+            </div>
+            <div>
+                <button class="btn-block" type="submit">Kirim</button>
+            </div>
+            <hr>
+            <a class="btn-block" th:href = "@{/api/check/signin/}">Back</a>
+        </form>
+    </div>
+</div>
+</body>
+</html>

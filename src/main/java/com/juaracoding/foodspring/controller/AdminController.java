@@ -15,6 +15,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Objects;
 
@@ -48,7 +49,7 @@ public class AdminController {
     }
 
     @GetMapping(value = "/dashboard/product/add-product-form")
-    public String addProductForm() {
+    public String addProductForm(Model model) {
         return "admin/add-product-form";
     }
 

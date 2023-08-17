@@ -20,11 +20,15 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.validator.constraints.Length;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "MstUser")
@@ -74,11 +78,37 @@ public class User {
     @Length(message = "Password min length 6", min = 6)
     private String password;
 
+    @OneToMany
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JoinColumn(name = "UserId", referencedColumnName = "UserId")
+    private List<ShoppingCart> shoppingCarts;
+
+    @OneToMany
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JoinColumn(name = "UserId", referencedColumnName = "UserId")
+    private List<ShopOrder> shopOrders;
+
+
     @Column(name = "Birthday")
     private LocalDate birthDay;
 
     @Column(name = "LastLogin")
     private LocalDateTime lastLogin;
+
+    @Column(name = "Token")
+    private String token;
+
+    @Column(name = "TokenCounter")
+    private Integer tokenCounter=0;
+
+    @Column(name = "PasswordCounter")
+    private Integer passwordCounter=0;
+
+    @Column(name = "ModifiedDate")
+    private Date modifiedDate;
+
+    @Column(name = "ModifiedBy")
+    private Integer modifiedBy;
 
     @Column(name = "CreatedAt", columnDefinition = "datetime2 default getdate()")
     @CreationTimestamp
@@ -89,10 +119,8 @@ public class User {
     private LocalDateTime updatedAt;
 
     @Column(name = "IsDelete", columnDefinition = "smallint default 0")
-    @NotNull(message = "Flag isDelete can't be null")
-    private Boolean isDelete;
+    private Boolean isDelete = false;
 
     @Column(name = "IsAdmin", columnDefinition = "smallint default 0")
-    @NotNull(message = "Flag isAdmin can't be null")
-    private Boolean isAdmin;
+    private Boolean isAdmin = false;
 }

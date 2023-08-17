@@ -10,21 +10,394 @@ Created on 8/10/2023 12:16 PM
 Version 1.0
 */
 
+import com.juaracoding.foodspring.dto.ForgetPasswordDTO;
+import com.juaracoding.foodspring.dto.UserDTO;
+import com.juaracoding.foodspring.handler.FormatValidation;
+import com.juaracoding.foodspring.model.User;
+import com.juaracoding.foodspring.service.AuthService;
+import com.juaracoding.foodspring.utils.ConstantMessage;
+import com.juaracoding.foodspring.utils.MappingAttribute;
+import jakarta.validation.Valid;
+import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.request.WebRequest;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Controller
-@RequestMapping(value = "/auth")
+@RequestMapping("/api/v1/auth")
 public class AuthController {
 
-    @GetMapping(value = "/login")
-    public String login() {
-        return "auth/login-page";
+    private final AuthService authService;
+    private final MappingAttribute mappingAttribute = new MappingAttribute();
+    @Autowired
+    private ModelMapper modelMapper;
+    private Map<String, Object> objectMapper = new HashMap<>();
+    private String[] strExceptionArr = new String[2];
+
+    @Autowired
+    public AuthController(AuthService authService) {
+        strExceptionArr[0] = "AuthController";
+        this.authService = authService;
     }
 
-    @GetMapping(value = "/register")
-    public String register() {
-        return "auth/register-page";
+    /*
+        VALIDASI FORM REGISTRASI
+     */
+    @PostMapping("/register")
+    public String doRegis(@ModelAttribute("usr")
+                          @Valid UserDTO user
+            , BindingResult bindingResult
+            , Model model
+            , WebRequest request) {
+        /* START VALIDATION */
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("usr", user);
+            return "auth/register-page";
+        }
+        boolean isValid = true;
+//        if (!FormatValidation.phoneNumberFormatValidation(user.getPhone())) {
+//            isValid = false;
+//            mappingAttribute.setErrorMessage(bindingResult, ConstantMessage.ERROR_PHONE_NUMBER_FORMAT_INVALID);
+//        }
+
+        if (!FormatValidation.emailFormatValidation(user.getEmail())) {
+            isValid = false;
+            mappingAttribute.setErrorMessage(bindingResult, ConstantMessage.ERROR_EMAIL_FORMAT_INVALID);
+        }
+        if (!isValid) {
+            model.addAttribute("usr", user);
+            return "auth/register-page";
+        }
+        /* END OF VALIDATION */
+
+        User users = modelMapper.map(user, new TypeToken<User>() {}.getType());
+        objectMapper = authService.checkRegis(users, request);
+        if (objectMapper.get("message").toString().equals(ConstantMessage.ERROR_FLOW_INVALID))//AUTO LOGOUT JIKA ADA PESAN INI
+        {
+            return "redirect:/check/logout";
+        }
+
+        if ((Boolean) objectMapper.get("success")) {
+            mappingAttribute.setAttribute(model, objectMapper);
+            model.addAttribute("verifyEmail", user.getEmail());
+            model.addAttribute("users", new User());
+
+            return "auth/login-page";
+        } else {
+            mappingAttribute.setErrorMessage(bindingResult, objectMapper.get("message").toString());
+            model.addAttribute("users", users);
+            return "auth/register-page";
+        }
+    }
+
+    /*
+        VERIFIKASI TOKEN SETELAH MENGINPUT FORM REGISTRASI
+     */
+    @GetMapping("/v1/taketoken")
+    public String requestToken(@ModelAttribute("usr")
+                               @Valid UserDTO user,
+                               BindingResult bindingResult, Model model, @RequestParam String email, WebRequest request) {
+
+        if (email == null || email.equals("") || !FormatValidation.emailFormatValidation(email)) {
+            return "redirect:/check/logout";//LANGSUNG LOGOUT KARENA FLOW TIDAK VALID / MUNGKIN HIT API INI BUKAN DARI WEB
+        }
+
+        objectMapper = authService.getNewToken(email, request);
+        if (objectMapper.get("message").toString().equals(ConstantMessage.ERROR_FLOW_INVALID))//AUTO LOGOUT JIKA ADA PESAN INI
+        {
+            return "redirect:/check/logout";
+        }
+        Boolean isSuccess = (Boolean) objectMapper.get("success");
+        if (isSuccess) {
+            model.addAttribute("verifyEmail", email);
+            model.addAttribute("usr", new UserDTO());
+            mappingAttribute.setErrorMessage(bindingResult, objectMapper.get("message").toString());
+            return "auth/login-page";
+        } else {
+            model.addAttribute("usr", new UserDTO());
+            return "auth/login-page";
+        }
+    }
+
+    /*
+        VERIFIKASI TOKEN SETELAH MENGINPUT FORM REGISTRASI
+     */
+    @PostMapping("/verify")
+    public String verifyRegis(@ModelAttribute("usr")
+                              @Valid User user,
+                              BindingResult bindingResult,
+                              Model model,
+                              @RequestParam String email,
+                              WebRequest request) {
+        //tidak ada bindingResult karena tidak memerlukan validasi di masing-masing field
+
+        String verToken = user.getToken();
+        int lengthToken = verToken.length();
+        if (email == null || email.equals("") || !FormatValidation.emailFormatValidation(email)) {
+            return "redirect:/api/check/logout";//Flow sudah salah kalau ini kosong ATAU FORMAT EMAIL TIDAK SESUAI
+        }
+
+        if (verToken.equals(""))//token tidak boleh kosong
+        {
+            mappingAttribute.setErrorMessage(bindingResult, ConstantMessage.ERROR_TOKEN_IS_EMPTY);
+            model.addAttribute("verifyEmail", email);
+            return "auth/auth-verify";
+        } else if (lengthToken != 6)//token HARUS 6 DIGIT
+        {
+            mappingAttribute.setErrorMessage(bindingResult, ConstantMessage.ERROR_TOKEN_INVALID);
+            model.addAttribute("verifyEmail", email);
+            return "auth/auth-verify";
+        }
+
+        objectMapper = authService.confirmRegis(user, email, request);
+        if (objectMapper.get("message").toString().equals(ConstantMessage.ERROR_FLOW_INVALID))//AUTO LOGOUT JIKA ADA PESAN INI
+        {
+            return "redirect:/api/check/logout";
+        }
+
+        if ((Boolean) objectMapper.get("success")) {
+            mappingAttribute.setErrorMessage(bindingResult, "REGISTRASI BERHASIL SILAHKAN LOGIN");
+            model.addAttribute("users", new User());//agar field kosong
+            return "authz/login-page";
+        } else {
+            model.addAttribute("verifyEmail", email);
+            mappingAttribute.setErrorMessage(bindingResult, objectMapper.get("message").toString());
+            return "auth/auth-verify";
+        }
+    }
+
+    /*
+        API UNTUK LOGIN
+     */
+    @PostMapping("/login")
+    public String login(@ModelAttribute("usr")
+                        @Valid User user,
+                        BindingResult bindingResult,
+                        Model model,
+                        WebRequest request) {
+
+        if (bindingResult.hasErrors()) {
+            return "auth/login-page";
+        }
+
+        objectMapper = authService.doLogin(user, request);
+        Boolean isSuccess = (Boolean) objectMapper.get("success");
+        String userParse = objectMapper.get("data") == null ? null : "";
+        if (userParse == null) {
+            mappingAttribute.setErrorMessage(bindingResult, objectMapper.get("message").toString());
+            model.addAttribute("usr", new UserDTO());
+            return "auth/login-page";
+        }
+        if (isSuccess) {
+            User nextUser = (User) objectMapper.get("data");
+//            nextUser.getAkses().getListMenuAkses().get(0).getMenuHeader().getNamaMenuHeader();
+            //        System.out.println(WebRequest.SCOPE_REQUEST);//0
+            //        System.out.println(WebRequest.SCOPE_SESSION);//1
+            //0 = scope request artinya hanya saat login saja tidak menyimpan di memory server / database
+            //1 = scope session artinya setelah login dan akan menyimpan data selama session masih aktif
+            request.setAttribute("USR_ID", nextUser.getUserId(), 1);//cara ambil request.getAttribute("USR_ID",1)
+            request.setAttribute("EMAIL", nextUser.getEmail(), 1);//cara ambil request.getAttribute("EMAIL",1)
+            request.setAttribute("PHONE", nextUser.getPhone(), 1);//cara ambil request.getAttribute("NO_HP",1)
+            request.setAttribute("USR_NAME", nextUser.getUsername(), 1);//cara ambil request.getAttribute("USR_NAME",1)
+            mappingAttribute.setAttribute(model, objectMapper, request);//urutan nya ini terakhir
+            return "main/view-products";
+        } else {
+            mappingAttribute.setErrorMessage(bindingResult, objectMapper.get("message").toString());
+            return "auth/login-page";
+        }
+    }
+
+    /*
+        PENGECEKAN PERTAMA KALI UNTUK LUPA PASSWORD
+     */
+    @PostMapping("/forgetpwd")
+    public String sendMailForgetPwd(@ModelAttribute("forgetpwd")
+                                    @Valid ForgetPasswordDTO forgetPasswordDTO,
+                                    BindingResult bindingResult
+            , Model model
+            , WebRequest request
+    ) {
+        String email = forgetPasswordDTO.getEmail();
+        Boolean isInvalid = false;
+
+        if (email == null || email.equals("")) {
+            isInvalid = true;
+            mappingAttribute.setErrorMessage(bindingResult, ConstantMessage.ERROR_EMAIL_IS_EMPTY);//FLOW AWAL UNTUK VALIDASI EMAIL
+
+        }
+        if (!FormatValidation.emailFormatValidation(email)) {
+            isInvalid = true;
+            mappingAttribute.setErrorMessage(bindingResult, ConstantMessage.ERROR_EMAIL_FORMAT_INVALID);
+        }
+
+        if (isInvalid)// AGAR KELUAR KEDUA VALIDASI INI DI NOTIFIKASI NYA
+        {
+            return "auth/forget_pwd_email";
+        }
+
+        objectMapper = authService.sendMailForgetPwd(email, request);
+        if (objectMapper.get("message").toString().equals(ConstantMessage.ERROR_FLOW_INVALID))//AUTO LOGOUT JIKA ADA PESAN INI
+        {
+            return "redirect:/check/logout";
+        }
+        Boolean isSuccess = (Boolean) objectMapper.get("success");
+        ForgetPasswordDTO nextForgetPasswordDTO = new ForgetPasswordDTO();
+        if (isSuccess) {
+            mappingAttribute.setAttribute(model, objectMapper);
+            nextForgetPasswordDTO.setEmail(email);
+            model.addAttribute("forgetpwd", nextForgetPasswordDTO);
+            return "auth/forget-pwd-verifikasi";
+        } else {
+            model.addAttribute("forgetpwd", nextForgetPasswordDTO);
+            mappingAttribute.setErrorMessage(bindingResult, objectMapper.get("message").toString());
+            return "auth/forget-pwd-email";
+        }
+
+    }
+
+    /*
+        VERIFIKASI TOKEN YANG SUDAH DIKIRIM KE EMAIL UNTUK LUPA PASSWORD PROSES YANG PERTAMYA KALI
+     */
+    @PostMapping("/vertokenfp")
+    public String verifyTokenForgetPwd(@ModelAttribute("forgetpwd")
+                                       @Valid ForgetPasswordDTO forgetPasswordDTO,
+                                       BindingResult bindingResult
+            , Model model
+            , WebRequest request
+    ) {
+
+        String email = forgetPasswordDTO.getEmail();
+        String token = forgetPasswordDTO.getToken();
+        int intTokenLength = token.length();
+        boolean isValid = true;
+        boolean isInvalidFlow = false;
+
+        if (email == null || email.equals("")) {
+            isInvalidFlow = true;// KALAU SUDAH KOSONG ARTINYA DIA GAK AKAN PERNAH BISA MELANJUTKAN PROSES JADI SEBAIKNYA DILOGOUT SAJA
+        }
+        if (!FormatValidation.emailFormatValidation(email)) {
+            isInvalidFlow = true;// KALAU SUDAH KOSONG ARTINYA DIA GAK AKAN PERNAH BISA MELANJUTKAN PROSES JADI SEBAIKNYA DILOGOUT SAJA
+        }
+
+        if (isInvalidFlow) {
+            return "redirect:/check/logout";
+        }
+
+        /*START VALIDATION*/
+        if (intTokenLength != 6) {
+            mappingAttribute.setErrorMessage(bindingResult, ConstantMessage.ERROR_TOKEN_INVALID);
+            isValid = false;
+        }
+        if (token == null || token.equals("")) {
+            mappingAttribute.setErrorMessage(bindingResult, ConstantMessage.ERROR_TOKEN_IS_EMPTY);
+            isValid = false;
+        }
+
+        if (!isValid) {
+            model.addAttribute("forgetpwd", forgetPasswordDTO);
+            return "auth/forget-pwd-verifikasi";
+        }/*END OF VALIDATION*/
+
+        objectMapper = authService.confirmTokenForgotPwd(forgetPasswordDTO, request);
+        if (objectMapper.get("message").toString().equals(ConstantMessage.ERROR_FLOW_INVALID)) {
+            return "redirect:/check/logout";
+        }
+
+        Boolean isSuccess = (Boolean) objectMapper.get("success");
+        if (isSuccess) {
+            ForgetPasswordDTO nextForgetPasswordDTO = new ForgetPasswordDTO();
+            mappingAttribute.setAttribute(model, objectMapper);
+            nextForgetPasswordDTO.setEmail(email);
+            model.addAttribute("forgetpwd", nextForgetPasswordDTO);
+            return "auth/auth-forget-pwd";
+        } else {
+            model.addAttribute("forgetpwd", forgetPasswordDTO);
+            mappingAttribute.setErrorMessage(bindingResult, objectMapper.get("message").toString());
+            return "auth/forget-pwd-verifikasi";
+        }
+    }
+
+    /*
+        LOGIC UNTUK COMPARE PASSWORD LAMA , PASSWORD BARU DAN PASSWORD KONFIRMASI
+     */
+    @PostMapping("/cfpwd")
+    public String verifyForgetPwd(@ModelAttribute("forgetpwd")
+                                  @Valid ForgetPasswordDTO forgetPasswordDTO,
+                                  BindingResult bindingResult
+            , Model model
+            , WebRequest request
+    ) {
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("forgetpwd", forgetPasswordDTO);
+            return "auth/forget-pwd";
+        }
+
+        String emailz = forgetPasswordDTO.getEmail();
+
+        if (emailz == null || emailz.equals("")) {
+            return "redirect:/check/logout";
+        }
+
+        objectMapper = authService.confirmPasswordChange(forgetPasswordDTO, request);
+        if (objectMapper.get("message").toString().equals(ConstantMessage.ERROR_FLOW_INVALID)) {
+            return "redirect:/check/logout";
+        }
+
+        Boolean isSuccess = (Boolean) objectMapper.get("success");
+        if (isSuccess) {
+            mappingAttribute.setAttribute(model, objectMapper);
+            model.addAttribute("usr", new UserDTO());
+            return "auth/login-page";
+        } else {
+            model.addAttribute("forgetpwd", forgetPasswordDTO);
+            mappingAttribute.setErrorMessage(bindingResult, objectMapper.get("message").toString());
+            return "auth/forget-pwd";
+        }
+    }
+
+    /*
+        API GENERATE NEW TOKEN UNTUK LUPA PASSWORD PROSES SELANJUTNYA SETELAH PROSES KIRIM TOKEN YANG PERTAMA
+     */
+    @GetMapping("/ntverfp")
+    public String requestTokenForgetPwd(@ModelAttribute("forgetpwd")
+                                        @Valid ForgetPasswordDTO forgetPasswordDTO,
+                                        BindingResult bindingResult,
+                                        Model model,
+                                        @RequestParam String emailz,
+                                        WebRequest request) {
+        forgetPasswordDTO.setToken("");//DIKOSONGKAN UNTUK MENGHILANGKAN INPUTAN USER DI FIELD TOKEN
+        forgetPasswordDTO.setEmail(emailz);
+
+        /*
+            API GENERATE NEW TOKEN UNTUK LUPA PASSWORD PROSES SELANJUTNYA SETELAH PROSES KIRIM TOKEN YANG PERTAMA
+        */
+        String email = forgetPasswordDTO.getEmail();
+        if (email == null || email.equals("")) {
+            return "redirect:/check/logout";
+        }
+
+        objectMapper = authService.getNewToken(email, request);
+        if (objectMapper.get("message").toString().equals(ConstantMessage.ERROR_FLOW_INVALID)) {
+            return "redirect:/check/logout";
+        }
+        Boolean isSuccess = (Boolean) objectMapper.get("success");
+        if (isSuccess) {
+            model.addAttribute("forgetPwd", forgetPasswordDTO);
+            mappingAttribute.setAttribute(model, objectMapper);
+            return "auth/forget-pwd-verifikasi";
+        } else {
+            mappingAttribute.setErrorMessage(bindingResult, objectMapper.get("message").toString());
+            model.addAttribute("forgetPwd", forgetPasswordDTO);
+            return "auth/login-page";
+        }
     }
 }

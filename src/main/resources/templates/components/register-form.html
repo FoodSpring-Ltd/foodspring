@@ -7,7 +7,7 @@
 
   <div class="card-body p-4">
 
-    <form method="POST" th:object="${usr}" th:action="@{/api/v1/auth/register}" accept-charset="UTF-8" role="form" class="auth-form-v3 js-captcha-form" autocomplete="off" data-captcha-action="register"><input name="_token" type="hidden" value="EZB3BLGPaaVG8Nkkl8h9X24R6eiUB1hgusqE3QIw">
+    <form method="POST" th:object="${user}" th:action="@{/auth/register}" accept-charset="UTF-8" role="form" class="auth-form-v3 js-captcha-form" autocomplete="off" data-captcha-action="register"><input name="_token" type="hidden" value="EZB3BLGPaaVG8Nkkl8h9X24R6eiUB1hgusqE3QIw">
 
       <div class="form-group mb-3">
         <input class="form-control dcd-default-form font-weight-medium auth-form-v3__first-input" th:field="*{username}" placeholder="Username" autocomplete="on" name="username" type="text">

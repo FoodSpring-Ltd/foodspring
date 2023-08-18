@@ -1,4 +1,4 @@
-package com.juaracoding.foodspring.controller;
+package com.juaracoding.foodspring.handler;
 /*
 IntelliJ IDEA 2022.2.2 (Community Edition)
 Build #IC-222.4167.29, built on September 13, 2022
@@ -23,5 +23,11 @@ public class ControllerAdvisor {
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public String Error404() {
         return "error/404";
+    }
+
+    @ExceptionHandler(Exception.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public String Error500() {
+        return "error/error";
     }
 }

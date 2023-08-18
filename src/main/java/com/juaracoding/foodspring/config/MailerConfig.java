@@ -1,6 +1,7 @@
 package com.juaracoding.foodspring.config;
 
 import com.juaracoding.foodspring.core.Crypto;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -113,7 +114,7 @@ public class MailerConfig {
     }
 
     @Bean
-    public  static PropertySourcesPlaceholderConfigurer propertyConfigInDev() {
+    public static PropertySourcesPlaceholderConfigurer propertyConfigInDev() {
         return new PropertySourcesPlaceholderConfigurer();
     }
 }

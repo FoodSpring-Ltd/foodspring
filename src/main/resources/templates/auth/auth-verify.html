@@ -11,8 +11,8 @@
 <body>
 <div class="container">
   <div class="wrapper">
-    <!--        <form th:action="@{/api/authz/v1/verify/{size}/{page}/{sort}?email={mailz} (mailz=${verifyEmail},sortz=${sorting},page=${paging}})}" th:object = "${usr}" method="POST">-->
-    <form th:action="@{/api/authz/v1/verify/?email={mailz} (mailz=${verifyEmail}) }" th:object = "${usr}" method="POST">
+
+    <form th:action="@{/auth/verify?email={mail} (mail=${verifyEmail}) }" th:object = "${user}" method="POST">
       <!--            <form th:action="@{/api/school/v1/students/{id} (id=${student.id})}" th:object = "${student}" method="POST">-->
       <h1>Input Token</h1>
       <div th:if="${#fields.hasErrors('global')}" class="error-box error-danger" >
@@ -22,15 +22,15 @@
         <label hidden th:text="${verifyEmail}" id="verifyEmail">[verifyEmail]</label>
       </div>
       <div>
-        <label for="tokenz">Input Token:</label>
-        <input type="password" th:field = "*{token}" name="token" id="tokenz" maxlength="6"/>
+        <label for="token">Input Token:</label>
+        <input type="password" th:field = "*{token}" name="token" id="token" maxlength="6"/>
       </div>
       <div>
         <button class="btn-block" type="submit">Kirim</button>
       </div>
 
       <div>
-        <a class="btn btn-block" th:href = "@{/api/authz/v1/taketoken?email={mailz} (mailz=${verifyEmail})}">New Token</a>
+        <a class="btn btn-block" th:href = "@{/auth/newToken?email={mail} (mail=${verifyEmail})}">New Token</a>
       </div>
     </form>
   </div>

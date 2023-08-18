@@ -46,6 +46,18 @@ public class CartItem {
     @JoinColumn(name = "VariantId")
     private Variant variant;
 
+    @Column(name = "VariantName")
+    private String variantName;
+
+    @Column(name = "Price")
+    private Double price;
+
+    @Column(name = "PercentDiscount")
+    private Float percentDiscount;
+
+    @Column(name = "ProductName")
+    private String productName;
+
     @Column(name = "Qty")
     @Comment(value = "Product Item Quantity")
     private Integer qty;

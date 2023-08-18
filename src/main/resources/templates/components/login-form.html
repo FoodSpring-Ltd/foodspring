@@ -7,19 +7,25 @@
 
   <div class="card-body p-4">
 
-    <form method="POST" action="https://www.dicoding.com/login?" accept-charset="UTF-8" role="form" class="auth-form-v3 js-captcha-form" autocomplete="off" data-captcha-action="login"><input name="_token" type="hidden" value="EZB3BLGPaaVG8Nkkl8h9X24R6eiUB1hgusqE3QIw">
-
+    <form method="POST" th:object="${loginDTO}" th:action="@{/auth/login}" accept-charset="UTF-8" role="form" class="auth-form-v3 js-captcha-form" autocomplete="off" data-captcha-action="login">
+      <input name="_token" type="hidden" value="EZB3BLGPaaVG8Nkkl8h9X24R6eiUB1hgusqE3QIw">
+      <div th:if="${#fields.hasErrors('global')}" class="error-box error-danger" >
+        <ul>
+          <li th:each="err : ${#fields.errors('global')}" th:text="${err}" class="error" style="color: red" />
+        </ul>
+      </div>
       <div class="form-group mb-3">
-        <input class="form-control dcd-default-form font-weight-medium auth-form-v3__first-input" placeholder="Email" autocomplete="off" name="login_email" type="email" fdprocessedid="eohdj">
+        <input class="form-control dcd-default-form font-weight-medium auth-form-v3__first-input" th:field="*{credential}" placeholder="Email/Phone/Username" autocomplete="off" name="credential" type="text" required>
       </div>
 
       <div class="form-group">
         <div class="input-group mb-2">
-          <input id="login-password" class="auth-form-v3__password-input form-control dcd-default-form font-weight-medium" placeholder="Password" autocomplete="off" required="" name="login_password" type="password" value="" fdprocessedid="sma8br">
+          <input id="login-password" class="auth-form-v3__password-input form-control dcd-default-form font-weight-medium" th:field="*{password}" placeholder="Password" autocomplete="off" name="password" type="password" required="true">
+
         </div>
 
         <div class="text-right">
-          <a href="https://www.dicoding.com/passwordreset" class="small font-weight-600 ml-auto dcd-link">Lupa Password?</a>
+          <a th:href="@{/auth/forget-password}" class="small font-weight-600 ml-auto dcd-link">Lupa Password?</a>
         </div>
       </div>
 
@@ -47,12 +53,6 @@
         <small>
           Dengan melakukan login, Anda setuju dengan <a href="" data-bs-toggle="modal" data-bs-target="#termAndCondition">syarat &amp; ketentuan FoodSpring</a>.
         </small>
-
-        <div class="small mt-2">
-          This site is protected by reCAPTCHA and the Google
-          <a href="https://policies.google.com/privacy">Privacy Policy</a> and
-          <a href="https://policies.google.com/terms">Terms of Service</a> apply.
-        </div>
       </div>
 
     </form>

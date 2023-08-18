@@ -10,6 +10,8 @@ Created on 8/10/2023 8:17 AM
 Version 1.0
 */
 
+import com.juaracoding.foodspring.config.ServicePath;
+import com.juaracoding.foodspring.config.ViewPath;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,41 +22,41 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.Objects;
 
 @Controller
-@RequestMapping(value = "/admin")
+@RequestMapping(value = ServicePath.ADMIN)
 public class AdminController {
 
     @GetMapping(value = "")
     public String adminHome() {
-        return "admin/adminHome";
+        return ViewPath.ADMIN_HOME;
     }
 
-    @GetMapping(value = "/dashboard/category")
+    @GetMapping(value = ServicePath.DASHBOARD_CATEGORY)
     public String categoryDashboard(@RequestParam(value = "page", required = false) Integer page,
                                     @RequestParam(value = "limit", required = false) Integer limit,
                                     Model model) {
         model.addAttribute("selectedRow", limit);
         model.addAttribute("totalPages", 10);
         model.addAttribute("currentPage", page == null ? 1 : page);
-        return "admin/category-dashboard";
+        return ViewPath.ADMIN_CATEGORY_DASHBOARD;
     }
 
-    @GetMapping(value = "/dashboard/product")
+    @GetMapping(value = ServicePath.DASHBOARD_PRODUCT)
     public String productDashboard(@RequestParam(value = "page", required = false) Integer page,
                                     @RequestParam(value = "limit", required = false) Integer limit,
                                     Model model) {
         model.addAttribute("selectedRow", limit);
         model.addAttribute("totalPages", 10);
         model.addAttribute("currentPage", page == null ? 1 : page);
-        return "admin/product-dashboard";
+        return ViewPath.ADMIN_PRODUCT_DASHBOARD;
     }
 
-    @GetMapping(value = "/dashboard/product/add-product-form")
+    @GetMapping(value = ServicePath.DASHBOARD_PRODUCT_ADD_PRODUCT_FORM)
     public String addProductForm(Model model) {
-        return "admin/add-product-form";
+        return ViewPath.ADMIN_ADD_PRODUCT_FORM;
     }
 
-    @GetMapping(value = "/dashboard/product/update-product-form")
+    @GetMapping(value = ServicePath.DASHBOARD_PRODUCT_UPDATE_PRODUCT_FORM)
     public String updateProductForm() {
-        return "admin/update-product-form";
+        return ViewPath.ADMIN_UPDATE_PRODUCT_FORM;
     }
 }

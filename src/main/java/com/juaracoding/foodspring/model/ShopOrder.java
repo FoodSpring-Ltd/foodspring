@@ -43,9 +43,7 @@ public class ShopOrder {
     @NotNull(message = "Order date can't be null")
     private LocalDateTime orderDate;
 
-    @Column(name = "GrandTotal")
-    @Comment(value = "Order total price (grand total)", on = "GrandTotal")
-    @NotNull(message = "Grand total can't be null")
+    @Transient
     private Double grandTotal;
 
     @OneToMany

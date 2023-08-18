@@ -9,7 +9,7 @@ spring:
       dialect: org.hibernate.dialect.SQLServer2012Dialect
       naming:
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
-      ddl-auto: create-drop
+      ddl-auto: update
     properties:
       hibernate:
         default_schema: FoodSpring
@@ -21,6 +21,8 @@ spring:
       initialize-schema: always
       schema: classpath:data/schema-sqlserver.sql
       table-name: FoodSpring.Spring_Session
+  autoconfigure:
+    exclude: org.springframework.boot.autoconfigure.web.ErrorMvcAutoConfiguration
 
 springdoc:
   api-docs:
@@ -35,3 +37,5 @@ server:
       timeout: 300
   error:
     path: /error
+    whitelabel:
+      enabled: false

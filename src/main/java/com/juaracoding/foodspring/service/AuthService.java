@@ -13,6 +13,7 @@ Version 1.0
 import com.juaracoding.foodspring.config.AppConfig;
 import com.juaracoding.foodspring.core.BcryptImpl;
 import com.juaracoding.foodspring.dto.ForgetPasswordDTO;
+import com.juaracoding.foodspring.dto.LoginDTO;
 import com.juaracoding.foodspring.dto.UserDTO;
 import com.juaracoding.foodspring.handler.ResourceNotFoundException;
 import com.juaracoding.foodspring.handler.ResponseHandler;
@@ -149,15 +150,13 @@ public class AuthService {
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public Map<String, Object> doLogin(User user, WebRequest request) {
-        user.setUsername(user.getEmail());
-        user.setPhone(user.getPhone());
-        List<User> listUserResult = userRepository.findByEmailOrPhoneOrUsername(user.getEmail(), user.getPhone(), user.getUsername());//DATANYA PASTI HANYA 1
+    public Map<String, Object> doLogin(LoginDTO loginDTO, WebRequest request) {
+        List<User> listUserResult = userRepository.findByEmailOrPhoneOrUsername(loginDTO.getCredential(), loginDTO.getCredential(), loginDTO.getCredential());//DATANYA PASTI HANYA 1
         User nextUser = null;
         try {
             if (listUserResult.size() != 0) {
                 nextUser = listUserResult.get(0);
-                if (!BcryptImpl.verifyHash(user.getPassword() + nextUser.getUsername(), nextUser.getPassword()))//dicombo dengan userName
+                if (!BcryptImpl.verifyHash(loginDTO.getPassword() + nextUser.getUsername(), nextUser.getPassword()))//dicombo dengan userName
                 {
                     return new ResponseHandler().generateModelAttribut(ConstantMessage.ERROR_LOGIN_FAILED,
                             HttpStatus.NOT_ACCEPTABLE, null, "FV01007", request);
@@ -198,7 +197,7 @@ public class AuthService {
                         HttpStatus.NOT_ACCEPTABLE, null, "FV01009", request);
             }
         } catch (Exception e) {
-            strExceptionArr[1] = "getNewToken(String emailz, WebRequest request)  --- LINE 185";
+            strExceptionArr[1] = "getNewToken(String email, WebRequest request)  --- LINE 185";
             LoggingFile.exceptionString(strExceptionArr, e, AppConfig.getFlagLogging());
             return new ResponseHandler().generateModelAttribut(ConstantMessage.ERROR_FLOW_INVALID,
                     HttpStatus.INTERNAL_SERVER_ERROR, null, "FE01004", request);

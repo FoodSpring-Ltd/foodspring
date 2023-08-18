@@ -77,5 +77,6 @@ public class ConstantMessage {
     public static final String ERROR_PHONE_NUMBER_FORMAT_INVALID = "ERROR_PHONE_NUMBER_FORMAT_INVALID";
     public static final String ERROR_EMAIL_FORMAT_INVALID = "ERROR_EMAIL_FORMAT_INVALID";
     public static final String ERROR_TOKEN_IS_EMPTY = "ERROR_TOKEN_IS_EMPTY";
+    public static final String THIS_FIELD_CANT_BE_BLANK = "This Field can't be blank";
 }
 

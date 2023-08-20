@@ -80,6 +80,13 @@
 			<version>${project.parent.version}</version>
 		</dependency>
 
+		<!-- https://mavenlibs.com/maven/dependency/com.cloudinary/cloudinary-http44 -->
+		<dependency>
+			<groupId>com.cloudinary</groupId>
+			<artifactId>cloudinary-http44</artifactId>
+			<version>1.34.0</version>
+		</dependency>
+
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-devtools</artifactId>

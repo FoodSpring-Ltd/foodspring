@@ -12,7 +12,7 @@
 <!--<div th:replace="header/navheader::navapalah"></div>-->
 <div class="container">
     <div class="wrapper">
-        <form th:action="@{/api/authz/v1/cfpwd}" th:object = "${forgetpwd}" method="POST">
+        <form th:action="@{/auth/verify-forget-password}" th:object = "${forgetpassword}" method="POST">
             <!--            <form th:action="@{/api/school/v1/students/{id} (id=${student.id})}" th:object = "${student}" method="POST">-->
             <h1>Set Password</h1>
             <div th:if="${#fields.hasErrors('global')}" class="error-box error-danger" >

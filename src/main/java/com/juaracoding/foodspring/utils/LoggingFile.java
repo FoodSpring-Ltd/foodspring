@@ -23,7 +23,8 @@ public class LoggingFile {
             logger.info(sbuilds.append(System.getProperty("line.separator")).
                     append("ERROR IN CLASS =>").append(datax[0]).append(System.getProperty("line.separator")).
                     append("METHOD   =>").append(datax[1]).append(System.getProperty("line.separator")).
-                    append("ERROR IS       =>").append(e.getMessage()).
+                    append("ERROR IS       =>").append(e.getMessage()).append(System.getProperty("line.separator")).
+                    append("CAUSED BY      =>").append(e.getCause().getMessage()).
                     append(System.getProperty("line.separator")).toString());
             sbuilds.setLength(0);
         }

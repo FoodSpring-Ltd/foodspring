@@ -42,11 +42,11 @@ public class ShoppingCart {
     @JoinColumn(name = "ShoppingCartId", referencedColumnName = "ShoppingCartId")
     private List<CartItem> cartItems;
 
-    @Column(name = "CreatedAt", columnDefinition = "datetime2 default getdate()")
+    @Column(name = "CreatedAt")
     @CreationTimestamp
     private LocalDateTime createdAt;
 
-    @Column(name = "UpdatedAt", columnDefinition = "datetime2 default getdate()")
+    @Column(name = "UpdatedAt")
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 }

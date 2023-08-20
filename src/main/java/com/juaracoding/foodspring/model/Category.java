@@ -48,13 +48,13 @@ public class Category {
     @JoinColumn(name = "CategoryId", referencedColumnName = "CategoryId")
     private List<Product> products;
 
-    @Column(name = "CreatedAt", columnDefinition = "datetime2 default getdate()")
+    @Column(name = "CreatedAt")
     @CreationTimestamp
-    private LocalDateTime createdAt;
+    private LocalDateTime createdAt = LocalDateTime.now();
 
-    @Column(name = "UpdatedAt", columnDefinition = "datetime2 default getdate()")
+    @Column(name = "UpdatedAt")
     @UpdateTimestamp
-    private LocalDateTime updatedAt;
+    private LocalDateTime updatedAt = LocalDateTime.now();
 
     @Column(name = "ModifiedBy")
     private Long modifiedBy;

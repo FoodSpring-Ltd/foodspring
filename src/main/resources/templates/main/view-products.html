@@ -64,17 +64,9 @@
                 </div>
             </div>
             <div class="product-container">
-                <div th:replace="~{components/product-card :: product-card}"></div>
-                <div th:replace="~{components/product-card :: product-card(name='Salad Korea Indah')}"></div>
-                <div th:replace="~{components/product-card :: product-card(name='Salad Korea Indah')}"></div>
-                <div th:replace="~{components/product-card :: product-card(name='Salad Korea Indah')}"></div>
-                <div th:replace="~{components/product-card :: product-card(name='Salad Korea Indah')}"></div>
-                <div th:replace="~{components/product-card :: product-card(name='Salad Korea Indah')}"></div>
-                <div th:replace="~{components/product-card :: product-card(name='Salad Korea Indah')}"></div>
-                <div th:replace="~{components/product-card :: product-card(name='Salad Korea Indah')}"></div>
-                <div th:replace="~{components/product-card :: product-card(name='Salad Korea Indah')}"></div>
-                <div th:replace="~{components/product-card :: product-card(name='Salad Korea Indah')}"></div>
-                <div th:replace="~{components/product-card :: product-card(name='Salad Korea Indah')}"></div>
+                <div th:each="product : ${products}">
+                    <div th:replace="~{components/product-card :: product-card(product=${product})}"></div>
+                </div>
             </div>
 
         </div>

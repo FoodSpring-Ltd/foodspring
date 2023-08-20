@@ -32,7 +32,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.request.WebRequest;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -46,7 +45,6 @@ public class AuthService {
     private final TransformToDTO transformToDTO = new TransformToDTO();
     private final Map<String, String> mapColumnSearch = new HashMap<String, String>();
     private final Map<String, Object> objectMapper = new HashMap<String, Object>();
-    private final StringBuilder stringBuilder = new StringBuilder();
     private final UserRepository userRepository;
     @Autowired
     private ModelMapper modelMapper;
@@ -169,7 +167,7 @@ public class AuthService {
                         HttpStatus.NOT_ACCEPTABLE, null, "FV01008", request);
             }
         } catch (Exception e) {
-            strExceptionArr[1] = "doLogin(Userz userz,WebRequest request)  --- LINE 132";
+            strExceptionArr[1] = "doLogin(User user,WebRequest request)  --- LINE 132";
             LoggingFile.exceptionString(strExceptionArr, e, AppConfig.getFlagLogging());
             return new ResponseHandler().generateModelAttribut(ConstantMessage.ERROR_LOGIN_FAILED,
                     HttpStatus.INTERNAL_SERVER_ERROR, null, "FE01003", request);
@@ -207,7 +205,7 @@ public class AuthService {
                 call method send SMTP
          */
 
-        strProfile[0] = "TOKEN BARU UNTUK VERIFIKASI GANTI PASSWORD";
+        strProfile[0] = "TOKEN BARU UNTUK VERIFIKASI EMAIL";
         strProfile[1] = user.getFirstName().concat(" " + user.getLastName());
         strProfile[2] = String.valueOf(intVerification);
 
@@ -320,78 +318,6 @@ public class AuthService {
                 HttpStatus.OK, null, null, request);
     }
 
-
-    public Map<String, Object> saveUser(User user, WebRequest request) {
-        String strMessage = ConstantMessage.SUCCESS_SAVE;
-        Object strUserIdz = request.getAttribute("USR_ID", 1);
-        int intVerification = new Random().nextInt(100000, 999999);
-        String strToken = "";
-        try {
-            if (strUserIdz == null) {
-                return new ResponseHandler().generateModelAttribut(ConstantMessage.ERROR_FLOW_INVALID,
-                        HttpStatus.NOT_ACCEPTABLE, null, "FV03001", request);
-            }
-            strToken = BcryptImpl.hash(String.valueOf(intVerification));
-            user.setPassword(strToken);
-            user.setToken(String.valueOf(intVerification));
-            userRepository.save(user);
-        } catch (Exception e) {
-            strExceptionArr[1] = "saveUser(User user, WebRequest request) --- LINE 67";
-            LoggingFile.exceptionString(strExceptionArr, e, AppConfig.getFlagLogging());
-            return new ResponseHandler().generateModelAttribut(ConstantMessage.ERROR_SAVE_FAILED,
-                    HttpStatus.BAD_REQUEST,
-                    transformToDTO.transformObjectDataEmpty(objectMapper, mapColumnSearch),
-                    "FE03001", request);
-        }
-
-        strProfile[0] = "LINK SET PASSWORD";
-        strProfile[1] = user.getFirstName().concat(" " + user.getLastName());
-        stringBuilder.setLength(0);
-        strProfile[2] = stringBuilder.append("http://").append(AppConfig.getUrlEndPointVerify())
-                .append("/api/auth/v1/userman/vermail?uid=").append(BcryptImpl.hash(user.getUsername())).
-                append("&tkn=").append(strToken).
-                append("&mail=").append(user.getEmail()).toString();
-
-        /*EMAIL NOTIFICATION*/
-        if (AppConfig.getFlagSMTPActive().equalsIgnoreCase("y") && !user.getEmail().equals("")) {
-            new ExecuteSMTP().sendSMTPToken(user.getEmail(), "AKUN TELAH DIBUAT", strProfile, "\\data\\ver_set_pwd.html");
-        }
-
-        return new ResponseHandler().generateModelAttribut(strMessage,
-                HttpStatus.CREATED,
-                transformToDTO.transformObjectDataSave(objectMapper, user.getUserId(), mapColumnSearch),
-                null, request);
-    }
-
-
-    @Transactional(rollbackFor = Exception.class)
-    public Map<String, Object> saveUploadFileUser(List<User> listUser,
-                                                  MultipartFile multipartFile,
-                                                  WebRequest request) throws Exception {
-        List<User> listUserResults = null;
-        String strMessage = ConstantMessage.SUCCESS_SAVE;
-
-        try {
-            listUserResults = userRepository.saveAll(listUser);
-            if (listUserResults.size() == 0) {
-                strExceptionArr[1] = "saveUploadFileUser(List<User> listUser, MultipartFile multipartFile, WebRequest request)  --- LINE 377";
-                LoggingFile.exceptionString(strExceptionArr, new ResourceNotFoundException("FILE KOSONG"), AppConfig.getFlagLogging());
-                return new ResponseHandler().generateModelAttribut(ConstantMessage.ERROR_EMPTY_FILE + " -- " + multipartFile.getOriginalFilename(),
-                        HttpStatus.BAD_REQUEST, null, "FV03004", request);
-            }
-        } catch (Exception e) {
-            strExceptionArr[1] = "saveUploadFileUser(List<User> listUser, MultipartFile multipartFile, WebRequest request)--- LINE 383";
-            LoggingFile.exceptionString(strExceptionArr, e, AppConfig.getFlagLogging());
-            return new ResponseHandler().generateModelAttribut(ConstantMessage.ERROR_SAVE_FAILED,
-                    HttpStatus.BAD_REQUEST, null, "FE03002", request);
-        }
-        return new ResponseHandler().
-                generateModelAttribut(strMessage,
-                        HttpStatus.CREATED,
-                        transformToDTO.transformObjectDataEmpty(objectMapper, mapColumnSearch),
-                        null,
-                        request);
-    }
 
     public Map<String, Object> findAllUser(Pageable pageable, WebRequest request) {
         List<UserDTO> listUserDTO = null;

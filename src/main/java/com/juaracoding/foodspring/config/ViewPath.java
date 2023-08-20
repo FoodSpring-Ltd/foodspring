@@ -27,4 +27,7 @@ public class ViewPath {
     public static final String ADMIN_ADD_PRODUCT_FORM = "admin/add-product-form";
     public static final String ADMIN_UPDATE_PRODUCT_FORM = "admin/update-product-form";
     public static final String MAIN_PRODUCT_DETAILS = "main/product-details";
+
+    public static final String REDIRECT_AUTH_VERIFY = "redirect:/auth/verify";
+    public static final String REDIRECT_ADMIN_CATEGORY_DASHBOARD = "redirect:/admin/dashboard/category";
 }

@@ -62,11 +62,11 @@ public class CartItem {
     @Comment(value = "Product Item Quantity")
     private Integer qty;
 
-    @Column(name = "CreatedAt", columnDefinition = "datetime2 default getdate()")
+    @Column(name = "CreatedAt")
     @CreationTimestamp
-    private LocalDateTime createdAt;
+    private LocalDateTime createdAt = LocalDateTime.now();
 
-    @Column(name = "UpdatedAt", columnDefinition = "datetime2 default getdate()")
+    @Column(name = "UpdatedAt")
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 }

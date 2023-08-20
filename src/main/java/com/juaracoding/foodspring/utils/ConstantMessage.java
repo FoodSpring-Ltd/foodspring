@@ -78,5 +78,9 @@ public class ConstantMessage {
     public static final String ERROR_EMAIL_FORMAT_INVALID = "ERROR_EMAIL_FORMAT_INVALID";
     public static final String ERROR_TOKEN_IS_EMPTY = "ERROR_TOKEN_IS_EMPTY";
     public static final String THIS_FIELD_CANT_BE_BLANK = "This Field can't be blank";
+    public static final String ERROR_CREATING_CATEGORY = "Error creating category";
+    public static final String SUCCESS_CREATE_CATEGORY = "Category successfully created";
+    public static final String SUCCESS_CREATED_PRODUCT = "Product successfully created";
+    public static final String ERROR_CREATING_PRODUCT = "Error creating product, please check the log";
 }
 

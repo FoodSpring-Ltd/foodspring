@@ -6,7 +6,7 @@
         <span aria-hidden="true">&laquo;</span>
       </a>
     </li>
-    <li class="page-item" th:each="pageNumber : ${#numbers.sequence(1, totalPages)}" th:unless="${totalPages > 3 and (pageNumber < (currentPage - 1) or pageNumber > (currentPage + 1))}">
+    <li class="page-item" th:if="${totalPages > 0}" th:each="pageNumber : ${#numbers.sequence(1, totalPages)}" th:unless="${totalPages > 3 and (pageNumber < (currentPage - 1) or pageNumber > (currentPage + 1))}">
       <a class="page-link" th:href="@{/admin/dashboard/category(page=${pageNumber}, limit=${selectedRow == null ? 10 : selectedRow})}"
          th:classappend="${pageNumber == currentPage ? 'active' : ''}"
          th:text="${pageNumber}"></a>

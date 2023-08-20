@@ -10,7 +10,10 @@ Created on 8/16/2023 7:54 AM
 Version 1.0
 */
 
+import com.cloudinary.Cloudinary;
+import com.cloudinary.utils.ObjectUtils;
 import com.juaracoding.foodspring.core.Crypto;
+import com.juaracoding.foodspring.utils.MappingAttribute;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.jdbc.DataSourceBuilder;
@@ -41,5 +44,20 @@ public class MainConfig {
     @Bean
     public ModelMapper modelMapper() {
         return new ModelMapper();
+    }
+
+    @Bean
+    public MappingAttribute mappingAttribute() {
+        return new MappingAttribute();
+    }
+
+    @Bean
+    public Cloudinary cloudinary() {
+        Cloudinary cloudinary = new Cloudinary(ObjectUtils.asMap(
+                "cloud_name", environment.getProperty("cloudinary.cloud_name"),
+                "api_key", environment.getProperty("cloudinary.api.key"),
+                "api_secret", environment.getProperty("cloudinary.api.secret")
+        ));
+        return cloudinary;
     }
 }

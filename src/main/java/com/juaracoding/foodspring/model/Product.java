@@ -13,10 +13,7 @@ Version 1.0
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
@@ -32,12 +29,13 @@ import java.util.List;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class Product {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "ProductId")
-    private Long productId;
+    private String productId;
 
     @Column(name = "ProductName")
     @NotBlank(message = "Product Name can't be blank")
@@ -49,8 +47,7 @@ public class Product {
     private String description;
 
     @Column(name = "ImageURL")
-    @NotBlank(message = "Image URL can't be blank")
-    private String imageURL;
+    private String imageURL = "https://placehold.co/600x400?text=Product+Image&font=roboto";
 
     @Column(name = "Price")
     @NotNull(message = "Price can't be null")
@@ -74,23 +71,21 @@ public class Product {
     @JoinColumn(name = "DiscountId")
     private Discount discount;
 
-    @Column(name = "CreatedAt", columnDefinition = "datetime2 default getdate()")
+    @Column(name = "CreatedAt")
     @CreationTimestamp
     private LocalDateTime createdAt;
 
-    @Column(name = "UpdatedAt", columnDefinition = "datetime2 default getdate()")
+    @Column(name = "UpdatedAt")
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 
     @Column(name = "ModifiedBy")
     private Long modifiedBy;
 
-    @Column(name = "IsDelete", columnDefinition = "smallint default 0")
-    @NotNull(message = "Flag isDelete can't be null")
-    private Boolean isDelete;
+    @Column(name = "IsDelete")
+    private Boolean isDelete = false;
 
-    @Column(name = "IsAvailable", columnDefinition = "smallint default 1")
-    @NotNull(message = "Flag isAvailable can't be null")
-    private Boolean isAvailable;
+    @Column(name = "IsAvailable")
+    private Boolean isAvailable = true;
 
 }

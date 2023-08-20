@@ -27,4 +27,11 @@ public class ServicePath {
     public static final String DASHBOARD_PRODUCT_ADD_PRODUCT_FORM = "/dashboard/product/add-product-form";
     public static final String DASHBOARD_PRODUCT_UPDATE_PRODUCT_FORM = "/dashboard/product/update-product-form";
     public static final String PRODUCT_DETAIL = "/product/detail";
+    public static final String AUTH_LOGOUT = "/auth/logout";
+    public static final String HOME = "/";
+    public static final String CATEGORY = "/category";
+    public static final String REDIRECT_ADMIN_DASHBOARD_CATEGORY = "redirect:/admin/dashboard/category";
+    public static final String CATEGORY_DELETE = "/category/delete";
+    public static final String CATEGORY_UPDATE = "/category/update";
+    public static final String PRODUCT = "/product";
 }

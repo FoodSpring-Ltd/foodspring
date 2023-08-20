@@ -12,7 +12,6 @@ Version 1.0
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -53,11 +52,11 @@ public class Variant {
     @JoinColumn(name = "VariantId", referencedColumnName = "VariantId")
     private List<CartItem> cartItems;
 
-    @Column(name = "CreatedAt", columnDefinition = "datetime2 default getdate()")
+    @Column(name = "CreatedAt")
     @CreationTimestamp
     private LocalDateTime createdAt;
 
-    @Column(name = "UpdatedAt", columnDefinition = "datetime2 default getdate()")
+    @Column(name = "UpdatedAt")
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 }

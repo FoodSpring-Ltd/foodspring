@@ -46,7 +46,7 @@
           </ul>
         </div>
       </div>
-      <a href="/admin/dashboard/product/add" class="btn btn-primary">Add Product</a>
+      <a href="/admin/dashboard/product/add-product-form" class="btn btn-primary">Add Product</a>
     </div>
     <div class="cat-table">
       <table border="1" class="table table-bordered table-hover table-striped table-responsive-md">
@@ -57,29 +57,43 @@
           <th style="text-align: center">Name</th>
           <th style="text-align: center">Available</th>
           <th style="text-align: center">Price</th>
+          <th style="text-align: center">Category</th>
           <th colspan="3" style="text-align: center">Actions</th>
         </tr>
         </thead>
         <tbody>
-        <tr>
-          <td>1</td>
-          <td style="text-align: center">1</td>
-          <td>Salad Italia</td>
-          <td style="text-align: center">Yes</td>
-          <td>Rp2.500</td>
+        <tr th:each="product, index : ${products}">
+          <td th:text="${index.count}"></td>
+          <td style="text-align: center" th:text="${product.productId}"></td>
+          <td th:text="${product.productName}"></td>
           <td style="text-align: center">
-            <a href="" type="button" class="btn btn-primary" th:attr="data-id=${1}" th:onclick="openModalDetailProd(this.getAttribute('data-id'))" data-bs-toggle="modal" data-bs-target="#prodDetailModal">Show Details</a>
+            <span th:if="${product.isAvailable}">Yes</span>
+            <span th:unless="${product.isAvailable}">No</span>
+          </td>
+          <td th:text="${'Rp' + product.price}"></td>
+          <td th:if="${product.category != null}" th:text="${product.category.name}"></td>
+          <td th:unless="${product.category != null}" th:text="${'None'}"></td>
+          <td style="text-align: center">
+            <a href="" type="button" class="btn btn-primary"
+               th:attr="data-id=${product.productId}"
+               th:onclick="openModalDetailProd(this.getAttribute('data-id'))"
+               data-bs-toggle="modal" data-bs-target="#prodDetailModal">
+              Show Details
+            </a>
           </td>
           <td style="text-align: center">
-            <a href="/admin/dashboard/product/update-product-form" type="button" class="btn btn-info">Edit</a>
+            <a th:href="@{/admin/dashboard/product/update-product-form(productId=${product.productId})}"
+               type="button" class="btn btn-info">
+              Edit
+            </a>
           </td>
           <td style="text-align: center">
             <a href="" type="button" class="btn btn-danger">Delete</a>
           </td>
         </tr>
-        <!-- Add more rows here if needed -->
         </tbody>
       </table>
+
       <div class="table-pagination">
         <div class="cat-paginate">
           <div th:replace="~{components/pagination-bar :: pagination-bar}"></div>

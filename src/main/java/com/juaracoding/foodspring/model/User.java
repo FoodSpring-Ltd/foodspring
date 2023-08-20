@@ -110,17 +110,17 @@ public class User {
     @Column(name = "ModifiedBy")
     private Integer modifiedBy;
 
-    @Column(name = "CreatedAt", columnDefinition = "datetime2 default getdate()")
+    @Column(name = "CreatedAt")
     @CreationTimestamp
     private LocalDateTime createdAt;
 
-    @Column(name = "UpdatedAt", columnDefinition = "datetime2 default getdate()")
+    @Column(name = "UpdatedAt")
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 
-    @Column(name = "IsDelete", columnDefinition = "smallint default 0")
+    @Column(name = "IsDelete")
     private Boolean isDelete = false;
 
-    @Column(name = "IsAdmin", columnDefinition = "smallint default 0")
+    @Column(name = "IsAdmin")
     private Boolean isAdmin = false;
 }

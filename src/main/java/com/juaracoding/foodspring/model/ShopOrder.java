@@ -39,7 +39,7 @@ public class ShopOrder {
     @JoinColumn(name = "UserId")
     private User user;
 
-    @Column(name = "OrderDate", columnDefinition = "datetime2 default getdate()")
+    @Column(name = "OrderDate")
     @NotNull(message = "Order date can't be null")
     private LocalDateTime orderDate;
 
@@ -59,11 +59,11 @@ public class ShopOrder {
     @JoinColumn(name = "PaymentTypeId")
     private PaymentType paymentType;
 
-    @Column(name = "CreatedAt", columnDefinition = "datetime2 default getdate()")
+    @Column(name = "CreatedAt")
     @CreationTimestamp
     private LocalDateTime createdAt;
 
-    @Column(name = "UpdatedAt", columnDefinition = "datetime2 default getdate()")
+    @Column(name = "UpdatedAt")
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 }

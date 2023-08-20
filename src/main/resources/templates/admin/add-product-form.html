@@ -13,102 +13,188 @@
 
     <link th:href="@{/css/navbar-top.css}" rel="stylesheet">
     <link th:href="@{/css/add-product-form.css}" rel="stylesheet">
+    <style>
+    .error-message {
+       color: red;
+       font-size: 12px;
+    }
+
+    </style>
     <title>Add Product</title>
 
 </head>
 <body>
-<div th:replace="~{components/navbar-top :: navbar-top}" class="navbar-container">
+<div th:replace="~{components/navbar-top-bt4 :: navbar-top-bt4}" class="navbar-container">
 </div>
 <div class="add-product-container">
-    <h2>Add Product</h2>
-    <div class="add-product-form">
-      <form>
-        <div class="form-row">
-          <div class="form-group col-md-6">
-            <label for="productName">Product Name <span style="color: red">*</span></label>
-            <input type="text" class="form-control" id="productName" required>
-          </div>
-          <div class="form-group col-md-6">
-            <label for="productImg">Product Image <span style="color: red">*</span></label>
-            <input type="file" class="form-control-file" id="productImg">
-          </div>
-        </div>
-        <div class="form-group">
-          <div class="input-group mb-2" style="width: 180px">
-            <div class="input-group-prepend">
-              <div class="input-group-text">Rp <span style="color: red">*</span></div>
-            </div>
-            <input type="text" class="form-control" id="inlineFormInputGroup" placeholder="Price">
-          </div>
-        </div>
+    <div class="d-flex w-100 justify-content-center align-items-center pt-3" style="position: absolute">
+        <!-- Flexbox container for aligning the toasts -->
+        <div aria-live="polite" aria-atomic="true" class="d-flex justify-content-center align-items-center" style="height: 200px;">
 
-        <div class="form-row">
-          <div class="form-group col-md-6">
-            <label for="selectCat">Category <span style="color: red">*</span></label>
-            <select id="selectCat" class="form-control form-control-md selectpicker" data-live-search="true">
-              <option>Mustard</option>
-              <option>Ketchup</option>
-              <option>Barbecue</option>
-            </select>
-          </div>
-          <div class="form-group col-md-6">
-
-            <div id="input-container">
-              <label for="multi-input">Variants</label>
-              <input class="form-control" type="text" id="multi-input" placeholder="Type and press Enter">
+            <!-- Then put toasts within -->
+            <div class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+                <div class="toast-header">
+                    <img src="..." class="rounded mr-2" alt="...">
+                    <strong class="mr-auto">FoodSpring Admin</strong>
+                    <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="toast-body">
+                   [[${message}]]
+                </div>
             </div>
-            <div id="bubble-container"></div>
-          </div>
         </div>
-        <div class="form-group">
-          <label for="description">Description</label>
-          <textarea class="form-control" id="description" rows="12"></textarea>
-        </div>
-        <button type="submit" class="btn btn-primary">Submit</button>
-      </form>
     </div>
-</div>
+    <h2 style="text-align: center">Add Product [[${message}]]</h2>
+    <div class="add-product-form">
+        <form th:action="@{/admin/dashboard/product/add-product-form}" method="POST" th:object="${product}"
+              enctype="multipart/form-data">
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label for="productName">Product Name <span style="color: red">*</span></label>
+                    <input th:field="*{productName}" name="productName" type="text" class="form-control"
+                           id="productName" required>
+                    <div th:errors="*{productName}" class="error-message"></div>
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="productImg">Product Image <span style="color: red">*</span></label>
+                    <input name="productImage" type="file" class="form-control-file" id="productImg" required>
+                    <!-- Add error message display here if needed -->
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="input-group mb-2" style="width: 180px">
+                    <div class="input-group-prepend">
+                        <div class="input-group-text">Rp <span style="color: red">*</span></div>
+                    </div>
+                    <input th:field="*{price}" name="price" type="text" class="form-control" id="inlineFormInputGroup"
+                           placeholder="Price">
+                    <div th:errors="*{price}" class="error-message"></div>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label for="selectCat">Category <span style="color: red">*</span></label>
+                    <select id="selectCat" class="form-control form-control-md selectpicker" data-live-search="true"
+                            data-max-options="1"
+                            th:field="*{categoryId}">
+                        <option th:value="${null}" selected>--Select Category--</option>
+                        <option th:each="cat : ${categories}"
+                                th:value="${cat.categoryId}"
+                                th:text="${cat.name}"
+                                th:selected="${cat.categoryId == product.categoryId}"
+                        ></option>
+                    </select>
+                    <div th:errors="*{categoryId}" class="error-message"></div>
+                </div>
+                <div class="form-group col-md-6">
+                    <div id="input-container">
+                        <label for="multi-input">Variants</label>
+                        <input class="form-control" type="text" id="multi-input" placeholder="Type and press Enter">
+                    </div>
+                    <div id="bubble-container">
+
+                    </div>
+                    <input th:field="*{variants}" type="hidden" name="variants" id="variants-input"/>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label for="selectDisc">Discount</label>
+                    <select id="selectDisc" class="form-control form-control-md selectpicker" data-live-search="true"
+                            data-max-options="1"
+                            th:field="*{discountId}">
+                        <option th:value="${null}" selected>--Select Discount--</option>
+                        <option th:each="disc : ${discounts}"
+                                th:value="${disc.discountId}"
+                                th:text="${disc.discountName}"
+                                th:selected="${disc.discountId == product.discountId}"
+                        ></option>
+                    </select>
+                    <div th:errors="*{discountId}" class="error-message"></div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="description">Description</label>
+                <textarea th:field="*{description}" name="description" class="form-control" id="description"
+                          rows="12"></textarea>
+                <div th:errors="*{description}" class="error-message"></div>
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+    </div>
 
 </div>
 
-<script>
+</div>
 
-    $(document).ready(function() {
-        $('.selectpicker').selectpicker();
-    });
 
-</script>
 <script>
     const inputContainer = document.getElementById("input-container");
-const bubbleContainer = document.getElementById("bubble-container");
-const multiInput = document.getElementById("multi-input");
+    const bubbleContainer = document.getElementById("bubble-container");
+    const multiInput = document.getElementById("multi-input");
+    const variantsInput = document.getElementById("variants-input");
 
-multiInput.addEventListener("keydown", function(event) {
-    if (event.key === "Enter" || event.key === ",") {
-        event.preventDefault();
-        addBubble(multiInput.value.trim());
-        multiInput.value = "";
+    multiInput.addEventListener("keydown", function(event) {
+        if (event.key === "Enter" || event.key === ",") {
+            event.preventDefault();
+            addBubble(multiInput.value.trim());
+            multiInput.value = "";
+            updateVariantsInput();
+        }
+    });
+
+    function addBubble(value) {
+        if (value) {
+            const bubble = document.createElement("span");
+            bubble.classList.add("bubble");
+            bubble.textContent = value;
+            bubble.addEventListener("click", function() {
+                bubbleContainer.removeChild(bubble);
+                updateVariantsInput();
+            });
+            bubbleContainer.appendChild(bubble);
+        }
     }
-});
 
-function addBubble(value) {
-    if (value) {
-        const bubble = document.createElement("span");
-        bubble.classList.add("bubble");
-        bubble.textContent = value;
-        bubble.addEventListener("click", function() {
-            bubbleContainer.removeChild(bubble);
-        });
-        bubbleContainer.appendChild(bubble);
+    function updateVariantsInput() {
+        const bubbleElements = bubbleContainer.getElementsByClassName("bubble");
+        const variants = Array.from(bubbleElements).map(bubble => bubble.textContent);
+        variantsInput.value = variants.join(",");
     }
-}
 
- </script>
+
+
+</script>
 
 
 <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"
         integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
         crossorigin="anonymous"></script>
+<script>
+ $('.toast').toast('show')
+    $(document).ready(function() {
+        $('.selectpicker').selectpicker({ size: '3' });
+    });
+
+    $(document).ready(function() {
+    // Get the hidden input value containing variants
+    const variantsInput = document.getElementById("variants-input");
+    const existingVariants = variantsInput.value.split(",");
+
+    // Populate the bubbleContainer with existing variants
+    const bubbleContainer = document.getElementById("bubble-container");
+    existingVariants.forEach(function(variant) {
+        addBubble(variant);
+    });
+});
+
+
+</script>
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"
         integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN"
         crossorigin="anonymous"></script>

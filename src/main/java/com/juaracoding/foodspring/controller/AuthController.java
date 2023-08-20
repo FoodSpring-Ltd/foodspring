@@ -10,6 +10,7 @@ Created on 8/10/2023 12:16 PM
 Version 1.0
 */
 
+import com.juaracoding.foodspring.accessannotation.NoLogin;
 import com.juaracoding.foodspring.config.ServicePath;
 import com.juaracoding.foodspring.config.ViewPath;
 import com.juaracoding.foodspring.dto.ForgetPasswordDTO;
@@ -26,17 +27,12 @@ import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
 
-import javax.swing.text.View;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @Controller
@@ -44,7 +40,8 @@ import java.util.Map;
 public class AuthController {
 
     private final AuthService authService;
-    private final MappingAttribute mappingAttribute = new MappingAttribute();
+    @Autowired
+    private MappingAttribute mappingAttribute;
     @Autowired
     private ModelMapper modelMapper;
     private Map<String, Object> objectMapper = new HashMap<>();
@@ -60,6 +57,7 @@ public class AuthController {
         VALIDASI FORM REGISTRASI
      */
     @PostMapping(ServicePath.REGISTER)
+    @NoLogin
     public String doRegis(@ModelAttribute("user")
                           @Valid UserDTO user
             , BindingResult bindingResult
@@ -106,7 +104,14 @@ public class AuthController {
         }
     }
 
+    @GetMapping(ServicePath.VERIFY)
+    public String getVerifyRegisForm(Model model, @RequestParam String email){
+        model.addAttribute("verifyEmail", email);
+        model.addAttribute("user", new User());
+        return ViewPath.AUTH_VERIFY;
+    }
     @GetMapping(ServicePath.REGISTER)
+    @NoLogin
     public String getRegisterForm(Model model) {
         model.addAttribute("user", new UserDTO());
         return ViewPath.AUTH_REGISTER_PAGE;
@@ -131,10 +136,8 @@ public class AuthController {
         Boolean isSuccess = (Boolean) objectMapper.get("success");
         if (isSuccess) {
             model.addAttribute("verifyEmail", email);
-            model.addAttribute("loginDTO", new LoginDTO());
-            mappingAttribute.setErrorMessage(bindingResult, objectMapper.get("message").toString());
-        } else {
-            model.addAttribute("loginDTO", new LoginDTO());
+            model.addAttribute("user",user);
+           return ViewPath.AUTH_VERIFY;
         }
         return ViewPath.LOGIN;
     }
@@ -186,6 +189,7 @@ public class AuthController {
     }
 
     @GetMapping(ServicePath.LOGIN)
+    @NoLogin
     public String getLoginForm(Model model) {
         model.addAttribute("loginDTO", new LoginDTO());
         return ViewPath.LOGIN;
@@ -195,6 +199,7 @@ public class AuthController {
         API UNTUK LOGIN
      */
     @PostMapping(ServicePath.LOGIN)
+    @NoLogin
     public String login(@ModelAttribute("loginDTO")
                         @Valid LoginDTO loginDto,
                         BindingResult bindingResult,
@@ -223,7 +228,7 @@ public class AuthController {
             request.setAttribute("USR_ID", nextUser.getUserId(), 1);//cara ambil request.getAttribute("USR_ID",1)
             request.setAttribute("EMAIL", nextUser.getEmail(), 1);//cara ambil request.getAttribute("EMAIL",1)
             request.setAttribute("PHONE", nextUser.getPhone(), 1);//cara ambil request.getAttribute("NO_HP",1)
-            request.setAttribute("USR_NAME", nextUser.getUsername(), 1);//cara ambil request.getAttribute("USR_NAME",1)
+            request.setAttribute("USERNAME", nextUser.getUsername(), 1);//cara ambil request.getAttribute("USR_NAME",1)
             request.setAttribute("IS_ADMIN", nextUser.getIsAdmin(), 1);
             mappingAttribute.setAttribute(model, objectMapper, request);//urutan nya ini terakhir
             return ViewPath.REDIRECT_SLASH;
@@ -312,7 +317,7 @@ public class AuthController {
         }
 
         if (isInvalidFlow) {
-            return "redirect:/check/logout";
+            return ViewPath.REDIRECT_LOGOUT;
         }
 
         /*START VALIDATION*/
@@ -326,13 +331,14 @@ public class AuthController {
         }
 
         if (!isValid) {
-            model.addAttribute("forgetpwd", forgetPasswordDTO);
-            return "auth/forget-pwd-verifikasi";
+            model.addAttribute("forgetpassword", forgetPasswordDTO);
+
+            return ViewPath.AUTH_FORGET_PWD_VERIFIKASI;
         }/*END OF VALIDATION*/
 
         objectMapper = authService.confirmTokenForgotPwd(forgetPasswordDTO, request);
         if (objectMapper.get("message").toString().equals(ConstantMessage.ERROR_FLOW_INVALID)) {
-            return "redirect:/check/logout";
+            return ViewPath.REDIRECT_LOGOUT;
         }
 
         Boolean isSuccess = (Boolean) objectMapper.get("success");
@@ -340,12 +346,12 @@ public class AuthController {
             ForgetPasswordDTO nextForgetPasswordDTO = new ForgetPasswordDTO();
             mappingAttribute.setAttribute(model, objectMapper);
             nextForgetPasswordDTO.setEmail(email);
-            model.addAttribute("forgetpwd", nextForgetPasswordDTO);
-            return "auth/auth-forget-pwd";
+            model.addAttribute("forgetpassword", nextForgetPasswordDTO);
+            return ViewPath.AUTH_FORGET_PWD;
         } else {
-            model.addAttribute("forgetpwd", forgetPasswordDTO);
+            model.addAttribute("forgetpassword", forgetPasswordDTO);
             mappingAttribute.setErrorMessage(bindingResult, objectMapper.get("message").toString());
-            return "auth/forget-pwd-verifikasi";
+            return ViewPath.AUTH_FORGET_PWD_VERIFIKASI;
         }
     }
 
@@ -364,9 +370,9 @@ public class AuthController {
             return ViewPath.AUTH_FORGET_PWD;
         }
 
-        String emailz = forgetPasswordDTO.getEmail();
+        String email = forgetPasswordDTO.getEmail();
 
-        if (emailz == null || emailz.equals("")) {
+        if (email == null || email.equals("")) {
             return ViewPath.REDIRECT_LOGOUT;
         }
 
@@ -378,7 +384,7 @@ public class AuthController {
         Boolean isSuccess = (Boolean) objectMapper.get("success");
         if (isSuccess) {
             mappingAttribute.setAttribute(model, objectMapper);
-            model.addAttribute("user", new UserDTO());
+            model.addAttribute("loginDTO", new LoginDTO());
             return ViewPath.LOGIN;
         } else {
             model.addAttribute("forgetpassword", forgetPasswordDTO);
@@ -414,12 +420,12 @@ public class AuthController {
         }
         Boolean isSuccess = (Boolean) objectMapper.get("success");
         if (isSuccess) {
-            model.addAttribute("forgetPwd", forgetPasswordDTO);
+            model.addAttribute("forgetpassword", forgetPasswordDTO);
             mappingAttribute.setAttribute(model, objectMapper);
             return ViewPath.AUTH_FORGET_PWD_VERIFIKASI;
         } else {
             mappingAttribute.setErrorMessage(bindingResult, objectMapper.get("message").toString());
-            model.addAttribute("forgetPwd", forgetPasswordDTO);
+            model.addAttribute("forgetpassword", forgetPasswordDTO);
             return ViewPath.LOGIN;
         }
     }

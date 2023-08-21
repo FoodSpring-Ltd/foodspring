@@ -12,6 +12,8 @@ Version 1.0
 
 import org.apache.log4j.Logger;
 
+import java.util.Objects;
+
 public class LoggingFile {
 
     private static StringBuilder sbuilds = new StringBuilder();
@@ -24,7 +26,7 @@ public class LoggingFile {
                     append("ERROR IN CLASS =>").append(datax[0]).append(System.getProperty("line.separator")).
                     append("METHOD   =>").append(datax[1]).append(System.getProperty("line.separator")).
                     append("ERROR IS       =>").append(e.getMessage()).append(System.getProperty("line.separator")).
-                    append("CAUSED BY      =>").append(e.getCause().getMessage()).
+                    append("CAUSED BY      =>").append(Objects.isNull(e.getCause()) ? "unknown" : e.getCause().getMessage()).
                     append(System.getProperty("line.separator")).toString());
             sbuilds.setLength(0);
         }

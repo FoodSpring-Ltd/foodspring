@@ -60,4 +60,5 @@ public class MainConfig {
         ));
         return cloudinary;
     }
+
 }

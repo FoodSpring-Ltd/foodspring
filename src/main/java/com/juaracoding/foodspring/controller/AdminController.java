@@ -13,10 +13,7 @@ Version 1.0
 import com.juaracoding.foodspring.accessannotation.AdminAccess;
 import com.juaracoding.foodspring.config.ServicePath;
 import com.juaracoding.foodspring.config.ViewPath;
-import com.juaracoding.foodspring.dto.CategoryDTO;
-import com.juaracoding.foodspring.dto.CategorySimpleResponse;
-import com.juaracoding.foodspring.dto.ProductDTO;
-import com.juaracoding.foodspring.dto.ProductSimpleResponse;
+import com.juaracoding.foodspring.dto.*;
 import com.juaracoding.foodspring.service.CategoryService;
 import com.juaracoding.foodspring.service.DiscountService;
 import com.juaracoding.foodspring.service.ProductService;
@@ -92,6 +89,7 @@ public class AdminController {
         Integer totalPages = (Integer) objectMapper.get("totalPages");
         Long totalElements = (Long) objectMapper.get("totalElements");
         List<ProductSimpleResponse> data = (List< ProductSimpleResponse>) objectMapper.get("data");
+        System.out.println(data.get(0).getVariants());
         model.addAttribute("selectedRow", limit);
         model.addAttribute("totalPages", totalPages);
         model.addAttribute("totalElements", totalElements);
@@ -237,5 +235,39 @@ public class AdminController {
         }
         redirectAttributes.addFlashAttribute("message", "Can't update selected category");
         return ServicePath.REDIRECT_ADMIN_DASHBOARD_CATEGORY;
+    }
+
+
+    @GetMapping(value = ServicePath.DASHBOARD_DISCOUNT)
+    public String discountDashboard(@RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
+                                    @RequestParam(value = "limit", required = false, defaultValue = "10") Integer limit,
+                                    Model model,
+                                    WebRequest request) {
+        objectMapper = discountService.getAllDiscount(PageRequest.of(page - 1, limit));
+        Integer totalPages = (Integer) objectMapper.get("totalPages");
+        Long totalElements = (Long) objectMapper.get("totalElements");
+        List<DiscountDTO> data = (List<DiscountDTO>) objectMapper.get("data");
+        model.addAttribute("selectedRow", limit);
+        model.addAttribute("totalPages", totalPages);
+        model.addAttribute("totalElements", totalElements);
+        model.addAttribute("currentPage", Math.min(page, totalPages));
+        model.addAttribute("discounts", data);
+        model.addAttribute("discount", new DiscountDTO());
+        mappingAttribute.setAttribute(model, request);
+        return ViewPath.ADMIN_DISCOUNT_DASHBOARD;
+    }
+    @PostMapping(value = ServicePath.DISCOUNT)
+    public String addDiscount(@ModelAttribute("discount") DiscountDTO discountDTO,
+                              BindingResult bindingResult,
+                              Model model,
+                              WebRequest request) {
+        if (bindingResult.hasErrors()) {
+            return ViewPath.ADMIN_DISCOUNT_DASHBOARD;
+        }
+
+
+        System.out.println(discountDTO);
+
+        return ViewPath.ADMIN_DISCOUNT_DASHBOARD;
     }
 }

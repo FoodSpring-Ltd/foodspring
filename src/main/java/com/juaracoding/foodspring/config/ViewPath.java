@@ -30,4 +30,5 @@ public class ViewPath {
 
     public static final String REDIRECT_AUTH_VERIFY = "redirect:/auth/verify";
     public static final String REDIRECT_ADMIN_CATEGORY_DASHBOARD = "redirect:/admin/dashboard/category";
+    public static final String ADMIN_DISCOUNT_DASHBOARD = "admin/discount-dashboard";
 }

@@ -139,7 +139,7 @@ public class ProductService {
             Product oldProduct = product.get().get();
             if (!Objects.isNull(category)) {
                 oldProduct.setCategory(category.get());
-            }else {
+            } else {
                 oldProduct.setCategory(null);
             }
 
@@ -177,8 +177,7 @@ public class ProductService {
         Map<String, Object> response = new HashMap<>();
         try {
             Page<Product> results = productRepository.findAllByIsDeleteFalse(pageable);
-            List<ProductSimpleResponse> products = modelMapper.map(results.getContent(), new TypeToken<List<ProductSimpleResponse>>() {
-            }.getType());
+            List<ProductSimpleResponse> products = convertToProductSimpleResponseList(results.getContent());
             response.put("data", products);
             response.put("totalPages", results.getTotalPages());
             response.put("totalElements", results.getTotalElements());
@@ -230,8 +229,10 @@ public class ProductService {
     }
 
 
-
     private String productVariantToString(List<Variant> variants) {
+        if (Objects.isNull(variants) || variants.size() == 0) {
+            return "";
+        }
         return variants.parallelStream()
                 .map(Variant::getName)
                 .collect(Collectors.joining(","));
@@ -256,16 +257,34 @@ public class ProductService {
 
     @Transactional(rollbackFor = Exception.class)
     public Map<String, Object> softDeleteById(String productId) {
-       Optional<Product> product =  productRepository.findById(productId);
-       Map<String, Object> response = new HashMap<>();
-       if (product.isPresent()) {
-           product.get().setIsDelete(true);
-           response.put("success", true);
-           response.put("message", ConstantMessage.PRODUCT_DELETION_SUCCESS);
-           return response;
-       }
+        Optional<Product> product = productRepository.findById(productId);
+        Map<String, Object> response = new HashMap<>();
+        if (product.isPresent()) {
+            product.get().setIsDelete(true);
+            response.put("success", true);
+            response.put("message", ConstantMessage.PRODUCT_DELETION_SUCCESS);
+            return response;
+        }
         response.put("success", false);
         response.put("message", ConstantMessage.ERROR_DELETE_PRODUCT);
         return response;
     }
+
+    private List<ProductSimpleResponse> convertToProductSimpleResponseList(List<Product> products) {
+        List<ProductSimpleResponse> results = Optional.ofNullable(products).orElse(Collections.emptyList()).stream()
+                .map(item -> {
+                    ProductSimpleResponse res = ProductSimpleResponse.builder()
+                            .productId(item.getProductId())
+                            .category(item.getCategory())
+                            .description(item.getDescription())
+                            .isAvailable(item.getIsAvailable())
+                            .imageURL(item.getImageURL())
+                            .productName(item.getProductName())
+                            .price(item.getPrice()).build();
+                    res.setVariants(productVariantToString(item.getVariants()));
+                    return res;
+                }).toList();
+        return results;
+    }
+
 }

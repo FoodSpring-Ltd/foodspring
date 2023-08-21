@@ -38,4 +38,6 @@ public class ServicePath {
     public static final String REDIRECT_ADMIN_DASHBOARD_PRODUCT = "redirect:/admin/dashboard/product";
     public static final String PRODUCT_UPDATE = "/product/update";
     public static final String PRODUCT_DELETE = "/product/delete";
+    public static final String DASHBOARD_DISCOUNT = "/dashboard/discount";
+    public static final String DISCOUNT = "/discount";
 }

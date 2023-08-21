@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta discountName="viewport" content="width=device-width, initial-scale=1">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
   <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"
@@ -10,31 +10,38 @@
           crossorigin="anonymous"></script>
   <link th:href="@{/css/cat-dashboard.css}" rel="stylesheet">
   <link th:href="@{/css/navbar-top.css}" rel="stylesheet">
+  <style>
+    .error-message {
+       color: red;
+       font-size: 12px;
+    }
+
+    </style>
   <title>Discount Dashboard</title>
   <script>
-    function submitCategoryForm() {
+    function submitDiscountForm() {
         // Get the form element by its ID
-        var categoryForm = document.getElementById("categoryForm");
+        var discountForm = document.getElementById("discountForm");
 
         // Submit the form
-        categoryForm.submit();
+        discountForm.submit();
     }
     function submitUpdateForm() {
      // Get the form element by its ID
-        var catUpdateForm = document.getElementById("catUpdateForm");
+        var discountUpdateForm = document.getElementById("discountUpdateForm");
 
         // Submit the form
-        catUpdateForm.submit();
+        discountUpdateForm.submit();
     }
 
-    function openModal(id, name) {
-        const categoryUpdateIdField = document.getElementById("category-update-id");
-        const categoryUpdateIdFieldShow = document.getElementById("category-update-id-show");
+    function openModal(id, discountName) {
+        const discountUpdateIdField = document.getElementById("discount-update-id");
+        const discountUpdateIdFieldShow = document.getElementById("discount-update-id-show");
 
-        const categoryUpdateNameField = document.getElementById("category-update-name");
-        categoryUpdateIdField.value = id;
-        categoryUpdateIdFieldShow.value = id;
-        categoryUpdateNameField.value = name;
+        const discountUpdateNameField = document.getElementById("discount-update-discountName");
+        discountUpdateIdField.value = id;
+        discountUpdateIdFieldShow.value = id;
+        discountUpdateNameField.value = discountName;
     }
 
 
@@ -67,7 +74,7 @@
           </ul>
         </div>
       </div>
-      <a href="#" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#categoryFormModal">Add Category</a>
+      <a href="#" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#discountFormModal">Add Discount</a>
     </div>
     <div class="cat-table">
       <table border="1" class="table table-bordered table-hover table-striped table-responsive-md">
@@ -84,18 +91,21 @@
         </thead>
         <tbody>
         <!-- Iterate over categories and populate table rows -->
-        <tr th:each="category, index : ${categories}">
+        <tr th:each="discount, index : ${discounts}">
           <td th:text="${index.index + 1}"></td>
-          <td style="text-align: center" th:text="${category.categoryId}"></td>
-          <td th:text="${category.name}"></td>
+          <td style="text-align: center" th:text="${discount.discountId}"></td>
+          <td th:text="${discount.discountName}"></td>
+          <td th:text="${discount.startAt}"></td>
+          <td th:text="${discount.endAt}"></td>
+          <td th:text="${discount.percentDiscount + '%'}"></td>
           <td style="text-align: center">
             <a href="" type="button" class="btn btn-primary"
-               th:attr="data-id=${category.categoryId}, data-catName=${category.name}"
+               th:attr="data-id=${discount.discountId}, data-catName=${discount.discountName}"
                th:onclick="openModal(this.getAttribute('data-id'), this.getAttribute('data-catName'))"
-               data-bs-toggle="modal" data-bs-target="#catUpdateFormModal">Edit</a>
+               data-bs-toggle="modal" data-bs-target="#discountUpdateFormModal">Edit</a>
           </td>
           <td style="text-align: center">
-            <a th:href="@{/admin/category/delete(categoryId=${category.categoryId})}" type="button" class="btn btn-danger">Delete</a>
+            <a th:href="@{/admin/discount/delete(discountId=${discount.discountId})}" type="button" class="btn btn-danger">Delete</a>
           </td>
         </tr>
         </tbody>
@@ -108,23 +118,23 @@
       </div>
     </div>
   </div>
-  <div class="modal fade" id="catUpdateFormModal" tabindex="-1" aria-labelledby="categoryFormModalLabel" aria-hidden="true">
+  <div class="modal fade" id="discountUpdateFormModal" tabindex="-1" aria-labelledby="discountFormModalLabel" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h1 class="modal-title fs-5" id="catUpdateFormModalLabel">Update Category</h1>
+          <h1 class="modal-title fs-5" id="discountUpdateFormModalLabel">Update Discount</h1>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-          <form method="POST" th:action="@{/admin/category/update}" th:object="${category}" id="catUpdateForm">
+          <form method="POST" th:action="@{/admin/discount/update}" th:object="${discount}" id="discountUpdateForm">
             <div class="mb-3">
-              <label for="category-update-id" class="col-form-label">ID:</label>
-              <input name="categoryId" th:field="*{categoryId}" type="text" class="form-control" id="category-update-id" hidden>
-              <input name="categoryId" th:field="*{categoryId}" type="text" class="form-control" id="category-update-id-show" disabled>
+              <label for="discount-update-id" class="col-form-label">ID:</label>
+              <input discountName="discountId" th:field="*{discountId}" type="text" class="form-control" id="discount-update-id" hidden>
+              <input discountName="discountId" th:field="*{discountId}" type="text" class="form-control" id="discount-update-id-show" disabled>
             </div>
             <div class="mb-3">
-              <label for="category-name" class="col-form-label">Category Name:</label>
-              <input th:field="*{name}" name="name" type="text" class="form-control" id="category-update-name">
+              <label for="discount-discountName" class="col-form-label">Discount Name:</label>
+              <input th:field="*{discountName}" discountName="discountName" type="text" class="form-control" id="discount-update-discountName">
             </div>
           </form>
         </div>
@@ -138,24 +148,42 @@
     </div>
 
   </div>
-  <div class="modal fade" id="categoryFormModal" tabindex="-1" aria-labelledby="categoryFormModalLabel" aria-hidden="true">
+  <div class="modal fade" id="discountFormModal" tabindex="-1" aria-labelledby="discountFormModalLabel" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h1 class="modal-title fs-5" id="categoryFormModalLabel">New Category</h1>
+          <h1 class="modal-title fs-5" id="discountFormModalLabel">New Discount</h1>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-          <form method="POST" th:action="@{/admin/category}" th:object="${category}" id="categoryForm">
-            <div class="mb-3">
-              <label for="category-name" class="col-form-label">Category Name:</label>
-              <input th:field="*{name}" name="name" type="text" class="form-control" id="category-name">
+          <form method="POST" th:action="@{/admin/discount}" th:object="${discount}" id="discountForm">
+            <div class="form-group mb-3">
+              <label for="discount-discountName" class="col-form-label">Discount Name:</label>
+              <input th:field="*{discountName}" type="text" class="form-control" id="discount-discountName">
+              <div th:errors="*{discountName}" class="error-message"></div>
+            </div>
+            <div class="form-group mb-3">
+              <label for="discount-percentDiscount" class="col-form-label">Percent Discount:</label>
+              <input th:field="*{percentDiscount}" type="text" class="form-control" id="discount-percentDiscount">
+              <div th:errors="*{percentDiscount}" class="error-message"></div>
+            </div>
+            <div class="form-row">
+              <div class="form-group col-6">
+                <label for="discount-start" class="col-form-label">Start Date:</label>
+                <input th:field="*{startAt}" type="datetime-local" class="form-control" id="discount-start">
+                <div th:errors="*{startAt}" class="error-message"></div>
+              </div>
+              <div class="form-group col-6">
+                <label for="discount-end" class="col-form-label">End Date:</label>
+                <input th:field="*{endAt}" type="datetime-local" class="form-control" id="discount-end">
+                <div th:errors="*{endAt}" class="error-message"></div>
+              </div>
             </div>
           </form>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-primary" th:onclick="submitCategoryForm()">Submit</button>
+          <button type="button" class="btn btn-primary" th:onclick="submitDiscountForm()">Submit</button>
         </div>
 
 

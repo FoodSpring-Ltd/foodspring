@@ -11,9 +11,15 @@ Version 1.0
 */
 
 import com.juaracoding.foodspring.model.Category;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class ProductSimpleResponse {
     private String productId;
     private String productName;
@@ -22,4 +28,5 @@ public class ProductSimpleResponse {
     private Boolean isAvailable;
     private String description;
     private String imageURL;
+    private String variants;
 }

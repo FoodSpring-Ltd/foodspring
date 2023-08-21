@@ -16,4 +16,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface VariantRepository extends JpaRepository<Variant, Long> {
+
+    void deleteByProductProductId(String productId);
 }

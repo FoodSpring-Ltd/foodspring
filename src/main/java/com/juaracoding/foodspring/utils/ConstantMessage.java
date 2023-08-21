@@ -82,5 +82,9 @@ public class ConstantMessage {
     public static final String SUCCESS_CREATE_CATEGORY = "Category successfully created";
     public static final String SUCCESS_CREATED_PRODUCT = "Product successfully created";
     public static final String ERROR_CREATING_PRODUCT = "Error creating product, please check the log";
+    public static final Object PRODUCT_UPDATED = "Product updated successfully";
+    public static final Object ERROR_PRODUCT_UPDATED = "Product update failed! Please try again";
+    public static final Object PRODUCT_DELETION_SUCCESS = "Product deleted successfully";
+    public static final Object ERROR_DELETE_PRODUCT = "Something went wrong, can't delete product";
 }
 

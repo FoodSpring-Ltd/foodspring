@@ -25,12 +25,14 @@ import org.hibernate.validator.constraints.Length;
 @Builder
 public class ProductDTO {
 
+    private String productId;
+
     @NotBlank(message = "Product Name can't be blank")
     @Length(message = "Product name can't be longer than 200", max = 200)
     private String productName;
 
 
-    @Length(message = "Description max 1000", max = 1000)
+    @Length(message = "Description max 1000 character", max = 1000)
     private String description;
 
 
@@ -39,7 +41,7 @@ public class ProductDTO {
     private Double price;
 
 
-    @NotNull(message = "Category ID can't be null")
+
     private Long categoryId;
 
     private String variants;

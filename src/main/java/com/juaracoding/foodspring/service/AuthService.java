@@ -65,24 +65,23 @@ public class AuthService {
 
     public Map<String, Object> checkRegis(User user, WebRequest request) {
         int intVerification = new Random().nextInt(100000, 999999);
-        List<User> listUserResult = userRepository.findByEmailOrPhoneOrUsername(user.getEmail(), user.getPhone(), user.getUsername());//INI VALIDASI USER IS EXISTS
+        User userDB = userRepository.findFirstByEmailOrPhoneOrUsername(user.getEmail(), user.getPhone(), user.getUsername());//INI VALIDASI USER IS EXISTS
         String emailForSMTP = user.getEmail();
         try {
-            if (listUserResult.size() != 0)//kondisi mengecek apakah user terdaftar
+            if (userDB != null)//kondisi mengecek apakah user terdaftar
             {
 
                 emailForSMTP = user.getEmail();
-                User nextUser = listUserResult.get(0);
-                if (!nextUser.getIsDelete())//sudah terdaftar dan aktif
+                if (!userDB.getIsDelete())//sudah terdaftar dan aktif
                 {
                     //PEMBERITAHUAN SAAT REGISTRASI BAGIAN MANA YANG SUDAH TERDAFTAR (USERNAME, EMAIL ATAU NOHP)
-                    if (nextUser.getEmail().equals(user.getEmail())) {
+                    if (userDB.getEmail().equals(user.getEmail())) {
                         return new ResponseHandler().generateModelAttribut(ConstantMessage.ERROR_EMAIL_ISEXIST,
                                 HttpStatus.NOT_ACCEPTABLE, null, "FV01001", request);//EMAIL SUDAH TERDAFTAR DAN AKTIF
-                    } else if (nextUser.getPhone().equals(user.getPhone())) {//FV = FAILED VALIDATION
+                    } else if (userDB.getPhone().equals(user.getPhone())) {//FV = FAILED VALIDATION
                         return new ResponseHandler().generateModelAttribut(ConstantMessage.ERROR_PHONE_ISEXIST,
                                 HttpStatus.NOT_ACCEPTABLE, null, "FV01002", request);//NO HP SUDAH TERDAFTAR DAN AKTIF
-                    } else if (nextUser.getUsername().equals(user.getUsername())) {
+                    } else if (userDB.getUsername().equals(user.getUsername())) {
                         return new ResponseHandler().generateModelAttribut(ConstantMessage.ERROR_USERNAME_ISEXIST,
                                 HttpStatus.NOT_ACCEPTABLE, null, "FV01003", request);//USERNAME SUDAH TERDAFTAR DAN AKTIF
                     } else {
@@ -90,11 +89,11 @@ public class AuthService {
                                 HttpStatus.NOT_ACCEPTABLE, null, "FV01004", request);//KARENA YANG DIAMBIL DATA YANG PERTAMA JADI ANGGAPAN NYA SUDAH TERDAFTAR SAJA
                     }
                 } else {
-                    nextUser.setPassword(BcryptImpl.hash(user.getPassword() + user.getUsername()));
-                    nextUser.setToken(BcryptImpl.hash(String.valueOf(intVerification)));
-                    nextUser.setTokenCounter(nextUser.getTokenCounter() + 1);//setiap kali mencoba ditambah 1
-                    nextUser.setModifiedBy(Math.toIntExact(nextUser.getUserId()));
-                    nextUser.setModifiedDate(new Date());
+                    userDB.setPassword(BcryptImpl.hash(user.getPassword() + user.getUsername()));
+                    userDB.setToken(BcryptImpl.hash(String.valueOf(intVerification)));
+                    userDB.setTokenCounter(userDB.getTokenCounter() + 1);//setiap kali mencoba ditambah 1
+                    userDB.setModifiedBy(Math.toIntExact(userDB.getUserId()));
+                    userDB.setModifiedDate(new Date());
                 }
             } else//belum terdaftar
             {
@@ -122,12 +121,12 @@ public class AuthService {
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public Map<String, Object> confirmRegis(User userz, String emails, WebRequest request) {
+    public Map<String, Object> confirmRegis(User user, String emails, WebRequest request) {
         List<User> listUserResult = userRepository.findByEmail(emails);
         try {
             if (listUserResult.size() != 0) {
                 User nextUser = listUserResult.get(0);
-                if (!BcryptImpl.verifyHash(userz.getToken(), nextUser.getToken())) {
+                if (!BcryptImpl.verifyHash(user.getToken(), nextUser.getToken())) {
                     return new ResponseHandler().generateModelAttribut(ConstantMessage.ERROR_TOKEN_INVALID,
                             HttpStatus.NOT_ACCEPTABLE, null, "FV01005", request);
                 }
@@ -149,19 +148,17 @@ public class AuthService {
 
     @Transactional(rollbackFor = Exception.class)
     public Map<String, Object> doLogin(LoginDTO loginDTO, WebRequest request) {
-        List<User> listUserResult = userRepository.findByEmailOrPhoneOrUsername(loginDTO.getCredential(), loginDTO.getCredential(), loginDTO.getCredential());//DATANYA PASTI HANYA 1
-        User nextUser = null;
+        User user = userRepository.findFirstByEmailOrPhoneOrUsername(loginDTO.getCredential(), loginDTO.getCredential(), loginDTO.getCredential());//DATANYA PASTI HANYA 1
         try {
-            if (listUserResult.size() != 0) {
-                nextUser = listUserResult.get(0);
-                if (!BcryptImpl.verifyHash(loginDTO.getPassword() + nextUser.getUsername(), nextUser.getPassword()))//dicombo dengan userName
+            if (user != null) {
+                if (!BcryptImpl.verifyHash(loginDTO.getPassword() + user.getUsername(), user.getPassword()))//dicombo dengan userName
                 {
                     return new ResponseHandler().generateModelAttribut(ConstantMessage.ERROR_LOGIN_FAILED,
                             HttpStatus.NOT_ACCEPTABLE, null, "FV01007", request);
                 }
-                nextUser.setLastLogin(LocalDateTime.now());
-                nextUser.setTokenCounter(0);//SETIAP KALI LOGIN BERHASIL , BERAPA KALIPUN UJI COBA REQUEST TOKEN YANG SEBELUMNYA GAGAL AKAN SECARA OTOMATIS DIRESET MENJADI 0
-                nextUser.setPasswordCounter(0);//SETIAP KALI LOGIN BERHASIL , BERAPA KALIPUN UJI COBA YANG SEBELUMNYA GAGAL AKAN SECARA OTOMATIS DIRESET MENJADI 0
+                user.setLastLogin(LocalDateTime.now());
+                user.setTokenCounter(0);//SETIAP KALI LOGIN BERHASIL , BERAPA KALIPUN UJI COBA REQUEST TOKEN YANG SEBELUMNYA GAGAL AKAN SECARA OTOMATIS DIRESET MENJADI 0
+                user.setPasswordCounter(0);//SETIAP KALI LOGIN BERHASIL , BERAPA KALIPUN UJI COBA YANG SEBELUMNYA GAGAL AKAN SECARA OTOMATIS DIRESET MENJADI 0
             } else {
                 return new ResponseHandler().generateModelAttribut(ConstantMessage.ERROR_USER_NOT_EXISTS,
                         HttpStatus.NOT_ACCEPTABLE, null, "FV01008", request);
@@ -174,7 +171,7 @@ public class AuthService {
         }
 
         return new ResponseHandler().generateModelAttribut(ConstantMessage.SUCCESS_LOGIN,
-                HttpStatus.OK, nextUser, null, request);
+                HttpStatus.OK, user, null, request);
     }
 
     public Map<String, Object> getNewToken(String email, WebRequest request) {

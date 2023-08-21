@@ -144,7 +144,6 @@
             event.preventDefault();
             addBubble(multiInput.value.trim());
             multiInput.value = "";
-            updateVariantsInput();
         }
     });
 
@@ -158,10 +157,12 @@
                 updateVariantsInput();
             });
             bubbleContainer.appendChild(bubble);
+            updateVariantsInput();
         }
     }
 
     function updateVariantsInput() {
+        const variantsInput = document.getElementById("variants-input");
         const bubbleElements = bubbleContainer.getElementsByClassName("bubble");
         const variants = Array.from(bubbleElements).map(bubble => bubble.textContent);
         variantsInput.value = variants.join(",");
@@ -176,7 +177,6 @@
         integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
         crossorigin="anonymous"></script>
 <script>
- $('.toast').toast('show')
     $(document).ready(function() {
         $('.selectpicker').selectpicker({ size: '3' });
     });

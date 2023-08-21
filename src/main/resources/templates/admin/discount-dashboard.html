@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"
+          integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+          crossorigin="anonymous"></script>
+  <link th:href="@{/css/cat-dashboard.css}" rel="stylesheet">
+  <link th:href="@{/css/navbar-top.css}" rel="stylesheet">
+  <title>Discount Dashboard</title>
+  <script>
+    function submitCategoryForm() {
+        // Get the form element by its ID
+        var categoryForm = document.getElementById("categoryForm");
+
+        // Submit the form
+        categoryForm.submit();
+    }
+    function submitUpdateForm() {
+     // Get the form element by its ID
+        var catUpdateForm = document.getElementById("catUpdateForm");
+
+        // Submit the form
+        catUpdateForm.submit();
+    }
+
+    function openModal(id, name) {
+        const categoryUpdateIdField = document.getElementById("category-update-id");
+        const categoryUpdateIdFieldShow = document.getElementById("category-update-id-show");
+
+        const categoryUpdateNameField = document.getElementById("category-update-name");
+        categoryUpdateIdField.value = id;
+        categoryUpdateIdFieldShow.value = id;
+        categoryUpdateNameField.value = name;
+    }
+
+
+
+</script>
+</head>
+<body>
+<div th:replace="~{components/navbar-top :: navbar-top}" class="navbar-container"></div>
+<div class="cat-dashboard">
+  <div class="d-flex w-100 justify-content-center align-items-center pt-3" style="position: absolute">
+    <div th:if="${message != null}" class="toast align-items-center text-white bg-primary border-0" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="2000">
+      <div class="d-flex">
+        <div class="toast-body">
+          [[${message}]]
+        </div>
+        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+      </div>
+    </div>
+  </div>
+  <div class="cat-dash-container">
+    <div class="btn-container">
+      <div class="row-container dropdown">
+        <div class="btn-custom dropdown-toggle" id="dropdownMenuButtonRow" data-bs-toggle="dropdown"
+             aria-expanded="false">
+          <p th:text="${selectedRow == null} ? 'Row Per Page' : ${selectedRow}"></p>
+          <ul class="dropdown-menu" aria-labelledby="dropdownMenuButtonRow">
+            <li><a th:classappend="${selectedRow == 10}? 'active' : ''" class="dropdown-item" th:attr="data-row=${10}, data-page=${currentPage}" th:onclick="setSelectedRow(this)">10</a></li>
+            <li><a th:classappend="${selectedRow == 20}? 'active' : ''" class="dropdown-item"  th:attr="data-row=${20}, data-page=${currentPage}" th:onclick="setSelectedRow(this)">20</a></li>
+            <li><a th:classappend="${selectedRow == 30}? 'active' : ''" class="dropdown-item" th:attr="data-row=${30}, data-page=${currentPage}" th:onclick="setSelectedRow(this)">30</a></li>
+          </ul>
+        </div>
+      </div>
+      <a href="#" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#categoryFormModal">Add Category</a>
+    </div>
+    <div class="cat-table">
+      <table border="1" class="table table-bordered table-hover table-striped table-responsive-md">
+        <thead class="table-dark">
+        <tr>
+          <th>#</th>
+          <th style="text-align: center">Discount ID</th>
+          <th style="text-align: center">Name</th>
+          <th style="text-align: center">Start Date</th>
+          <th style="text-align: center">End Date</th>
+          <th style="text-align: center">Percent Discount</th>
+          <th colspan="2" style="text-align: center">Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <!-- Iterate over categories and populate table rows -->
+        <tr th:each="category, index : ${categories}">
+          <td th:text="${index.index + 1}"></td>
+          <td style="text-align: center" th:text="${category.categoryId}"></td>
+          <td th:text="${category.name}"></td>
+          <td style="text-align: center">
+            <a href="" type="button" class="btn btn-primary"
+               th:attr="data-id=${category.categoryId}, data-catName=${category.name}"
+               th:onclick="openModal(this.getAttribute('data-id'), this.getAttribute('data-catName'))"
+               data-bs-toggle="modal" data-bs-target="#catUpdateFormModal">Edit</a>
+          </td>
+          <td style="text-align: center">
+            <a th:href="@{/admin/category/delete(categoryId=${category.categoryId})}" type="button" class="btn btn-danger">Delete</a>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+
+      <div class="table-pagination">
+        <div class="cat-paginate">
+          <div th:replace="~{components/pagination-bar :: pagination-bar}"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal fade" id="catUpdateFormModal" tabindex="-1" aria-labelledby="categoryFormModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="catUpdateFormModalLabel">Update Category</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form method="POST" th:action="@{/admin/category/update}" th:object="${category}" id="catUpdateForm">
+            <div class="mb-3">
+              <label for="category-update-id" class="col-form-label">ID:</label>
+              <input name="categoryId" th:field="*{categoryId}" type="text" class="form-control" id="category-update-id" hidden>
+              <input name="categoryId" th:field="*{categoryId}" type="text" class="form-control" id="category-update-id-show" disabled>
+            </div>
+            <div class="mb-3">
+              <label for="category-name" class="col-form-label">Category Name:</label>
+              <input th:field="*{name}" name="name" type="text" class="form-control" id="category-update-name">
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary" th:onclick="submitUpdateForm()">Update</button>
+        </div>
+
+
+      </div>
+    </div>
+
+  </div>
+  <div class="modal fade" id="categoryFormModal" tabindex="-1" aria-labelledby="categoryFormModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="categoryFormModalLabel">New Category</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form method="POST" th:action="@{/admin/category}" th:object="${category}" id="categoryForm">
+            <div class="mb-3">
+              <label for="category-name" class="col-form-label">Category Name:</label>
+              <input th:field="*{name}" name="name" type="text" class="form-control" id="category-name">
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary" th:onclick="submitCategoryForm()">Submit</button>
+        </div>
+
+
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+     function setSelectedRow(link) {
+        var selectedRowValue = link.getAttribute('data-row');
+        var pageValue = link.getAttribute('data-page');
+        link.classList.add('active');
+        var dropdownButton = document.getElementById('dropdownMenuButtonRow');
+
+        var newUrl = new URL(window.location.href);
+        newUrl.searchParams.set('page', pageValue);
+        newUrl.searchParams.set('limit', selectedRowValue);
+        window.location.href = newUrl.toString();
+    }
+</script>
+
+<script>
+var $j = jQuery.noConflict();
+$j(function() {
+    $j('.toast').toast('show');
+});
+
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+        integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.min.js"
+        integrity="sha384-Rx+T1VzGupg4BHQYs2gCW9It+akI2MM/mndMCy36UVfodzcJcF0GGLxZIzObiEfa"
+        crossorigin="anonymous"></script>
+</body>
+</html>

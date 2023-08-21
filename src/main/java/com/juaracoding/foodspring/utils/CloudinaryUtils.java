@@ -34,7 +34,6 @@ public class CloudinaryUtils {
                 "resource_type", "image"
         );
         Map<String, String> resultMap = cloudinary.uploader().upload(file.getBytes(), params);
-        return resultMap; // Returns the URL of the uploaded image
-
+        return resultMap;
     }
 }

@@ -34,4 +34,8 @@ public class ServicePath {
     public static final String CATEGORY_DELETE = "/category/delete";
     public static final String CATEGORY_UPDATE = "/category/update";
     public static final String PRODUCT = "/product";
+    public static final String DASHBOARD_PRODUCT_UPDATE_PRODUCT_FORM_PRODUCT_ID =  "/dashboard/product/update-product-form/{productId}";
+    public static final String REDIRECT_ADMIN_DASHBOARD_PRODUCT = "redirect:/admin/dashboard/product";
+    public static final String PRODUCT_UPDATE = "/product/update";
+    public static final String PRODUCT_DELETE = "/product/delete";
 }

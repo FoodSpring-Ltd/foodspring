@@ -1,14 +1,17 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
-  <link th:href="@{/css/cat-dashboard.css}" rel="stylesheet">
-  <link th:href="@{/css/navbar-top.css}" rel="stylesheet">
-  <title>Product Dashboard</title>
-  <script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"
+            integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+            crossorigin="anonymous"></script>
+    <link th:href="@{/css/cat-dashboard.css}" rel="stylesheet">
+    <link th:href="@{/css/navbar-top.css}" rel="stylesheet">
+    <title>Product Dashboard</title>
+    <script>
     function openModalDetailProd(id) {
         const modalBody = document.getElementById("prodModalDetailBody");
         console.log(modalBody);
@@ -29,98 +32,120 @@
         `
 
     }
-</script>
+
+
+    </script>
 </head>
 <body>
+<div th:replace="~{components/navbar-top :: navbar-top}" class="navbar-container"></div>
 <div class="cat-dashboard">
-  <div class="cat-dash-container">
-    <div class="btn-container">
-      <div class="row-container dropdown">
-        <div class="btn-custom dropdown-toggle" id="dropdownMenuButtonRow" data-bs-toggle="dropdown"
-             aria-expanded="false">
-          <p th:text="${selectedRow == null} ? 'Row Per Page' : ${selectedRow}"></p>
-          <ul class="dropdown-menu" aria-labelledby="dropdownMenuButtonRow">
-            <li><a th:classappend="${selectedRow == 10}? 'active' : ''" class="dropdown-item" th:attr="data-row=${10}, data-page=${currentPage}" th:onclick="setSelectedRow(this)">10</a></li>
-            <li><a th:classappend="${selectedRow == 20}? 'active' : ''" class="dropdown-item"  th:attr="data-row=${20}, data-page=${currentPage}" th:onclick="setSelectedRow(this)">20</a></li>
-            <li><a th:classappend="${selectedRow == 30}? 'active' : ''" class="dropdown-item" th:attr="data-row=${30}, data-page=${currentPage}" th:onclick="setSelectedRow(this)">30</a></li>
-          </ul>
+    <div class="d-flex w-100 justify-content-center align-items-center pt-3" style="position: absolute">
+        <div th:if="${message != null}" class="toast align-items-center text-white bg-primary border-0" role="alert"
+             aria-live="assertive" aria-atomic="true" data-bs-delay="2000">
+            <div class="d-flex">
+                <div class="toast-body">
+                    [[${message}]]
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"
+                        aria-label="Close"></button>
+            </div>
         </div>
-      </div>
-      <a href="/admin/dashboard/product/add-product-form" class="btn btn-primary">Add Product</a>
     </div>
-    <div class="cat-table">
-      <table border="1" class="table table-bordered table-hover table-striped table-responsive-md">
-        <thead class="table-dark">
-        <tr>
-          <th>#</th>
-          <th style="text-align: center">Prod ID</th>
-          <th style="text-align: center">Name</th>
-          <th style="text-align: center">Available</th>
-          <th style="text-align: center">Price</th>
-          <th style="text-align: center">Category</th>
-          <th colspan="3" style="text-align: center">Actions</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="product, index : ${products}">
-          <td th:text="${index.count}"></td>
-          <td style="text-align: center" th:text="${product.productId}"></td>
-          <td th:text="${product.productName}"></td>
-          <td style="text-align: center">
-            <span th:if="${product.isAvailable}">Yes</span>
-            <span th:unless="${product.isAvailable}">No</span>
-          </td>
-          <td th:text="${'Rp' + product.price}"></td>
-          <td th:if="${product.category != null}" th:text="${product.category.name}"></td>
-          <td th:unless="${product.category != null}" th:text="${'None'}"></td>
-          <td style="text-align: center">
-            <a href="" type="button" class="btn btn-primary"
-               th:attr="data-id=${product.productId}"
-               th:onclick="openModalDetailProd(this.getAttribute('data-id'))"
-               data-bs-toggle="modal" data-bs-target="#prodDetailModal">
-              Show Details
-            </a>
-          </td>
-          <td style="text-align: center">
-            <a th:href="@{/admin/dashboard/product/update-product-form(productId=${product.productId})}"
-               type="button" class="btn btn-info">
-              Edit
-            </a>
-          </td>
-          <td style="text-align: center">
-            <a href="" type="button" class="btn btn-danger">Delete</a>
-          </td>
-        </tr>
-        </tbody>
-      </table>
-
-      <div class="table-pagination">
-        <div class="cat-paginate">
-          <div th:replace="~{components/pagination-bar :: pagination-bar}"></div>
+    <div class="cat-dash-container">
+        <div class="btn-container">
+            <div class="row-container dropdown">
+                <div class="btn-custom dropdown-toggle" id="dropdownMenuButtonRow" data-bs-toggle="dropdown"
+                     aria-expanded="false">
+                    <p th:text="${selectedRow == null} ? 'Row Per Page' : ${selectedRow}"></p>
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButtonRow">
+                        <li><a th:classappend="${selectedRow == 10}? 'active' : ''" class="dropdown-item"
+                               th:attr="data-row=${10}, data-page=${currentPage}"
+                               th:onclick="setSelectedRow(this)">10</a></li>
+                        <li><a th:classappend="${selectedRow == 20}? 'active' : ''" class="dropdown-item"
+                               th:attr="data-row=${20}, data-page=${currentPage}"
+                               th:onclick="setSelectedRow(this)">20</a></li>
+                        <li><a th:classappend="${selectedRow == 30}? 'active' : ''" class="dropdown-item"
+                               th:attr="data-row=${30}, data-page=${currentPage}"
+                               th:onclick="setSelectedRow(this)">30</a></li>
+                    </ul>
+                </div>
+            </div>
+            <a href="/admin/dashboard/product/add-product-form" class="btn btn-primary">Add Product</a>
         </div>
-      </div>
+        <div class="cat-table">
+            <table border="1" class="table table-bordered table-hover table-striped table-responsive-md">
+                <thead class="table-dark">
+                <tr>
+                    <th>#</th>
+                    <th style="text-align: center">Prod ID</th>
+                    <th style="text-align: center">Name</th>
+                    <th style="text-align: center">Available</th>
+                    <th style="text-align: center">Price</th>
+                    <th style="text-align: center">Category</th>
+                    <th colspan="3" style="text-align: center">Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="product, index : ${products}">
+                    <td th:text="${index.count}"></td>
+                    <td style="text-align: center" th:text="${product.productId}"></td>
+                    <td th:text="${product.productName}"></td>
+                    <td style="text-align: center">
+                        <span th:if="${product.isAvailable}">Yes</span>
+                        <span th:unless="${product.isAvailable}">No</span>
+                    </td>
+                    <td th:text="${'Rp' + product.price}"></td>
+                    <td th:if="${product.category != null}" th:text="${product.category.name}"></td>
+                    <td th:unless="${product.category != null}" th:text="${'None'}"></td>
+                    <td style="text-align: center">
+                        <a href="" type="button" class="btn btn-primary"
+                           th:attr="data-id=${product.productId}"
+                           th:onclick="openModalDetailProd(this.getAttribute('data-id'))"
+                           data-bs-toggle="modal" data-bs-target="#prodDetailModal">
+                            Show Details
+                        </a>
+                    </td>
+                    <td style="text-align: center">
+                        <a th:href="@{/admin/dashboard/product/update-product-form/{productId} (productId=${product.productId})}"
+                           type="button" class="btn btn-info">
+                            Edit
+                        </a>
+                    </td>
+                    <td style="text-align: center">
+                        <a th:href="@{/admin/product/delete(productId=${product.productId})}" type="button" class="btn btn-danger">Delete</a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+
+            <div class="table-pagination">
+                <div class="cat-paginate">
+                    <div th:replace="~{components/pagination-bar :: pagination-bar}"></div>
+                </div>
+            </div>
+        </div>
     </div>
-  </div>
-  <div class="modal fade" id="prodDetailModal" tabindex="-1" aria-labelledby="prodDetailModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h1 class="modal-title fs-5" id="prodDetailModalLabel">Details Product</h1>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    <div class="modal fade" id="prodDetailModal" tabindex="-1" aria-labelledby="prodDetailModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="prodDetailModalLabel">Details Product</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="prodModalDetailBody">
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+
+                </div>
+
+
+            </div>
         </div>
-        <div class="modal-body" id="prodModalDetailBody">
 
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-
-        </div>
-
-
-      </div>
     </div>
-
-  </div>
 </div>
 
 <script>
@@ -135,6 +160,17 @@
         newUrl.searchParams.set('limit', selectedRowValue);
         window.location.href = newUrl.toString();
     }
+
+
+</script>
+<script>
+var $j = jQuery.noConflict();
+$j(function() {
+    $j('.toast').toast('show');
+});
+
+
+
 </script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
         integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"

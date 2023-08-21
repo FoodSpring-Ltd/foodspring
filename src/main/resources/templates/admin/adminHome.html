@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
     <link th:href="@{/css/adminHome.css}" rel="stylesheet">
     <link th:href="@{/css/navbar-top.css}" rel="stylesheet">
     <title>Food Spring App by STARLINE</title>
@@ -19,30 +20,60 @@
         </h3>
     </div>
 </div>
-<div class="card-container">
-        <div class="col-sm-4 mb-3 mb-sm-0">
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title">Category</h5>
-                    <p class="card-text">Manage your restaurant food and drink category.</p>
-                    <a href="/admin/dashboard/category" class="btn manage">Manage</a>
-                </div>
-            </div>
-        </div>
-        <div class="col-sm-4 mb-3 mb-sm-0">
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title">Product</h5>
-                    <p class="card-text">Manage your food and drink product.</p>
-                    <a href="/admin/dashboard/product" class="btn manage">Manage</a>
-                </div>
+<div class="d-flex flex-wrap p-2 gap-2">
+    <div class="col-sm-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Category</h5>
+                <p class="card-text">Manage your restaurant food and drink category.</p>
+                <a href="/admin/dashboard/category" class="btn manage">Manage</a>
             </div>
         </div>
     </div>
-
+    <div class="col-sm-3">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Product</h5>
+                <p class="card-text">Manage your food and drink product.</p>
+                <a href="/admin/dashboard/product" class="btn manage">Manage</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-3">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Discount</h5>
+                <p class="card-text">Manage your product discount</p>
+                <a href="/admin/dashboard/discount" class="btn manage">Manage</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Incoming Order</h5>
+                <p class="card-text">Manage your incoming or ongoing order</p>
+                <a href="/admin/dashboard/orders" class="btn manage">Manage</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-3">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Completed Order</h5>
+                <p class="card-text">Manage your completed order</p>
+                <a href="/admin/dashboard/orders/completed" class="btn manage" style="pointer-events: none">Manage</a>
+            </div>
+        </div>
+    </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.min.js" integrity="sha384-Rx+T1VzGupg4BHQYs2gCW9It+akI2MM/mndMCy36UVfodzcJcF0GGLxZIzObiEfa" crossorigin="anonymous"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+        integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.min.js"
+        integrity="sha384-Rx+T1VzGupg4BHQYs2gCW9It+akI2MM/mndMCy36UVfodzcJcF0GGLxZIzObiEfa"
+        crossorigin="anonymous"></script>
 </body>
 </html>

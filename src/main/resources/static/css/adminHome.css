@@ -26,9 +26,10 @@
   width: 100%;
   display: flex;
   gap: 2%;
-  justify-content: left;
+  flex-wrap: wrap;
+  justify-content: space-evenly;
   align-items: center;
-  padding: 10px 5px 10px 5px;
+  padding: 20px 5px 20px 5px;
 
 }
 

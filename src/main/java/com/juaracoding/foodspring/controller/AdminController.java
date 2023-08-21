@@ -113,11 +113,12 @@ public class AdminController {
     @PostMapping(value = ServicePath.DASHBOARD_PRODUCT_ADD_PRODUCT_FORM)
     public String addProduct(@ModelAttribute("product") @Valid ProductDTO productDTO,
                              BindingResult bindingResult,
-                             @RequestParam MultipartFile productImage,
                              Model model,
-                             WebRequest request) {
+                             WebRequest request,
+                             RedirectAttributes redirectAttributes,
+                             @RequestParam MultipartFile productImage
+                             ) {
         mappingAttribute.setAttribute(model, request);
-        model.addAttribute("product", new ProductDTO());
         model.addAttribute("categories", categoryService.getAllCategory());
         model.addAttribute("discounts", discountService.getAllDiscount());
         if (bindingResult.hasErrors()) {
@@ -127,23 +128,69 @@ public class AdminController {
         try {
             objectMapper = productService.createProduct(productDTO, productImage);
             if((Boolean) objectMapper.get("success")) {
-                model.addAttribute("message", ConstantMessage.SUCCESS_CREATED_PRODUCT);
-                return ViewPath.ADMIN_ADD_PRODUCT_FORM;
+                redirectAttributes.addFlashAttribute("message", ConstantMessage.SUCCESS_CREATED_PRODUCT);
+                return ServicePath.REDIRECT_ADMIN_DASHBOARD_PRODUCT;
             }
-            model.addAttribute("message", ConstantMessage.ERROR_CREATING_PRODUCT);
+            redirectAttributes.addFlashAttribute("message", ConstantMessage.SUCCESS_CREATED_PRODUCT);
+            return ServicePath.REDIRECT_ADMIN_DASHBOARD_PRODUCT;
         } catch (Exception ex) {
             LoggingFile.exceptionString(new String[]{"AdminController", "addProduct"}, ex, "FC0001", "y");
         }
+        model.addAttribute("product", productDTO);
         return ViewPath.ADMIN_ADD_PRODUCT_FORM;
     }
 
-    @GetMapping(value = ServicePath.DASHBOARD_PRODUCT_UPDATE_PRODUCT_FORM)
-    public String updateProductForm(Model model, WebRequest request) {
+    @GetMapping(value = ServicePath.DASHBOARD_PRODUCT_UPDATE_PRODUCT_FORM_PRODUCT_ID)
+    public String getUpdateProductForm(Model model,
+                                       @PathVariable String productId,
+                                       RedirectAttributes redirectAttributes,
+                                       WebRequest request) {
+
         mappingAttribute.setAttribute(model, request);
+        model.addAttribute("categories", categoryService.getAllCategory());
+        model.addAttribute("discounts", discountService.getAllDiscount());
+        try {
+            ProductDTO product = productService.getProductDTOById(productId);
+            model.addAttribute("product", product);
+        } catch (Exception ex) {
+            redirectAttributes.addFlashAttribute("message", ex.getMessage());
+            return ServicePath.REDIRECT_ADMIN_DASHBOARD_PRODUCT;
+        }
         return ViewPath.ADMIN_UPDATE_PRODUCT_FORM;
 
     }
 
+    @PostMapping(value = ServicePath.PRODUCT_UPDATE)
+    public String updateProduct(@ModelAttribute(value = "product") ProductDTO productDTO,
+                                BindingResult bindingResult,
+                                @RequestParam MultipartFile productImage,
+                                Model model,
+                                RedirectAttributes redirectAttributes,
+                                WebRequest request) {
+        mappingAttribute.setAttribute(model, request);
+        model.addAttribute("product", productDTO);
+        model.addAttribute("categories", categoryService.getAllCategory());
+        model.addAttribute("discounts", discountService.getAllDiscount());
+        if (bindingResult.hasErrors()) {
+            return ViewPath.ADMIN_UPDATE_PRODUCT_FORM;
+        }
+        objectMapper = productService.updateProduct(productDTO, productImage, request);
+        if ((Boolean) objectMapper.get("success")) {
+            redirectAttributes.addFlashAttribute("message", ConstantMessage.PRODUCT_UPDATED);
+            return ServicePath.REDIRECT_ADMIN_DASHBOARD_PRODUCT;
+        }
+        redirectAttributes.addFlashAttribute("message", ConstantMessage.ERROR_PRODUCT_UPDATED);
+        return ServicePath.REDIRECT_ADMIN_DASHBOARD_PRODUCT;
+    }
+
+    @GetMapping(value = ServicePath.PRODUCT_DELETE)
+    public String deleteProductById(Model model,
+                                    RedirectAttributes redirectAttributes,
+                                    @RequestParam String productId) {
+        objectMapper = productService.softDeleteById(productId);
+        redirectAttributes.addFlashAttribute("message", objectMapper.get("message").toString());
+        return ServicePath.REDIRECT_ADMIN_DASHBOARD_PRODUCT;
+    }
     @PostMapping(value = ServicePath.CATEGORY)
     public String addCategory(@ModelAttribute("category") CategoryDTO categoryDTO,
                               BindingResult bindingResult,

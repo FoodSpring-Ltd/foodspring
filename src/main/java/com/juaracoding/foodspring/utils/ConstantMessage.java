@@ -86,5 +86,12 @@ public class ConstantMessage {
     public static final Object ERROR_PRODUCT_UPDATED = "Product update failed! Please try again";
     public static final Object PRODUCT_DELETION_SUCCESS = "Product deleted successfully";
     public static final Object ERROR_DELETE_PRODUCT = "Something went wrong, can't delete product";
+    public static final String SUCCESS_CREATE_DISCOUNT = "Discount created successfully";
+    public static final String ERROR_CREATE_DISCOUNT = "Failed to create discount. Something went wrong";
+    public static final String SUCCESS_UPDATE_DISCOUNT = "Discount updated successfully";
+    public static final String ERROR_DELETE_DISCOUNT = "Error deleting discount";
+    public static final String SUCCESS_DELETE_DISCOUNT = "Success delete discount";
+    public static final Object ERROR_UPDATE_DISCOUNT = "Discount update failed";
+    public static final String INVALID_DATE_RANGE = "Start datetime should be before end datetime";
 }
 

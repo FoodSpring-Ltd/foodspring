@@ -58,6 +58,11 @@ public class Discount {
     @Comment(value = "Discount end time")
     private LocalDateTime endAt;
 
+    @Column(name = "IsDelete")
+    private Boolean isDelete = false;
+
+    @Column(name = "ModifiedBy")
+    private Long modifiedBy;
 
     @Column(name = "CreatedAt")
     @CreationTimestamp

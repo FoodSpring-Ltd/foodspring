@@ -10,6 +10,7 @@ Created on 8/20/2023 4:44 PM
 Version 1.0
 */
 
+import com.juaracoding.foodspring.model.Category;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -41,7 +42,7 @@ public class ProductDTO {
     private Double price;
 
 
-
+    private Category category;
     private Long categoryId;
 
     private String variants;

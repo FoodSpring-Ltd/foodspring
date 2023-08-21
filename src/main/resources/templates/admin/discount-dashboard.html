@@ -34,14 +34,20 @@
         discountUpdateForm.submit();
     }
 
-    function openModal(id, discountName) {
-        const discountUpdateIdField = document.getElementById("discount-update-id");
-        const discountUpdateIdFieldShow = document.getElementById("discount-update-id-show");
+     function openModal(button) {
+        const discountId = button.getAttribute("data-id");
+        const discountName = button.getAttribute("data-discName");
+        const startAt = button.getAttribute("data-startAt");
+        const endAt = button.getAttribute("data-endAt");
+        const percentDiscount = button.getAttribute("data-percentDiscount");
 
-        const discountUpdateNameField = document.getElementById("discount-update-discountName");
-        discountUpdateIdField.value = id;
-        discountUpdateIdFieldShow.value = id;
-        discountUpdateNameField.value = discountName;
+        const form = document.getElementById("discountUpdateForm");
+
+        form.querySelector("#discount-update-id").value = discountId;
+        form.querySelector("#discount-update-discountName").value = discountName;
+        form.querySelector("#disc-percentDiscount-update").value = percentDiscount;
+        form.querySelector("#disc-start-update").value = startAt;
+        form.querySelector("#disc-end-update").value = endAt;
     }
 
 
@@ -95,13 +101,17 @@
           <td th:text="${index.index + 1}"></td>
           <td style="text-align: center" th:text="${discount.discountId}"></td>
           <td th:text="${discount.discountName}"></td>
-          <td th:text="${discount.startAt}"></td>
-          <td th:text="${discount.endAt}"></td>
+          <td th:text="${#temporals.format(discount.startAt, 'dd/MM/yyyy HH:mm') + ' WIB'}"></td>
+          <td th:text="${#temporals.format(discount.endAt, 'dd/MM/yyyy HH:mm') + ' WIB'}"></td>
           <td th:text="${discount.percentDiscount + '%'}"></td>
           <td style="text-align: center">
             <a href="" type="button" class="btn btn-primary"
-               th:attr="data-id=${discount.discountId}, data-catName=${discount.discountName}"
-               th:onclick="openModal(this.getAttribute('data-id'), this.getAttribute('data-catName'))"
+               th:attr="data-id=${discount.discountId},
+               data-discName=${discount.discountName},
+               data-startAt=${discount.startAt},
+               data-endAt=${discount.endAt},
+               data-percentDiscount=${discount.percentDiscount}"
+               th:onclick="openModal(this)"
                data-bs-toggle="modal" data-bs-target="#discountUpdateFormModal">Edit</a>
           </td>
           <td style="text-align: center">
@@ -119,7 +129,7 @@
     </div>
   </div>
   <div class="modal fade" id="discountUpdateFormModal" tabindex="-1" aria-labelledby="discountFormModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-lg">
       <div class="modal-content">
         <div class="modal-header">
           <h1 class="modal-title fs-5" id="discountUpdateFormModalLabel">Update Discount</h1>
@@ -127,14 +137,29 @@
         </div>
         <div class="modal-body">
           <form method="POST" th:action="@{/admin/discount/update}" th:object="${discount}" id="discountUpdateForm">
-            <div class="mb-3">
-              <label for="discount-update-id" class="col-form-label">ID:</label>
+            <div class="mb-0">
               <input discountName="discountId" th:field="*{discountId}" type="text" class="form-control" id="discount-update-id" hidden>
-              <input discountName="discountId" th:field="*{discountId}" type="text" class="form-control" id="discount-update-id-show" disabled>
             </div>
             <div class="mb-3">
               <label for="discount-discountName" class="col-form-label">Discount Name:</label>
               <input th:field="*{discountName}" discountName="discountName" type="text" class="form-control" id="discount-update-discountName">
+            </div>
+            <div class="form-group mb-3">
+              <label for="disc-percentDiscount-update" class="col-form-label">Percent Discount:</label>
+              <input th:field="*{percentDiscount}" type="text" class="form-control" id="disc-percentDiscount-update">
+              <div th:errors="*{percentDiscount}" class="error-message"></div>
+            </div>
+            <div class="form-row d-flex justify-content-between">
+              <div class="form-group">
+                <label for="disc-start-update" class="col-form-label">Start Date:</label>
+                <input th:field="*{startAt}" type="datetime-local" class="form-control" id="disc-start-update">
+                <div th:errors="*{startAt}" class="error-message"></div>
+              </div>
+              <div class="form-group">
+                <label for="disc-end-update" class="col-form-label">End Date:</label>
+                <input th:field="*{endAt}" type="datetime-local" class="form-control" id="disc-end-update">
+                <div th:errors="*{endAt}" class="error-message"></div>
+              </div>
             </div>
           </form>
         </div>

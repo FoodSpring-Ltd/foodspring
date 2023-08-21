@@ -11,6 +11,7 @@ Version 1.0
 */
 
 import com.juaracoding.foodspring.model.Category;
+import com.juaracoding.foodspring.model.Discount;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -29,4 +30,5 @@ public class ProductSimpleResponse {
     private String description;
     private String imageURL;
     private String variants;
+    private Discount discount;
 }

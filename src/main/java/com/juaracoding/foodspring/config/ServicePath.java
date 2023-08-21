@@ -40,4 +40,7 @@ public class ServicePath {
     public static final String PRODUCT_DELETE = "/product/delete";
     public static final String DASHBOARD_DISCOUNT = "/dashboard/discount";
     public static final String DISCOUNT = "/discount";
+    public static final String REDIRECT_ADMIN_DASHBOARD_DISCOUNT = "redirect:/admin/dashboard/discount";
+    public static final String DISCOUNT_UPDATE = "/discount/update";
+    public static final String DISCOUNT_DELETE = "/discount/delete";
 }

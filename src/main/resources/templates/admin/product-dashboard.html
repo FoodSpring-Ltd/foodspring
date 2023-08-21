@@ -24,7 +24,11 @@
         const category = button.getAttribute("data-category");
         const variants = button.getAttribute("data-variants");
         const isAvailable = button.getAttribute("data-availability");
-        console.log(isAvailable);
+        let discount = button.getAttribute("data-discount");
+        if (discount.includes('null')) {
+           discount = 'N/A';
+        }
+
         // Replace the modal content with the retrieved product details
         modalBody.innerHTML = `
             <div>
@@ -34,6 +38,7 @@
                     <div class="card-text-wrapper mb-2">
                         <p class="card-text"> <strong>Category</strong>: ${category ? category : 'N/A'} </p>
                         <p class="card-text"> <strong>Variants</strong>: ${variants} </p>
+                        <p class="card-text"> <strong>Discount</strong>: ${discount ? discount : 'N/A'} </p>
                         <p class="card-text"> <strong>Available</strong>: ${isAvailable == 'true' ? 'Yes' : 'No'}</p>
                         <p class="card-text">${description}</p>
                     </div>
@@ -116,7 +121,9 @@
                            data-price=${product.price},
                            data-image=${product.imageURL},
                            data-category=${product.category?.name},
-                           data-variants=${product.variants}, data-availability=${product.isAvailable}"
+                           data-variants=${product.variants},
+                           data-availability=${product.isAvailable},
+                           data-discount=${product.discount?.discountName + ' ' +  product.discount?.percentDiscount + '%'}"
                            th:onclick="openModalDetailProd(this)"
                            data-bs-toggle="modal" data-bs-target="#prodDetailModal">
                             Show Details

@@ -276,6 +276,7 @@ public class ProductService {
                     ProductSimpleResponse res = ProductSimpleResponse.builder()
                             .productId(item.getProductId())
                             .category(item.getCategory())
+                            .discount(item.getDiscount())
                             .description(item.getDescription())
                             .isAvailable(item.getIsAvailable())
                             .imageURL(item.getImageURL())

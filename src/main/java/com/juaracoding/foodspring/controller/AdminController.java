@@ -89,7 +89,6 @@ public class AdminController {
         Integer totalPages = (Integer) objectMapper.get("totalPages");
         Long totalElements = (Long) objectMapper.get("totalElements");
         List<ProductSimpleResponse> data = (List< ProductSimpleResponse>) objectMapper.get("data");
-        System.out.println(data.get(0).getVariants());
         model.addAttribute("selectedRow", limit);
         model.addAttribute("totalPages", totalPages);
         model.addAttribute("totalElements", totalElements);
@@ -260,14 +259,46 @@ public class AdminController {
     public String addDiscount(@ModelAttribute("discount") DiscountDTO discountDTO,
                               BindingResult bindingResult,
                               Model model,
+                              RedirectAttributes redirectAttributes,
                               WebRequest request) {
         if (bindingResult.hasErrors()) {
             return ViewPath.ADMIN_DISCOUNT_DASHBOARD;
         }
+        objectMapper = discountService.createDiscount(discountDTO, request);
+        redirectAttributes.addFlashAttribute("message",
+                objectMapper.get("message").toString());
+        return ServicePath.REDIRECT_ADMIN_DASHBOARD_DISCOUNT;
+    }
 
-
-        System.out.println(discountDTO);
-
-        return ViewPath.ADMIN_DISCOUNT_DASHBOARD;
+    @PostMapping(value = ServicePath.DISCOUNT_UPDATE)
+    public String updateDiscountById(@ModelAttribute("discount") @Valid DiscountDTO discountDTO,
+                                     BindingResult bindingResult,
+                                     RedirectAttributes redirectAttributes,
+                                     Model model,
+                                     WebRequest request) {
+        if (bindingResult.hasErrors()) {
+            redirectAttributes.addFlashAttribute("messages", ConstantMessage.ERROR_UPDATE_DISCOUNT);
+            return ServicePath.REDIRECT_ADMIN_DASHBOARD_DISCOUNT;
+        }
+        objectMapper = discountService.updateDiscount(discountDTO, request);
+        if ((Boolean) objectMapper.get("success")) {
+            redirectAttributes.addFlashAttribute("message", objectMapper.get("message").toString());
+            return ServicePath.REDIRECT_ADMIN_DASHBOARD_DISCOUNT;
+        }
+        redirectAttributes.addFlashAttribute("message", objectMapper.get("message").toString());
+        return ServicePath.REDIRECT_ADMIN_DASHBOARD_DISCOUNT;
+    }
+    @GetMapping(value = ServicePath.DISCOUNT_DELETE)
+    public String deleteCategoryById(Model model,
+                                     RedirectAttributes redirectAttributes,
+                                     WebRequest request,
+                                     @RequestParam Long discountId) {
+        objectMapper = discountService.softDeleteDiscountById(discountId, request);
+        if ((Boolean) objectMapper.get("success")) {
+            redirectAttributes.addFlashAttribute("message", "Discount deleted successfully");
+            return ServicePath.REDIRECT_ADMIN_DASHBOARD_DISCOUNT;
+        }
+        redirectAttributes.addFlashAttribute("message", "Can't delete selected discount");
+        return ServicePath.REDIRECT_ADMIN_DASHBOARD_DISCOUNT;
     }
 }

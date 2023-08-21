@@ -1,9 +1,9 @@
 <div th:fragment="product-card" class="card" xmlns:th="http://www.w3.org/1999/xhtml">
-  <img th:src="${product.imageURL}" class="card-img-top" th:alt="${product.productName}" th:onclick="'redirectToProductDetail(' + ${productId} + ')'">
-  <div class="card-body bg-transparent" th:onclick="'redirectToProductDetail(' + ${productId} + ')'">
+  <img th:attr="data-productId=${product.productId}" th:src="${product.imageURL}" class="card-img-top" th:alt="${product.productName}" onclick="redirectToProductDetail(this)">
+  <div th:attr="data-productId=${product.productId}" class="card-body bg-transparent" th:onclick="redirectToProductDetail(this)">
     <h5 class="card-title" th:text="${product.productName}"></h5>
     <div class="card-text-wrapper mb-2">
-     <p class="card-text" th:text="${product.description}">Some quick example text to build on the card title and make up the bulk of the card's content.Some quick example text to build on the card title and make up the bulk of the card's content.Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+     <p class="card-text" th:text="${product.description}"></p>
    </div>
     <div class="status-price">
       <span class="price"><small class="text-sm">Rp</small>[[${product.price}]]</span>

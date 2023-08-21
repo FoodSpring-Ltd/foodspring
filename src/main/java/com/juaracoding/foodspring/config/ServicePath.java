@@ -43,4 +43,6 @@ public class ServicePath {
     public static final String REDIRECT_ADMIN_DASHBOARD_DISCOUNT = "redirect:/admin/dashboard/discount";
     public static final String DISCOUNT_UPDATE = "/discount/update";
     public static final String DISCOUNT_DELETE = "/discount/delete";
+    public static final String REDIRECT_HOME = "redirect:/home";
+    public static final String PRODUCT_DETAIL_PRODUCT_ID = "/product/details/{productId}";
 }

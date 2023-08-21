@@ -188,6 +188,24 @@ public class ProductService {
         return response;
     }
 
+    public Map<String, Object> getAllProduct(Pageable pageable, List<Long> categoryIds) {
+        Map<String, Object> response = new HashMap<>();
+        try {
+            if (categoryIds == null || categoryIds.isEmpty()) {
+                return getAllProduct(pageable);
+            }
+            Page<Product> results = productRepository.findAllByIsDeleteFalseAndCategoryCategoryIdIn(categoryIds, pageable);
+            List<ProductSimpleResponse> products = convertToProductSimpleResponseList(results.getContent());
+            response.put("data", products);
+            response.put("totalPages", results.getTotalPages());
+            response.put("totalElements", results.getTotalElements());
+        } catch (Exception ex) {
+            strExceptionArr[1] = "getAllProduct(Pageable pageable, List<Long> categoryIds) --LINE 201";
+            LoggingFile.exceptionString(strExceptionArr, ex, "y");
+        }
+        return response;
+    }
+
     public ProductDTO getProductDTOById(String productId) throws ResourceNotFoundException {
         Optional<Product> product = productRepository.findById(productId);
         ProductDTO productDTO = null;
@@ -204,6 +222,15 @@ public class ProductService {
             }
             productDTO.setVariants(productVariantToString(product.get().getVariants()));
             return productDTO;
+        } else {
+            throw new ResourceNotFoundException("Product doesn't exist");
+        }
+    }
+
+    public Product getProductById(String productId) throws ResourceNotFoundException {
+        Optional<Product> product = productRepository.findById(productId);
+        if (product.isPresent()) {
+            return product.get();
         } else {
             throw new ResourceNotFoundException("Product doesn't exist");
         }

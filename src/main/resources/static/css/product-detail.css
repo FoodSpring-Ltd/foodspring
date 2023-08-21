@@ -77,3 +77,52 @@ color: #04d4f0;
   text-align: justify;
   word-break: keep-all;
 }
+
+ .quantity-adjustment {
+        display: flex;
+        align-items: center;
+    }
+
+    .btn-quantity {
+
+        transition: background-color 0.2s, transform 0.2s;
+        box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1); /* Add a subtle shadow */
+    }
+
+    .btn-quantity:hover {
+        background-color: #00b0c7; /* Slightly darker shade for hover */
+        transform: scale(1.1); /* Slightly enlarge on hover */
+    }
+
+    #quantity {
+        width: 60px;
+        text-align: center;
+        border: 1px solid #ccc;
+        padding: 5px;
+    }
+
+    /* Chrome, Safari, Edge, Opera */
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+    /* Firefox */
+    input[type=number] {
+      -moz-appearance: textfield;
+    }
+
+    .note-section {
+            /* Your styles for the note section */
+        }
+
+        .note-input {
+            height: 0;
+            overflow: hidden;
+            transition: height 0.3s;
+        }
+
+        .note-input.expanded {
+            height: auto;
+        }

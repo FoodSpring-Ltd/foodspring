@@ -78,10 +78,8 @@ public class User {
     @Length(message = "Password min length 6", min = 6)
     private String password;
 
-    @OneToMany
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    @JoinColumn(name = "UserId", referencedColumnName = "UserId")
-    private List<ShoppingCart> shoppingCarts;
+    @OneToOne
+    private Cart cart;
 
     @OneToMany
     @OnDelete(action = OnDeleteAction.CASCADE)

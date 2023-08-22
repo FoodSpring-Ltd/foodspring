@@ -1,14 +1,14 @@
 .cat-dash-container {
- display: flex;
- flex-direction: column;
- align-items: center;
- justify-content: center;
- padding: 60px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px;
 }
 
 .cat-table {
- flex: 90%;
- width: 100%;
+  flex: 90%;
+  width: 100%;
 }
 
 .btn-container {
@@ -26,27 +26,28 @@
 }
 
 .row-container {
- display: flex;
-   align-items: center;
-   justify-content: flex-end;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
 }
 
 .btn-custom {
-display: flex;
-align-items: center;
-justify-content: space-between;
-width: 130px;
-height: 40px;
-padding: 10px;
-cursor: pointer;
-border: 1px solid lightgrey;
- background-color: white;
- border-radius: 6px;
- &:hover {
-   border: 1px solid #04d4f0;
- }
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 130px;
+  height: 40px;
+  padding: 10px;
+  cursor: pointer;
+  border: 1px solid lightgrey;
+  background-color: white;
+  border-radius: 6px;
+
+  &:hover {
+    border: 1px solid #04d4f0;
+  }
 }
 
-.btn-custom p{
-margin-top: 10px;
+.btn-custom p {
+  margin-top: 10px;
 }

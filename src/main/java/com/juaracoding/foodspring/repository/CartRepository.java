@@ -10,10 +10,12 @@ Created on 8/15/2023 9:25 PM
 Version 1.0
 */
 
-import com.juaracoding.foodspring.model.ShoppingCart;
+import com.juaracoding.foodspring.model.Cart;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface ShoppingCartRepository extends JpaRepository<ShoppingCart, Long> {
+public interface CartRepository extends JpaRepository<Cart, Long> {
+
+    Cart findByUserUserId(Long userId);
 }

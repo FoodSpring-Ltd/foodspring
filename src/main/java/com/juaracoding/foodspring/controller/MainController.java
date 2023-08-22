@@ -12,6 +12,7 @@ Version 1.0
 
 import com.juaracoding.foodspring.config.ServicePath;
 import com.juaracoding.foodspring.config.ViewPath;
+import com.juaracoding.foodspring.dto.CartItemDTO;
 import com.juaracoding.foodspring.dto.ProductSimpleResponse;
 import com.juaracoding.foodspring.model.Product;
 import com.juaracoding.foodspring.service.CategoryService;
@@ -90,6 +91,7 @@ public class MainController {
                                 RedirectAttributes redirectAttributes,
                                 WebRequest request) {
         mappingAttribute.setAttribute(model, request);
+        model.addAttribute("cartItem", new CartItemDTO());
         try {
             Product product = productService.getProductById(productId);
             model.addAttribute("product", product);

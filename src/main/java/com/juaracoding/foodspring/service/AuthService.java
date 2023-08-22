@@ -17,7 +17,9 @@ import com.juaracoding.foodspring.dto.LoginDTO;
 import com.juaracoding.foodspring.dto.UserDTO;
 import com.juaracoding.foodspring.handler.ResourceNotFoundException;
 import com.juaracoding.foodspring.handler.ResponseHandler;
+import com.juaracoding.foodspring.model.Cart;
 import com.juaracoding.foodspring.model.User;
+import com.juaracoding.foodspring.repository.CartRepository;
 import com.juaracoding.foodspring.repository.UserRepository;
 import com.juaracoding.foodspring.utils.ConstantMessage;
 import com.juaracoding.foodspring.utils.ExecuteSMTP;
@@ -46,14 +48,18 @@ public class AuthService {
     private final Map<String, String> mapColumnSearch = new HashMap<String, String>();
     private final Map<String, Object> objectMapper = new HashMap<String, Object>();
     private final UserRepository userRepository;
+
+    private final CartRepository cartRepository;
+
     @Autowired
     private ModelMapper modelMapper;
 
     @Autowired
-    public AuthService(UserRepository userRepository) {
-        mapColumn();
+    public AuthService(UserRepository userRepository, CartRepository cartRepository) {
+        this.cartRepository = cartRepository;
         strExceptionArr[0] = "UserService";
         this.userRepository = userRepository;
+        mapColumn();
     }
 
     private void mapColumn() {
@@ -130,6 +136,10 @@ public class AuthService {
                     return new ResponseHandler().generateModelAttribut(ConstantMessage.ERROR_TOKEN_INVALID,
                             HttpStatus.NOT_ACCEPTABLE, null, "FV01005", request);
                 }
+                // Initialize the cart for the user
+                Cart userCart = new Cart();
+                userCart.setUser(listUserResult.get(0));
+                cartRepository.save(userCart);
                 nextUser.setIsDelete(true);//SET REGISTRASI BERHASIL
             } else {
                 return new ResponseHandler().generateModelAttribut(ConstantMessage.ERROR_USER_NOT_EXISTS,

@@ -12,8 +12,12 @@ Version 1.0
 
 import com.juaracoding.foodspring.model.CartItem;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 @Repository
 public interface CartItemRepository extends JpaRepository<CartItem, Long> {
+
+    @Query("SELECT ci FROM CartItem ci WHERE ci.product.productId = :productId AND ci.variant.variantId = :variantId AND ci.cart.cartId = :cartId")
+    CartItem findByProductIdAndVariantIdAndCartId(String productId, Long variantId, Long cartId);
 }

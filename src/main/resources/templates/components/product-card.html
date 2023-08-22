@@ -11,6 +11,26 @@
     </div>
   </div>
   <div class="card-footer p-0 border-0">
-      <a class="btn btn-primary rounded-top-0 add-btn"  href="#">Add to card</a>
+      <form
+              class="add-to-cart-form"
+              th:action="@{/api/cart}"
+              method="POST"
+      >
+
+          <!-- Hidden input field for productId -->
+          <input
+                  type="text"
+                  name="productId"
+                  th:value="${product.productId}"
+                  hidden
+          />
+          <input
+                  type="number"
+                  name="qty"
+                  value="1"
+                  hidden
+          />
+          <button type="submit" class="btn btn-primary rounded-top-0 add-btn">Add to card</button>
+      </form>
   </div>
 </div>

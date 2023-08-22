@@ -18,6 +18,7 @@ import lombok.Setter;
 import org.hibernate.annotations.Comment;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.validator.constraints.Length;
 
 import java.time.LocalDateTime;
 
@@ -35,8 +36,8 @@ public class CartItem {
     private Long cartItemId;
 
     @ManyToOne
-    @JoinColumn(name = "ShoppingCartId")
-    private ShoppingCart shoppingCart;
+    @JoinColumn(name = "CartId")
+    private Cart cart;
 
     @ManyToOne
     @JoinColumn(name = "ProductId")
@@ -46,21 +47,13 @@ public class CartItem {
     @JoinColumn(name = "VariantId")
     private Variant variant;
 
-    @Column(name = "VariantName")
-    private String variantName;
-
-    @Column(name = "Price")
-    private Double price;
-
-    @Column(name = "PercentDiscount")
-    private Float percentDiscount;
-
-    @Column(name = "ProductName")
-    private String productName;
-
     @Column(name = "Qty")
     @Comment(value = "Product Item Quantity")
     private Integer qty;
+
+    @Column(name = "Note")
+    @Length(message = "Note can't be longer than 500", max = 500)
+    private String note;
 
     @Column(name = "CreatedAt")
     @CreationTimestamp

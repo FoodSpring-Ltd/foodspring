@@ -21,5 +21,6 @@ import java.util.List;
 @Repository
 public interface ProductRepository extends JpaRepository<Product, String> {
     Page<Product> findAllByIsDeleteFalse(Pageable pageable);
+
     Page<Product> findAllByIsDeleteFalseAndCategoryCategoryIdIn(List<Long> categoryIds, Pageable pageable);
 }

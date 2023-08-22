@@ -22,24 +22,23 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
-@Table(name = "ShoppingCart")
+@Table(name = "Cart")
 @Setter
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ShoppingCart {
+public class Cart {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "ShoppingCartId")
-    private Long shoppingCartId;
+    @Column(name = "CartId")
+    private Long cartId;
 
-    @ManyToOne
-    @JoinColumn(name = "UserId")
+    @OneToOne
     private User user;
 
     @OneToMany
-    @JoinColumn(name = "ShoppingCartId", referencedColumnName = "ShoppingCartId")
+    @JoinColumn(name = "CartId", referencedColumnName = "CartId")
     private List<CartItem> cartItems;
 
     @Column(name = "CreatedAt")

@@ -18,6 +18,7 @@ import lombok.Setter;
 import org.hibernate.annotations.Comment;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.validator.constraints.Length;
 
 import java.time.LocalDateTime;
 
@@ -47,6 +48,10 @@ public class OrderItem {
     @Column(name = "Qty")
     @Comment(value = "Product Item Quantity")
     private Integer qty;
+
+    @Column(name = "Note")
+    @Length(message = "Note can't be longer than 500", max = 500)
+    private String note;
 
     @Column(name = "CreatedAt")
     @CreationTimestamp

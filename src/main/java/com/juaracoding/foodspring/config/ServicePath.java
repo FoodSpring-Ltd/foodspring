@@ -45,4 +45,7 @@ public class ServicePath {
     public static final String DISCOUNT_DELETE = "/discount/delete";
     public static final String REDIRECT_HOME = "redirect:/home";
     public static final String PRODUCT_DETAIL_PRODUCT_ID = "/product/details/{productId}";
+    public static final String CART = "/cart";
+    public static final String REDIRECT = "redirect:";
+    public static final String API_CART = "/api/cart";
 }

@@ -93,5 +93,12 @@ public class ConstantMessage {
     public static final String SUCCESS_DELETE_DISCOUNT = "Success delete discount";
     public static final Object ERROR_UPDATE_DISCOUNT = "Discount update failed";
     public static final String INVALID_DATE_RANGE = "Start datetime should be before end datetime";
+    public static final String SUCCESS_ADD_TO_CART = "Product added to cart successfully";
+    public static final String FAILED_ADD_TO_CART_PRODUCT = "Failed add to cart, product not found";
+    public static final String FAILED_ADD_TO_CART_VARIANT = "Failed add to cart, variant not found";
+    public static final String FAILED_ADD_TO_CART = "Failed add to cart";
+    public static final String FAILED_GET_CART_ITEMS = "Failed fetching cart items data";
+    public static final String SUCCESS_FETCH_DATA = "Data retrieval success";
+    public static final String SUCCESS_DELETE_DATA = "Data deletion successful";
 }
 

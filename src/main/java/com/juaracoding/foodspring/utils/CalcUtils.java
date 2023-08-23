@@ -14,8 +14,12 @@ public class CalcUtils {
 
     public static double getDiscountedPrice(Double initialPrice, Float discountPercent) {
         float percentDiscount = discountPercent / 100;
-        double deductionAmount = initialPrice * percentDiscount;
+        double deductionAmount = Math.round(initialPrice * percentDiscount);
         double discountedPrice = initialPrice - deductionAmount;
         return discountedPrice;
+    }
+
+    public static String getDiscountedPriceIDR(Double initialPrice, Float discountPercent) {
+        return CurrencyFormatter.toRupiah(getDiscountedPrice(initialPrice, discountPercent));
     }
 }

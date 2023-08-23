@@ -100,5 +100,12 @@ public class ConstantMessage {
     public static final String FAILED_GET_CART_ITEMS = "Failed fetching cart items data";
     public static final String SUCCESS_FETCH_DATA = "Data retrieval success";
     public static final String SUCCESS_DELETE_DATA = "Data deletion successful";
+    public static final String CART_ITEM_VARIANT_UPDATED = "Cart item variant updated successfully";
+    public static final String ERROR_UPDATE_ITEM_VARIANT = "Failed to update cart item's variant";
+    public static final String ERROR_CART_ITEM_NOT_FOUND = "Cart item doesn't exist";
+    public static final String ERROR_VARIANT_NOT_FOUND = "Variant doesn't exist";
+    public static final String PRODUCT_NOT_AVAILABLE = "Product is not available";
+    public static final String QUANTITY_INCREMENTED_BY = "Quantity updated by ";
+    public static final String SUCCESS_DELETE_CART_ITEM = "Cart Item has been deleted";
 }
 

@@ -31,4 +31,6 @@ public class ProductSimpleResponse {
     private String imageURL;
     private String variants;
     private Discount discount;
+    private String priceIDR;
+    private String discountedPriceIDR;
 }

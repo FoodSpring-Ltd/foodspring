@@ -1,52 +1,71 @@
-<div th:fragment="cart-item" style="max-height: 250px; overflow: hidden" class="card col-10 mb-3" xmlns:th="http://www.w3.org/1999/xhtml">
+<div th:fragment="cart-item" style="max-height: 250px; overflow: hidden" class="card col-12 mb-3" xmlns:th="http://www.w3.org/1999/xhtml">
   <div class="row g-0">
-    <div class="col-md-4" style="overflow: hidden">
+    <div class="col-md-3" style="overflow: hidden">
       <img th:src="${item.productImg}" style="object-fit: cover; width: 100%; height: 100%;" class="rounded-start" th:alt="${item.productName}">
 
     </div>
-    <div class="col-md-8">
-      <div class="d-flex justify-content-center">
+    <div class="col-md-9">
+      <div class="d-flex justify-content-center mb-0">
         <h5 class="card-title text-decoration-underline">[[${item.productName}]]</h5>
       </div>
       <div class="card-body">
 
-        <div class="d-flex flex-column gap-0">
-          <div class="d-flex justify-content-evenly">
-            <p class="fw-bold">Unit Price</p>
-            <p class="fw-bold">Discount</p>
-            <p class="fw-bold">Total Price</p>
-            <p class="fw-bold">Action</p>
-          </div>
-        </div>
-        <div class="mb-0"><hr style="margin-top: -15px;"></div> <!-- Adjusted margin for hr element -->
+        <table style="margin-top: -20px" class="table">
+          <thead>
+          <tr>
+            <th class="fw-bold">Variant</th>
+            <th class="fw-bold">Unit Price</th>
+            <th class="fw-bold">Discount</th>
+            <th class="fw-bold">Total Price</th>
+            <th class="fw-bold">Action</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <td>
+             <form th:action="@{/cart/update-cart-item-variant/{itemId} (itemId=${item.cartItemId})}" th:method="POST">
+               <select class="form-select" name="selectedVariantId" style="max-width: 100px" th:onchange="this.form.submit()">
+                 <option value="0" selected>--Select Variant--</option>
+                 <option th:each="variant : ${item.productVariants}"
+                         th:value="${variant.variantId}"
+                         th:text="${variant.name}"
+                         th:selected="${variant.name == item.variantName}"></option>
+               </select>
+             </form>
+            </td>
+            <td th:text="'Rp' + ${item.unitPriceIDR}">Rp25000</td>
+            <td th:text="${item.discountAmount != null ? item.discountAmount + '%' : 'None'}">20%</td>
+            <td th:text="'Rp' + ${item.totalPriceIDR}">Rp20000</td>
+            <td>
+              <a th:href="@{/cart/delete-item/{itemId} (itemId=${item.cartItemId})}"
+                 style="text-decoration: none; color: black">Delete</a>
+            </td>
+          </tr>
+          <!-- You can repeat the above <tr> structure for each item in your data -->
+          </tbody>
+        </table>
 
-        <div class="d-flex justify-content-evenly">
-          <p>Rp[[${item.unitPrice}]]</p>
-          <p>[[${item.discountAmount}]]%</p>
-          <p>Rp[[${item.totalPrice}]]</p>
-          <a href="#" style="text-decoration: none; color: black">Delete</a>
-        </div>
+
 
         <div class="d-flex justify-content-center">
           <div class="d-flex p-0 flex-row align-items-center justify-content-center gap-3">
             <div class="d-flex">
-              <button type="button" class="btn btn-primary btn-quantity border-0 px-3"
-                      style="background-color: #04d4f0" onclick="adjustQuantity(-1)">-
-              </button>
+              <a th:href="@{/cart/update-cart-item-qty/{itemId}/-1 (itemId=${item.cartItemId})}" type="button" class="btn btn-primary btn-quantity border-0 px-3"
+                      style="background-color: #04d4f0">-
+              </a>
             </div>
             <input type="number" name="quantity" id="quantity" th:value="${item.qty}" class="rounded">
             <div class="d-flex">
-              <button type="button" class="btn btn-primary btn-quantity border-0 px-3"
+              <a th:href="@{/cart/update-cart-item-qty/{itemId}/1 (itemId=${item.cartItemId})}" type="button" class="btn btn-primary btn-quantity border-0 px-3"
                       style="background-color: #04d4f0" onclick="adjustQuantity(1)">+
-              </button>
+              </a>
             </div>
           </div>
         </div>
       </div>
       <div th:if="${item.note != null} AND ${item.note.length != 0}" class="card-footer">
-        <div style="margin-top: -5px"><strong>Note:</strong><p class="fst-italic"> [[${item.note}]]</p></div>
+        <div style="margin-top: -5px"><p class="fst-italic" style="font-size: 12px"><strong>Note:</strong> [[${item.note}]]</p></div>
       </div>
     </div>
-
   </div>
 </div>

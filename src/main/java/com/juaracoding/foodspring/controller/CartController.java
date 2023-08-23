@@ -22,9 +22,9 @@ import com.midtrans.httpclient.error.MidtransError;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -63,6 +63,36 @@ public class CartController {
         return ViewPath.CART;
     }
 
+    @GetMapping(value = ServicePath.DELETE_CART_ITEM_ID)
+    public String deleteCartItem(Model model,
+                                 @PathVariable Long itemId,
+                                 RedirectAttributes redirectAttributes,
+                                 WebRequest request) {
+        objectMapper = cartService.deleteCartItemById(itemId, request);
+        redirectAttributes.addFlashAttribute("message", objectMapper.get("message").toString());
+        return ServicePath.REDIRECT_CART;
+    }
 
+    @PostMapping(value = ServicePath.UPDATE_CART_ITEM_VARIANT)
+    public String updateCartItemVariant(Model model,
+                                        @PathVariable Long itemId,
+                                        @RequestParam Long selectedVariantId,
+                                        RedirectAttributes redirectAttributes,
+                                        WebRequest request){
+        objectMapper = cartService.updateCartItemVariant(itemId, selectedVariantId, request);
+        redirectAttributes.addFlashAttribute("message", objectMapper.get("message").toString());
+        return ServicePath.REDIRECT_CART;
+    }
+
+    @GetMapping(value = ServicePath.UPDATE_CART_ITEM_QUANTITY)
+    public String updateCartItemVariant(Model model,
+                                        @PathVariable Long itemId,
+                                        @PathVariable Integer amount,
+                                        RedirectAttributes redirectAttributes,
+                                        WebRequest request){
+        objectMapper = cartService.updateCartItemQuantity(itemId, amount, request);
+        redirectAttributes.addFlashAttribute("message", objectMapper.get("message").toString());
+        return ServicePath.REDIRECT_CART;
+    }
 
 }

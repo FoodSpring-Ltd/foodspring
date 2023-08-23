@@ -59,6 +59,7 @@ public class Product {
 
     @OneToMany
     @JoinColumn(name = "ProductId", referencedColumnName = "ProductId")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private List<CartItem> cartItems;
 
     @ManyToOne
@@ -87,5 +88,11 @@ public class Product {
 
     @Column(name = "IsAvailable")
     private Boolean isAvailable = true;
+
+    @Transient
+    private String priceIDR;
+
+    @Transient
+    private String discountedPriceIDR;
 
 }

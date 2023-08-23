@@ -10,10 +10,13 @@ Created on 8/22/2023 4:35 PM
 Version 1.0
 */
 
+import com.juaracoding.foodspring.model.Variant;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -23,11 +26,14 @@ public class CartItemResponse {
 
     private Long cartItemId;
     private Double unitPrice;
+    private String unitPriceIDR;
     private Double totalPrice;
+    private String totalPriceIDR;
     private Float discountAmount;
     private String productName;
     private String note;
     private String productImg;
     private Integer qty;
     private String variantName;
+    private List<Variant> productVariants;
 }

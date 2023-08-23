@@ -1,36 +1,62 @@
 <div th:fragment="product-card" class="card" xmlns:th="http://www.w3.org/1999/xhtml">
-  <img th:attr="data-productId=${product.productId}" th:src="${product.imageURL}" class="card-img-top" th:alt="${product.productName}" onclick="redirectToProductDetail(this)">
-  <div th:attr="data-productId=${product.productId}" class="card-body bg-transparent" th:onclick="redirectToProductDetail(this)">
-    <h5 class="card-title" th:text="${product.productName}"></h5>
-    <div class="card-text-wrapper mb-2">
-     <p class="card-text" th:text="${product.description}"></p>
-   </div>
-    <div class="status-price">
-      <span class="price"><small class="text-sm">Rp</small>[[${product.price}]]</span>
-        <span th:unless="${product.isAvailable}" class="status">Sold Out</span>
+    <div class="position-relative">
+        <img th:attr="data-productId=${product.productId}" th:src="${product.imageURL}" class="card-img-top"
+             th:alt="${product.productName}" onclick="redirectToProductDetail(this)">
+        <div th:if="${not product.isAvailable}" class="sold-out-badge">
+            Sold Out
+        </div>
+        <div th:if="${product.discount?.percentDiscount != null AND product.discountedPriceIDR != null}" class="discount-badge">
+            <span th:text="${product.discount?.percentDiscount + '%'}"></span>
+        </div>
     </div>
-  </div>
-  <div class="card-footer p-0 border-0">
-      <form
-              class="add-to-cart-form"
-              th:action="@{/api/cart}"
-              method="POST"
-      >
+    <div th:attr="data-productId=${product.productId}" class="card-body bg-transparent"
+         th:onclick="redirectToProductDetail(this)">
+        <h5 class="card-title" th:text="${product.productName}"></h5>
+        <div class="card-text-wrapper mb-2">
+            <p class="card-text" th:text="${product.description}"></p>
+        </div>
+        <div class="status-price">
+    <span th:if="${product.discountedPriceIDR != null}" class="d-flex flex-column">
+        <!-- Display original price with strikethrough -->
+        <span class="original-price" style="font-size: 12px; color: red">
+            <s th:text="${'Rp' + product.priceIDR}"></s>
+        </span>
+        <!-- Display discounted price -->
+        <span class="price">
+            <small class="text-sm">Rp</small>[[${product.discountedPriceIDR}]]
+        </span>
+    </span>
+            <span th:unless="${product.discountedPriceIDR != null}" class="price">
+        <!-- Display regular price -->
+        <small class="text-sm">Rp</small>[[${product.priceIDR}]]
+    </span>
+            <span th:unless="${product.isAvailable}" class="status">Sold Out</span>
+        </div>
 
-          <!-- Hidden input field for productId -->
-          <input
-                  type="text"
-                  name="productId"
-                  th:value="${product.productId}"
-                  hidden
-          />
-          <input
-                  type="number"
-                  name="qty"
-                  value="1"
-                  hidden
-          />
-          <button type="submit" class="btn btn-primary rounded-top-0 add-btn">Add to card</button>
-      </form>
-  </div>
+    </div>
+    <div class="card-footer p-0 border-0">
+        <form
+                class="add-to-cart-form"
+                th:action="@{/api/cart}"
+                method="POST"
+        >
+
+            <!-- Hidden input field for productId -->
+            <input
+                    type="text"
+                    name="productId"
+                    th:value="${product.productId}"
+                    hidden
+            />
+            <input
+                    type="number"
+                    name="qty"
+                    value="1"
+                    hidden
+            />
+            <button th:disabled="${not product.isAvailable}" type="submit"
+                    class="btn btn-primary rounded-top-0 add-btn">Add to card
+            </button>
+        </form>
+    </div>
 </div>

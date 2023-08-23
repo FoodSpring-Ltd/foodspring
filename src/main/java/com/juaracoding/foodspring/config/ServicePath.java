@@ -48,4 +48,8 @@ public class ServicePath {
     public static final String CART = "/cart";
     public static final String REDIRECT = "redirect:";
     public static final String API_CART = "/api/cart";
+    public static final String DELETE_CART_ITEM_ID = "/delete-item/{itemId}";
+    public static final String REDIRECT_CART = "redirect:/cart";
+    public static final String UPDATE_CART_ITEM_VARIANT = "/update-cart-item-variant/{itemId}";
+    public static final String UPDATE_CART_ITEM_QUANTITY = "/update-cart-item-qty/{itemId}/{amount}";
 }

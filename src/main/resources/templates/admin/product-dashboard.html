@@ -104,13 +104,13 @@
                 <tbody>
                 <tr th:each="product, index : ${products}">
                     <td th:text="${index.count}"></td>
-                    <td style="text-align: center" th:text="${product.productId}"></td>
+                    <td style="text-align: center; text-transform: uppercase;" th:text="${product.productId}"></td>
                     <td th:text="${product.productName}"></td>
                     <td style="text-align: center">
                         <span th:if="${product.isAvailable}">Yes</span>
                         <span th:unless="${product.isAvailable}">No</span>
                     </td>
-                    <td th:text="${'Rp' + product.price}"></td>
+                    <td th:text="${'Rp' + product.priceIDR}"></td>
                     <td th:if="${product.category != null}" th:text="${product.category.name}"></td>
                     <td th:unless="${product.category != null}" th:text="${'None'}"></td>
                     <td style="text-align: center">
@@ -194,6 +194,7 @@ $j(function() {
     $j('.toast').toast('show');
 });
 </script>
+<script th:src="@{/js/navbar.js}"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
         integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
         crossorigin="anonymous"></script>

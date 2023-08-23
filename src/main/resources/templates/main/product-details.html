@@ -51,13 +51,19 @@
                 </div>
             </div>
         </div>
-        <div class="dp-product-img">
+        <div class="dp-product-img position-relative">
+            <!-- Sold Out badge on top of the image -->
+            <div th:if="${not product.isAvailable}" class="sold-out-badge">
+                Sold Out
+            </div>
+
             <img
                     th:src="${product.imageURL}"
                     class="card-img-top"
                     th:alt="${product.productName}"
             />
         </div>
+
 
         <div class="dp-product-details">
             <div class="dp-product-name">
@@ -67,8 +73,18 @@
                 <h2 class="dp-pr-name" th:text="${product.productName}">
                     Salad Italia
                 </h2>
-                <span class="dp-sale-count">Terjual 20+</span>
-                <span class="dp-price">Rp[[${product.price}]]</span>
+                <span th:if="${product.discountedPriceIDR != null}" class="d-flex pt-4 flex-column">
+        <!-- Display original price with strikethrough -->
+        <span class="original-price" style="font-size: 1.2rem; color: red">
+            <s th:text="${'Rp' + product.priceIDR}"></s>
+        </span>
+                    <!-- Display discounted price -->
+        <span class="dp-price" style="margin-top: -30px">
+            <small class="text-sm">Rp</small>[[${product.discountedPriceIDR}]]
+        </span>
+    </span>
+                <span th:unless="${product.discountedPriceIDR != null}" class="dp-price">Rp[[${product.priceIDR}]]</span>
+
             </div>
             <div class="mb-4">
                 <hr/>
@@ -172,7 +188,7 @@
                 </div>
                 <!-- Add to cart button -->
                 <div class="d-flex align-items-center justify-content-center mt-3">
-                    <button type="submit" class="btn-custom w-100">
+                    <button th:disabled="${not product.isAvailable}" type="submit" class="btn-custom w-100">
                         Add To Cart
                     </button>
                 </div>
@@ -201,6 +217,7 @@
 
 
 </script>
+<script th:src="@{/js/navbar.js}"></script>
 <script>
     document.getElementById("addToCartForm").addEventListener("submit", function (event) {
         event.preventDefault(); // Prevent the default form submission

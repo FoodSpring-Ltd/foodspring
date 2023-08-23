@@ -5,3 +5,19 @@
 .navbar-brand {
   color: white;
 }
+
+.d-flex.align-items-center {
+  justify-content: center;
+}
+
+/* Adjust the width of the search input */
+.custom-search-input {
+  width: 300px; /* Adjust the width as needed */
+}
+.nav-link {
+  color: white;
+}
+
+.nav-link.active {
+    color: red;
+}

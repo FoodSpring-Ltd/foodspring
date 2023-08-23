@@ -19,4 +19,5 @@ public class CartResponse {
     private Long cartId;
     private List<CartItemResponse> cartItems;
     private Double grandTotal;
+    private String grandTotalIDR;
 }

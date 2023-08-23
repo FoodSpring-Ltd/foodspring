@@ -13,17 +13,12 @@ Version 1.0
 import com.juaracoding.foodspring.dto.ProductDTO;
 import com.juaracoding.foodspring.dto.ProductSimpleResponse;
 import com.juaracoding.foodspring.handler.ResourceNotFoundException;
-import com.juaracoding.foodspring.model.Category;
-import com.juaracoding.foodspring.model.Discount;
-import com.juaracoding.foodspring.model.Product;
-import com.juaracoding.foodspring.model.Variant;
+import com.juaracoding.foodspring.model.*;
 import com.juaracoding.foodspring.repository.CategoryRepository;
 import com.juaracoding.foodspring.repository.DiscountRepository;
 import com.juaracoding.foodspring.repository.ProductRepository;
 import com.juaracoding.foodspring.repository.VariantRepository;
-import com.juaracoding.foodspring.utils.CloudinaryUtils;
-import com.juaracoding.foodspring.utils.ConstantMessage;
-import com.juaracoding.foodspring.utils.LoggingFile;
+import com.juaracoding.foodspring.utils.*;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -152,6 +147,7 @@ public class ProductService {
             }
 
             CompletableFuture<Void> addVariants = addVariant(variants.get(), oldProduct);
+            oldProduct.setPrice(productDTO.getPrice());
             oldProduct.setIsAvailable(productDTO.getIsAvailable());
             oldProduct.setModifiedBy((Long) request.getAttribute("USR_ID", WebRequest.SCOPE_SESSION));
             oldProduct.setUpdatedAt(LocalDateTime.now());
@@ -212,8 +208,7 @@ public class ProductService {
         if (product.isPresent()) {
             Category category = product.get().getCategory();
             Discount discount = product.get().getDiscount();
-            productDTO = modelMapper.map(product.get(), new TypeToken<ProductDTO>() {
-            }.getType());
+            productDTO = modelMapper.map(product.get(), new TypeToken<ProductDTO>() {}.getType());
             if (!Objects.isNull(category)) {
                 productDTO.setCategoryId(category.getCategoryId());
             }
@@ -230,6 +225,13 @@ public class ProductService {
     public Product getProductById(String productId) throws ResourceNotFoundException {
         Optional<Product> product = productRepository.findById(productId);
         if (product.isPresent()) {
+            product.get().setPriceIDR(CurrencyFormatter.toRupiah(product.get().getPrice()));
+            if (!Objects.isNull(product.get().getDiscount())) {
+                if (isDiscountApplicable(product.get().getDiscount())) {
+                    product.get().setDiscountedPriceIDR(CalcUtils.getDiscountedPriceIDR(product.get().getPrice(),
+                           product.get().getDiscount().getPercentDiscount()));
+                }
+            }
             return product.get();
         } else {
             throw new ResourceNotFoundException("Product doesn't exist");
@@ -275,6 +277,12 @@ public class ProductService {
     @Async
     @Transactional
     private CompletableFuture<Void> addVariant(List<Variant> variants, Product product) {
+        if (variants.isEmpty()) {
+            Variant variant = new Variant();
+            variant.setName("Original");
+            variant.setProduct(product);
+            variantRepository.save(variant);
+        }
         for (Variant variant : variants) {
             variant.setProduct(product);
             variantRepository.save(variant);
@@ -288,6 +296,9 @@ public class ProductService {
         Map<String, Object> response = new HashMap<>();
         if (product.isPresent()) {
             product.get().setIsDelete(true);
+            for(CartItem item: product.get().getCartItems()) {
+                item.setProduct(null);
+            }
             response.put("success", true);
             response.put("message", ConstantMessage.PRODUCT_DELETION_SUCCESS);
             return response;
@@ -308,11 +319,24 @@ public class ProductService {
                             .isAvailable(item.getIsAvailable())
                             .imageURL(item.getImageURL())
                             .productName(item.getProductName())
+                            .priceIDR(CurrencyFormatter.toRupiah(item.getPrice()))
                             .price(item.getPrice()).build();
+                    if (!Objects.isNull(res.getDiscount())) {
+                        if (isDiscountApplicable(res.getDiscount())) {
+                            res.setDiscountedPriceIDR(CalcUtils.getDiscountedPriceIDR(res.getPrice(),
+                                    res.getDiscount().getPercentDiscount()));
+                        }
+                    }
                     res.setVariants(productVariantToString(item.getVariants()));
                     return res;
                 }).toList();
         return results;
+    }
+
+    private boolean isDiscountApplicable(Discount discount) {
+       boolean isStarted = discount.getStartAt().equals(LocalDateTime.now()) || discount.getStartAt().isBefore(LocalDateTime.now());
+       boolean isEnded = discount.getEndAt().isBefore(LocalDateTime.now());
+       return isStarted && !isEnded;
     }
 
 }

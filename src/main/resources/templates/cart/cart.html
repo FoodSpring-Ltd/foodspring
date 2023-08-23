@@ -9,6 +9,10 @@
       integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9"
       crossorigin="anonymous"
     />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+
+
     <script
       src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"
       integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
@@ -22,20 +26,48 @@
   </head>
   <body>
     <div th:replace="~{components/navbar-top :: navbar-top}"></div>
-    <div class="d-flex p-4">
-      <div class="d-flex flex-column col-8">
+    <div
+            class="d-flex w-100 justify-content-center align-items-center pt-3"
+            style="position: absolute; z-index: 999"
+    >
+      <div
+
+              class="toast align-items-center text-white bg-primary border-0"
+              role="alert"
+              aria-live="assertive"
+              aria-atomic="true"
+              data-bs-delay="3000"
+              id="toastMessage"
+      >
+        <div class="d-flex">
+          <div class="toast-body" id="toastBody">[[${message}]]</div>
+          <button
+                  type="button"
+                  class="btn-close btn-close-white me-2 m-auto"
+                  data-bs-dismiss="toast"
+                  aria-label="Close"
+          ></button>
+        </div>
+      </div>
+    </div>
+    <div class="d-flex p-4 gap-2">
+      <div class="d-flex flex-column col-9">
         <div th:each="item : ${cart.cartItems}">
           <div
                   th:replace="~{components/cart-item :: cart-item(item=${item})}"
           ></div>
         </div>
+        <div th:if="${#lists.isEmpty(cart.cartItems)}" class="d-flex justify-content-center align-items-center">
+          <i class="fa fa-shopping-cart fa-5x mb-3"></i>
+          <p class="text-center">You have no cart items.</p>
+        </div>
       </div>
-      <div class="card col-3" style="max-height: 150px">
+      <div class="card col-2 border border-info" style="max-height: 150px">
         <div class="card-body">
           <h3 class="card-title">Checkout</h3>
           <div class="mb-3"><hr /></div>
           <div class="card-text-wrapper mb-2">
-            <h4 class="card-text">Total Payment: [[${cart.grandTotal}]]</h4>
+            <h4 class="card-text" style="font-size: 1.2rem"><span style="font-size: 1rem; color: grey">Total Payment</span> Rp[[${cart.grandTotalIDR}]]</h4>
           </div>
         </div>
         <div class="card-footer p-0 border-0">
@@ -44,7 +76,7 @@
             class="btn btn-primary rounded-top-0 col-12 pay-btn"
             id="pay-button"
             href="#"
-            >PAY</a
+            >CHECKOUT</a
           >
         </div>
       </div>
@@ -83,15 +115,16 @@
       };
     </script>
     <script>
-      function adjustQuantity(button, change) {
-        var quantityInput = document.getElementById("quantity");
-        var currentQuantity = parseInt(quantityInput.value);
-        var newQuantity = currentQuantity + change;
-        if (newQuantity >= 1) {
-          quantityInput.value = newQuantity;
-        }
+      var $j = jQuery.noConflict();
+      const message = document.getElementById('toastBody');
+      if (message.textContent.length != 0) {
+         $j(function () {
+        $j(".toast").toast("show");
+      });
+
       }
     </script>
+    <script th:src="@{/js/navbar.js}"></script>
     <script
       src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
       integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"

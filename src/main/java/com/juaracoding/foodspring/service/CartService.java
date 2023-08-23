@@ -18,6 +18,7 @@ import com.juaracoding.foodspring.model.*;
 import com.juaracoding.foodspring.repository.*;
 import com.juaracoding.foodspring.utils.CalcUtils;
 import com.juaracoding.foodspring.utils.ConstantMessage;
+import com.juaracoding.foodspring.utils.CurrencyFormatter;
 import com.juaracoding.foodspring.utils.LoggingFile;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -51,11 +52,12 @@ public class CartService {
     @Transactional(rollbackFor = Exception.class)
     public Map<String, Object> addToCart(CartItemDTO cartItemDTO, WebRequest request) {
         Long userId = (Long) request.getAttribute("USR_ID", WebRequest.SCOPE_SESSION);
+        Cart userCart = new Cart();
         try {
             CartItem cartItem = new CartItem();
             CompletableFuture<Optional<Variant>> variant = cartItemDTO.getVariantId() != null
                     ? CompletableFuture.supplyAsync(() -> variantRepository.findById(cartItemDTO.getVariantId()))
-                    : CompletableFuture.completedFuture(Optional.empty());
+                    : CompletableFuture.supplyAsync(() -> variantRepository.findFirstByProductProductId(cartItemDTO.getProductId()));
             CompletableFuture<Optional<Product>> product = CompletableFuture.supplyAsync(() -> productRepository.findById(cartItemDTO.getProductId()));
             CompletableFuture<Optional<User>> user = CompletableFuture.supplyAsync(() -> userRepository.findById(userId));
 
@@ -70,14 +72,47 @@ public class CartService {
                 return new ResponseHandler().generateModelAttribut(ConstantMessage.ERROR_USER_NOT_EXISTS,
                         HttpStatus.UNAUTHORIZED, null, "FS0004", request);
             }
+            if (product.get().isPresent()) {
+                if (product.get().get().getIsDelete() || !product.get().get().getIsAvailable()){
+                    return new ResponseHandler().generateModelAttribut(ConstantMessage.PRODUCT_NOT_AVAILABLE,
+                            HttpStatus.OK, null, "FS0004", request);
+                }
+            }
             if (variant.get().isPresent()) {
                 cartItem.setVariant(variant.get().get());
             }
-            cartItem.setQty(cartItemDTO.getQty());
-            cartItem.setCart(user.get().get().getCart());
-            cartItem.setProduct(product.get().get());
-            cartItem.setNote(cartItemDTO.getNote());
-            cartItemRepository.save(cartItem);
+            if (Objects.isNull(user.get().get().getCart())) {
+                userCart.setUser(user.get().get());
+                cartRepository.save(userCart);
+            } else {
+                userCart = user.get().get().getCart();
+            }
+            Product productRes = product.get().get();
+            Variant variantRes = variant.get().get();
+
+            CartItem cartItemPersisted = cartItemRepository.findByProductIdAndVariantIdAndCartId(productRes.getProductId(), variantRes.getVariantId(), userCart.getCartId());
+
+            if(!Objects.isNull(cartItemPersisted)) {
+                String oldNote = cartItemPersisted.getNote();
+                cartItemPersisted.setQty(cartItemPersisted.getQty() + cartItemDTO.getQty());
+                String newNote = null;
+                if (!Objects.isNull(oldNote)) {
+                    newNote = oldNote;
+                }
+                if(!Objects.isNull(cartItemDTO.getNote())) {
+                    if (!Objects.isNull(newNote)) {
+                        newNote = newNote.concat(". ").concat(cartItemDTO.getNote());
+                    }
+                }
+                cartItemPersisted.setNote(newNote);
+                cartItemRepository.save(cartItemPersisted);
+            } else {
+                cartItem.setQty(cartItemDTO.getQty());
+                cartItem.setCart(userCart);
+                cartItem.setProduct(product.get().get());
+                cartItem.setNote(cartItemDTO.getNote());
+                cartItemRepository.save(cartItem);
+            }
 
         } catch (Exception ex) {
             strExceptionArr[1] = "addToCart(CartItemDTO cartItemDTO, WebRequest request) -- LINE 86";
@@ -99,6 +134,7 @@ public class CartService {
             cartResponse.setCartItems(cartItemsResponses);
             double grandTotal = cartItemsResponses.stream().mapToDouble(CartItemResponse::getTotalPrice).sum();
             cartResponse.setGrandTotal(grandTotal);
+            cartResponse.setGrandTotalIDR(CurrencyFormatter.toRupiah(grandTotal));
         } catch (Exception ex) {
             strExceptionArr[1] = "getAllCartItem(WebRequest request) -- LINE 103";
             LoggingFile.exceptionString(strExceptionArr, ex, "y");
@@ -119,6 +155,9 @@ public class CartService {
     private List<CartItemResponse> cartItemToCartItemResponse(List<CartItem> cartItems){
         List<CartItemResponse> results = new ArrayList<>();
         for(CartItem item: cartItems) {
+            if (Objects.isNull(item.getProduct()) || (!Objects.isNull(item.getProduct()) && !item.getProduct().getIsAvailable())) {
+                continue;
+            }
             CartItemResponse res = CartItemResponse.builder()
                     .cartItemId(item.getCartItemId())
                     .qty(item.getQty())
@@ -126,19 +165,89 @@ public class CartService {
                     .productImg(item.getProduct().getImageURL())
                     .productName(item.getProduct().getProductName())
                     .unitPrice(item.getProduct().getPrice())
+                    .unitPriceIDR(CurrencyFormatter.toRupiah(item.getProduct().getPrice()))
+                    .productVariants(item.getProduct().getVariants())
+                    .variantName(Objects.isNull(item.getVariant()) ? "None" : item.getVariant().getName())
                     .build();
             Discount discount = item.getProduct().getDiscount();
             if (!Objects.isNull(discount)){
                 res.setDiscountAmount(discount.getPercentDiscount());
                 Double newUnitPrice = CalcUtils.getDiscountedPrice(res.getUnitPrice(), discount.getPercentDiscount());
                 res.setTotalPrice(newUnitPrice * res.getQty());
+                res.setTotalPriceIDR(CurrencyFormatter.toRupiah(newUnitPrice * res.getQty()));
             }else {
                 res.setTotalPrice(res.getUnitPrice() * res.getQty());
+                res.setTotalPriceIDR(CurrencyFormatter.toRupiah(res.getUnitPrice() * res.getQty()));
             }
             results.add(res);
         }
         return results;
     }
 
+    @Transactional(rollbackFor = Exception.class)
+    public Map<String, Object> updateCartItemVariant(Long itemId, Long variantId, WebRequest request) {
+        try {
+            CompletableFuture<Optional<CartItem>> cartItem = CompletableFuture.supplyAsync(
+                    () -> cartItemRepository.findById(itemId)
+            );
+            CompletableFuture<Optional<Variant>> newVariant = CompletableFuture.supplyAsync(
+                    () -> variantRepository.findById(variantId)
+            );
+            CompletableFuture.allOf(cartItem, newVariant).join();
+            if (cartItem.get().isEmpty()) {
+                return new ResponseHandler().generateModelAttribut(ConstantMessage.ERROR_CART_ITEM_NOT_FOUND,
+                        HttpStatus.BAD_REQUEST, null, "FS0005", request);
+            }
+            if (newVariant.get().isEmpty()) {
+                return new ResponseHandler().generateModelAttribut(ConstantMessage.ERROR_VARIANT_NOT_FOUND,
+                        HttpStatus.BAD_REQUEST, null, "FS0005", request);
+            }
+            Product productRes = cartItem.get().get().getProduct();
+            Cart userCart = cartItem.get().get().getCart();
+            CartItem cartItemPersisted = cartItemRepository.findByProductIdAndVariantIdAndCartId(productRes.getProductId(), variantId, userCart.getCartId());
 
+            if(!Objects.isNull(cartItemPersisted)) {
+                String oldNote = cartItemPersisted.getNote();
+                cartItemPersisted.setQty(cartItemPersisted.getQty() + cartItem.get().get().getQty());
+                String newNote = null;
+                if (!Objects.isNull(oldNote)) {
+                    newNote = oldNote.concat(". ").concat(cartItem.get().get().getNote()).trim();
+                } else {
+                    newNote = cartItem.get().get().getNote().trim();
+                }
+                cartItemPersisted.setNote(newNote);
+                cartItemRepository.save(cartItemPersisted);
+                cartItemRepository.deleteById(cartItem.get().get().getCartItemId());
+            } else {
+                cartItem.get().get().setVariant(newVariant.get().get());
+                cartItemRepository.save(cartItem.get().get());
+            }
+
+        } catch (Exception ex) {
+            strExceptionArr[1] = "updateCartItemVariant(Long itemId, Long variantId, WebRequest request) --LINE 163";
+            LoggingFile.exceptionString(strExceptionArr, ex, "y");
+            return new ResponseHandler().generateModelAttribut(ConstantMessage.ERROR_UPDATE_ITEM_VARIANT,
+                    HttpStatus.INTERNAL_SERVER_ERROR, null, "FS0005", request);
+        }
+        return new ResponseHandler().generateModelAttribut(ConstantMessage.CART_ITEM_VARIANT_UPDATED,
+                HttpStatus.OK, null, null, request);
+    }
+
+    @Transactional
+    public Map<String, Object> updateCartItemQuantity(Long itemId, Integer amount, WebRequest request) {
+        Optional<CartItem> cartItem = cartItemRepository.findById(itemId);
+        if (cartItem.isEmpty()) {
+            return new ResponseHandler().generateModelAttribut(ConstantMessage.ERROR_CART_ITEM_NOT_FOUND,
+                    HttpStatus.NOT_FOUND, null, null, request);
+        }
+        cartItem.get().setQty(cartItem.get().getQty() + amount);
+        if (cartItem.get().getQty() == 0) {
+            cartItemRepository.deleteById(cartItem.get().getCartItemId());
+            return new ResponseHandler().generateModelAttribut(ConstantMessage.SUCCESS_DELETE_CART_ITEM,
+                    HttpStatus.OK, null, null, request);
+        }
+        cartItemRepository.save(cartItem.get());
+        return new ResponseHandler().generateModelAttribut(ConstantMessage.QUANTITY_INCREMENTED_BY.concat(" ").concat(String.valueOf(amount)),
+                HttpStatus.OK, null, null, request);
+    }
 }

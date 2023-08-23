@@ -158,7 +158,7 @@
   min-width: 180px;
   max-width: 180px;
   overflow: hidden;
-  height: 345px;
+  height: 355px;
   background-color: white;
 
   &:hover {
@@ -211,3 +211,37 @@
   height: 12vw;
   object-fit: cover;
 }
+
+.position-relative {
+  position: relative;
+}
+
+.sold-out-badge {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: red;
+  color: white;
+  border-radius: 50%;
+  padding: 10px;
+  font-weight: bold;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 80px; /* Adjust the size of the badge */
+  height: 80px; /* Adjust the size of the badge */
+}
+
+.discount-badge {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background-color: #04d4f0;
+    color: white;
+    padding: 0.2rem 0.5rem;
+    border-radius: 0 0 0 0.25rem;
+    font-size: 0.8rem;
+}
+

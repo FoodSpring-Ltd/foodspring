@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class TransformToDTO {
+public class TransformToDTO<T, D> {
     private String sortBy = "";
     private String sort = "";
 
@@ -25,7 +25,7 @@ public class TransformToDTO {
     /*
         DATA EXISTS NO CONDITION
      */
-    public Map<String, Object> transformObject(Map<String, Object> mapz, List ls, Page page) {
+    public Map<String, Object> transformObject(Map<String, Object> mapz, List<D> ls, Page<T> page) {
         mapz.put("content", ls);
         mapz.put("currentPage", page.getNumber());
         mapz.put("totalItems", page.getTotalElements());

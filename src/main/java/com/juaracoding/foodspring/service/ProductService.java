@@ -13,17 +13,19 @@ Version 1.0
 import com.juaracoding.foodspring.dto.ProductDTO;
 import com.juaracoding.foodspring.dto.ProductSimpleResponse;
 import com.juaracoding.foodspring.handler.ResourceNotFoundException;
-import com.juaracoding.foodspring.model.*;
-import com.juaracoding.foodspring.repository.CategoryRepository;
-import com.juaracoding.foodspring.repository.DiscountRepository;
-import com.juaracoding.foodspring.repository.ProductRepository;
-import com.juaracoding.foodspring.repository.VariantRepository;
+import com.juaracoding.foodspring.handler.ResponseHandler;
+import com.juaracoding.foodspring.model.Category;
+import com.juaracoding.foodspring.model.Discount;
+import com.juaracoding.foodspring.model.Product;
+import com.juaracoding.foodspring.model.Variant;
+import com.juaracoding.foodspring.repository.*;
 import com.juaracoding.foodspring.utils.*;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -49,15 +51,18 @@ public class ProductService {
 
     @Autowired
     private CloudinaryUtils cloudinaryUtils;
+    private final CartItemRepository cartItemRepository;
 
     @Autowired
     public ProductService(CategoryRepository categoryRepository, ProductRepository productRepository, VariantRepository variantRepository,
-                          DiscountRepository discountRepository) {
+                          DiscountRepository discountRepository,
+                          CartItemRepository cartItemRepository) {
         this.categoryRepository = categoryRepository;
         this.productRepository = productRepository;
         this.variantRepository = variantRepository;
         strExceptionArr[0] = "ProductService";
         this.discountRepository = discountRepository;
+        this.cartItemRepository = cartItemRepository;
     }
 
     @Transactional
@@ -109,6 +114,13 @@ public class ProductService {
         return response;
     }
 
+    public Map<String, Object> searchProductByName(String productName, Pageable pageable, WebRequest request) {
+        Page<Product> products = productRepository.findAllByIsDeleteFalseAndProductNameContainsIgnoreCase(productName, pageable);
+        TransformToDTO<Product, ProductSimpleResponse> transformer = new TransformToDTO<>();
+        Map<String, Object> result = transformer.transformObject(new HashMap<>(), convertToProductSimpleResponseList(products.getContent()), products);
+        return new ResponseHandler().generateModelAttribut(ConstantMessage.SUCCESS_FIND_BY.concat("Product Name"),
+                HttpStatus.OK, result, null, request);
+    }
     @Transactional(rollbackFor = Exception.class)
     public Map<String, Object> updateProduct(ProductDTO productDTO, MultipartFile imageFile, WebRequest request) {
         Map<String, Object> response = new HashMap<>();
@@ -148,6 +160,7 @@ public class ProductService {
 
             CompletableFuture<Void> addVariants = addVariant(variants.get(), oldProduct);
             oldProduct.setPrice(productDTO.getPrice());
+            oldProduct.setProductName(productDTO.getProductName());
             oldProduct.setIsAvailable(productDTO.getIsAvailable());
             oldProduct.setModifiedBy((Long) request.getAttribute("USR_ID", WebRequest.SCOPE_SESSION));
             oldProduct.setUpdatedAt(LocalDateTime.now());
@@ -169,37 +182,41 @@ public class ProductService {
         return response;
     }
 
-    public Map<String, Object> getAllProduct(Pageable pageable) {
-        Map<String, Object> response = new HashMap<>();
+    public Map<String, Object> getAllProduct(Pageable pageable, WebRequest request) {
+        Map<String, Object> result;
         try {
             Page<Product> results = productRepository.findAllByIsDeleteFalse(pageable);
             List<ProductSimpleResponse> products = convertToProductSimpleResponseList(results.getContent());
-            response.put("data", products);
-            response.put("totalPages", results.getTotalPages());
-            response.put("totalElements", results.getTotalElements());
+            TransformToDTO<Product, ProductSimpleResponse> transformer = new TransformToDTO<>();
+            result = transformer.transformObject(new HashMap<>(), products, results);
         } catch (Exception ex) {
-            strExceptionArr[1] = "getAllProduct(Pageable pageable) --LINE 122";
+            strExceptionArr[1] = "getAllProduct(Pageable pageable, WebRequest request) --LINE 122";
             LoggingFile.exceptionString(strExceptionArr, ex, "y");
+            return new ResponseHandler().generateModelAttribut(ConstantMessage.ERROR_RETRIEVE_DATA,
+                    HttpStatus.INTERNAL_SERVER_ERROR, null, "FS0006", request);
         }
-        return response;
+        return new ResponseHandler().generateModelAttribut(ConstantMessage.SUCCESS_RETRIEVE_DATA,
+                HttpStatus.OK, result, null, request);
     }
 
-    public Map<String, Object> getAllProduct(Pageable pageable, List<Long> categoryIds) {
-        Map<String, Object> response = new HashMap<>();
+    public Map<String, Object> getAllProduct(Pageable pageable, List<Long> categoryIds, WebRequest request) {
+        Map<String, Object> result;
         try {
             if (categoryIds == null || categoryIds.isEmpty()) {
-                return getAllProduct(pageable);
+                return getAllProduct(pageable, request);
             }
             Page<Product> results = productRepository.findAllByIsDeleteFalseAndCategoryCategoryIdIn(categoryIds, pageable);
             List<ProductSimpleResponse> products = convertToProductSimpleResponseList(results.getContent());
-            response.put("data", products);
-            response.put("totalPages", results.getTotalPages());
-            response.put("totalElements", results.getTotalElements());
+            TransformToDTO<Product, ProductSimpleResponse> transformer = new TransformToDTO<>();
+            result = transformer.transformObject(new HashMap<>(), convertToProductSimpleResponseList(results.getContent()), results);
         } catch (Exception ex) {
-            strExceptionArr[1] = "getAllProduct(Pageable pageable, List<Long> categoryIds) --LINE 201";
+            strExceptionArr[1] = "getAllProduct(Pageable pageable, List<Long> categoryIds, WebRequest request) --LINE 201";
             LoggingFile.exceptionString(strExceptionArr, ex, "y");
+            return new ResponseHandler().generateModelAttribut(ConstantMessage.ERROR_RETRIEVE_DATA,
+                    HttpStatus.INTERNAL_SERVER_ERROR, null, "FS0006", request);
         }
-        return response;
+        return new ResponseHandler().generateModelAttribut(ConstantMessage.SUCCESS_RETRIEVE_DATA,
+                HttpStatus.OK, result, null, request);
     }
 
     public ProductDTO getProductDTOById(String productId) throws ResourceNotFoundException {
@@ -291,21 +308,16 @@ public class ProductService {
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public Map<String, Object> softDeleteById(String productId) {
+    public Map<String, Object> softDeleteById(String productId, WebRequest request) {
         Optional<Product> product = productRepository.findById(productId);
-        Map<String, Object> response = new HashMap<>();
         if (product.isPresent()) {
             product.get().setIsDelete(true);
-            for(CartItem item: product.get().getCartItems()) {
-                item.setProduct(null);
-            }
-            response.put("success", true);
-            response.put("message", ConstantMessage.PRODUCT_DELETION_SUCCESS);
-            return response;
+            cartItemRepository.deleteByProductProductId(productId);
+            return new ResponseHandler().generateModelAttribut(ConstantMessage.PRODUCT_DELETION_SUCCESS,
+                    HttpStatus.OK, null, null, request);
         }
-        response.put("success", false);
-        response.put("message", ConstantMessage.ERROR_DELETE_PRODUCT);
-        return response;
+        return new ResponseHandler().generateModelAttribut(ConstantMessage.ERROR_DELETE_PRODUCT,
+                HttpStatus.NOT_FOUND, null, null, request);
     }
 
     private List<ProductSimpleResponse> convertToProductSimpleResponseList(List<Product> products) {

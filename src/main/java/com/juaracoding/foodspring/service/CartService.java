@@ -15,8 +15,8 @@ import com.juaracoding.foodspring.dto.CartItemResponse;
 import com.juaracoding.foodspring.dto.CartResponse;
 import com.juaracoding.foodspring.handler.ResponseHandler;
 import com.juaracoding.foodspring.model.*;
+import com.juaracoding.foodspring.model.mapper.CartItemMapper;
 import com.juaracoding.foodspring.repository.*;
-import com.juaracoding.foodspring.utils.CalcUtils;
 import com.juaracoding.foodspring.utils.ConstantMessage;
 import com.juaracoding.foodspring.utils.CurrencyFormatter;
 import com.juaracoding.foodspring.utils.LoggingFile;
@@ -26,7 +26,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.request.WebRequest;
 
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 @Service
@@ -130,13 +133,14 @@ public class CartService {
         CartResponse cartResponse = new CartResponse();
         try {
             Cart userCart = cartRepository.findByUserUserId(userId);
-            cartItemsResponses = cartItemToCartItemResponse(userCart.getCartItems());
+            cartItemsResponses = CartItemMapper.INSTANCE.toCartItemResponseList(userCart.getCartItems());
             cartResponse.setCartItems(cartItemsResponses);
             double grandTotal = cartItemsResponses.stream().mapToDouble(CartItemResponse::getTotalPrice).sum();
             cartResponse.setGrandTotal(grandTotal);
             cartResponse.setGrandTotalIDR(CurrencyFormatter.toRupiah(grandTotal));
         } catch (Exception ex) {
             strExceptionArr[1] = "getAllCartItem(WebRequest request) -- LINE 103";
+            ex.printStackTrace();
             LoggingFile.exceptionString(strExceptionArr, ex, "y");
             return new ResponseHandler().generateModelAttribut(ConstantMessage.FAILED_GET_CART_ITEMS,
                     HttpStatus.INTERNAL_SERVER_ERROR, null, "FS0004", request);
@@ -150,38 +154,6 @@ public class CartService {
         cartItemRepository.deleteById(cartItemId);
         return new ResponseHandler().generateModelAttribut(ConstantMessage.SUCCESS_DELETE_DATA,
                 HttpStatus.OK, null, null, request);
-    }
-
-    private List<CartItemResponse> cartItemToCartItemResponse(List<CartItem> cartItems){
-        List<CartItemResponse> results = new ArrayList<>();
-        for(CartItem item: cartItems) {
-            if (Objects.isNull(item.getProduct()) || (!Objects.isNull(item.getProduct()) && !item.getProduct().getIsAvailable())) {
-                continue;
-            }
-            CartItemResponse res = CartItemResponse.builder()
-                    .cartItemId(item.getCartItemId())
-                    .qty(item.getQty())
-                    .note(item.getNote())
-                    .productImg(item.getProduct().getImageURL())
-                    .productName(item.getProduct().getProductName())
-                    .unitPrice(item.getProduct().getPrice())
-                    .unitPriceIDR(CurrencyFormatter.toRupiah(item.getProduct().getPrice()))
-                    .productVariants(item.getProduct().getVariants())
-                    .variantName(Objects.isNull(item.getVariant()) ? "None" : item.getVariant().getName())
-                    .build();
-            Discount discount = item.getProduct().getDiscount();
-            if (!Objects.isNull(discount)){
-                res.setDiscountAmount(discount.getPercentDiscount());
-                Double newUnitPrice = CalcUtils.getDiscountedPrice(res.getUnitPrice(), discount.getPercentDiscount());
-                res.setTotalPrice(newUnitPrice * res.getQty());
-                res.setTotalPriceIDR(CurrencyFormatter.toRupiah(newUnitPrice * res.getQty()));
-            }else {
-                res.setTotalPrice(res.getUnitPrice() * res.getQty());
-                res.setTotalPriceIDR(CurrencyFormatter.toRupiah(res.getUnitPrice() * res.getQty()));
-            }
-            results.add(res);
-        }
-        return results;
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -211,11 +183,11 @@ public class CartService {
                 cartItemPersisted.setQty(cartItemPersisted.getQty() + cartItem.get().get().getQty());
                 String newNote = null;
                 if (!Objects.isNull(oldNote)) {
-                    newNote = oldNote.concat(". ").concat(cartItem.get().get().getNote()).trim();
+                    newNote = oldNote.concat(". ").concat(cartItem.get().get().getNote());
                 } else {
-                    newNote = cartItem.get().get().getNote().trim();
+                    newNote = cartItem.get().get().getNote();
                 }
-                cartItemPersisted.setNote(newNote);
+                cartItemPersisted.setNote(Objects.isNull(newNote) ? null : newNote.trim());
                 cartItemRepository.save(cartItemPersisted);
                 cartItemRepository.deleteById(cartItem.get().get().getCartItemId());
             } else {

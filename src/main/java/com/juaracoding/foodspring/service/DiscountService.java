@@ -18,6 +18,7 @@ import com.juaracoding.foodspring.model.Product;
 import com.juaracoding.foodspring.repository.DiscountRepository;
 import com.juaracoding.foodspring.utils.ConstantMessage;
 import com.juaracoding.foodspring.utils.LoggingFile;
+import com.juaracoding.foodspring.utils.TransformToDTO;
 import org.modelmapper.Conditions;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
@@ -43,6 +44,8 @@ public class DiscountService {
     @Autowired
     private ModelMapper modelMapper;
 
+    private TransformToDTO<Discount, DiscountDTO> transformer = new TransformToDTO<>();
+
     @Autowired
     public DiscountService(DiscountRepository discountRepository) {
         strExceptionArr[0] = "DiscountService";
@@ -57,20 +60,21 @@ public class DiscountService {
         return results;
     }
 
-    public Map<String, Object> getAllDiscount(Pageable pageable) {
-        Map<String, Object> response = new HashMap<>();
+    public Map<String, Object> getAllDiscount(Pageable pageable, WebRequest request) {
+        Map<String, Object> result = new HashMap<>();
         try {
-            Page<Discount> results = discountRepository.findAllByIsDeleteFalse(pageable);
-            List<DiscountDTO> discounts = modelMapper.map(results.getContent(), new TypeToken<List<DiscountDTO>>() {
+            Page<Discount> page = discountRepository.findAllByIsDeleteFalse(pageable);
+            List<DiscountDTO> discounts = modelMapper.map(page.getContent(), new TypeToken<List<DiscountDTO>>() {
             }.getType());
-            response.put("data", discounts);
-            response.put("totalPages", results.getTotalPages());
-            response.put("totalElements", results.getTotalElements());
+            result = transformer.transformObject(new HashMap<>(), discounts, page);
         } catch (Exception ex) {
-            strExceptionArr[1] = "getAllDiscount(Pageable pageable) --LINE 60";
+            strExceptionArr[1] = "getAllDiscount(Pageable pageable, WebRequest request) --LINE 63";
             LoggingFile.exceptionString(strExceptionArr, ex, "y");
+            return new ResponseHandler().generateModelAttribut(ConstantMessage.SUCCESS_RETRIEVE_DATA,
+                    HttpStatus.INTERNAL_SERVER_ERROR, result, "FSD0001", request);
         }
-        return response;
+        return new ResponseHandler().generateModelAttribut(ConstantMessage.SUCCESS_RETRIEVE_DATA,
+                HttpStatus.OK, result, null, request);
     }
 
     @Transactional(rollbackFor = Exception.class)

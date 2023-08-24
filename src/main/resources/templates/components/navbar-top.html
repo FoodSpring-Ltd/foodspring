@@ -22,11 +22,14 @@
           <a class="nav-link" th:href="@{/admin}">Dashboard</a>
         </li>
       </ul>
-      <form class="d-flex align-items-center" role="search">
+      <form class="d-flex align-items-center" role="search" th:action="@{/home/search}" method="GET">
         <!-- Add a custom class to the form -->
-        <input class="form-control me-2 custom-search-input" type="search" placeholder="Search" aria-label="Search">
+        <input class="form-control me-2 custom-search-input" type="search" placeholder="Search" aria-label="Search" name="productName">
+        <input type="hidden" name="page" th:value="${currentPage}"> <!-- Set the initial page value -->
+        <input type="hidden" name="limit" th:value="${selectedRow}"> <!-- Set the initial limit value -->
         <button class="btn btn-outline-success" type="submit">Search</button>
       </form>
+
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
         <li th:if="${USR_ID != null}" class="nav-item">
           <a class="nav-link" th:href="@{/cart}">Cart</a>

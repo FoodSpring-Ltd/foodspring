@@ -1,19 +1,15 @@
 <nav th:fragment="pagination-bar" th:aria-label="${label}" xmlns:th="http://www.thymeleaf.org">
   <ul class="pagination">
     <li class="page-item">
-      <a class="page-link" th:if="${currentPage > 1}" th:href="@{${path}(page=${currentPage - 1}, limit=${selectedRow == null ? 10 : selectedRow})}"
-         aria-label="Previous">
+      <a class="page-link" style="cursor: pointer" th:attr="data-currentPage=${currentPage - 1}, data-limit=${selectedRow}" th:if="${currentPage > 1}" th:onclick="updatePagination(this)" aria-label="Previous">
         <span aria-hidden="true">&laquo;</span>
       </a>
     </li>
     <li class="page-item" th:if="${totalPages > 0}" th:each="pageNumber : ${#numbers.sequence(1, totalPages)}" th:unless="${totalPages > 3 and (pageNumber < (currentPage - 1) or pageNumber > (currentPage + 1))}">
-      <a class="page-link" th:href="@{${path}(page=${pageNumber}, limit=${selectedRow == null ? 10 : selectedRow})}"
-         th:classappend="${pageNumber == currentPage ? 'active' : ''}"
-         th:text="${pageNumber}"></a>
+      <a style="cursor: pointer"  class="page-link" th:attr="data-currentPage=${pageNumber}, data-limit=${selectedRow}"  th:onclick="updatePagination(this)" th:classappend="${pageNumber == currentPage ? 'active' : ''}" th:text="${pageNumber}"></a>
     </li>
     <li class="page-item">
-      <a class="page-link" th:if="${currentPage < totalPages}" th:href="@{${path}(page=${currentPage + 1}, limit=${selectedRow == null ? 10 : selectedRow})}"
-         aria-label="Next">
+      <a style="cursor: pointer" class="page-link" th:attr="data-currentPage=${currentPage + 1}, data-limit=${selectedRow}" th:if="${currentPage < totalPages}"  th:onclick="updatePagination(this)" aria-label="Next">
         <span aria-hidden="true">&raquo;</span>
       </a>
     </li>

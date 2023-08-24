@@ -66,7 +66,7 @@ public class ConstantMessage {
     public static final String ERROR_FIRSTNAME_MAX_MIN_LENGTH = "ERROR_FIRSTNAME_MAX_MIN_LENGTH";
     public static final String ERROR_PHONE_IS_BLANK = "ERROR_PHONE_IS_BLANK";
     public static final String WARNING_DATA_EMPTY = "WARNING_DATA_EMPTY";
-    public static final String SUCCESS_FIND_BY = "SUCCESS_FIND_BY";
+    public static final String SUCCESS_FIND_BY = "Success find by ";
     public static final String USER_IS_ACTIVE = "USER_IS_ACTIVE";
     public static final String VERIFY_LINK_VALID = "VERIFY_LINK_VALID";
     public static final String WARNING_MENU_NOT_EXISTS = "WARNING_MENU_NOT_EXISTS";
@@ -82,16 +82,16 @@ public class ConstantMessage {
     public static final String SUCCESS_CREATE_CATEGORY = "Category successfully created";
     public static final String SUCCESS_CREATED_PRODUCT = "Product successfully created";
     public static final String ERROR_CREATING_PRODUCT = "Error creating product, please check the log";
-    public static final Object PRODUCT_UPDATED = "Product updated successfully";
-    public static final Object ERROR_PRODUCT_UPDATED = "Product update failed! Please try again";
-    public static final Object PRODUCT_DELETION_SUCCESS = "Product deleted successfully";
-    public static final Object ERROR_DELETE_PRODUCT = "Something went wrong, can't delete product";
+    public static final String PRODUCT_UPDATED = "Product updated successfully";
+    public static final String ERROR_PRODUCT_UPDATED = "Product update failed! Please try again";
+    public static final String PRODUCT_DELETION_SUCCESS = "Product deleted successfully";
+    public static final String ERROR_DELETE_PRODUCT = "Something went wrong, can't delete product";
     public static final String SUCCESS_CREATE_DISCOUNT = "Discount created successfully";
     public static final String ERROR_CREATE_DISCOUNT = "Failed to create discount. Something went wrong";
     public static final String SUCCESS_UPDATE_DISCOUNT = "Discount updated successfully";
     public static final String ERROR_DELETE_DISCOUNT = "Error deleting discount";
     public static final String SUCCESS_DELETE_DISCOUNT = "Success delete discount";
-    public static final Object ERROR_UPDATE_DISCOUNT = "Discount update failed";
+    public static final String ERROR_UPDATE_DISCOUNT = "Discount update failed";
     public static final String INVALID_DATE_RANGE = "Start datetime should be before end datetime";
     public static final String SUCCESS_ADD_TO_CART = "Product added to cart successfully";
     public static final String FAILED_ADD_TO_CART_PRODUCT = "Failed add to cart, product not found";
@@ -107,5 +107,7 @@ public class ConstantMessage {
     public static final String PRODUCT_NOT_AVAILABLE = "Product is not available";
     public static final String QUANTITY_INCREMENTED_BY = "Quantity updated by ";
     public static final String SUCCESS_DELETE_CART_ITEM = "Cart Item has been deleted";
+    public static final String SUCCESS_RETRIEVE_DATA = "Data retrieval success";
+    public static final String ERROR_RETRIEVE_DATA = "Failed to retrieve data";
 }
 

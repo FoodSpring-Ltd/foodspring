@@ -20,9 +20,9 @@ import com.juaracoding.foodspring.service.ProductService;
 import com.juaracoding.foodspring.utils.ConstantMessage;
 import com.juaracoding.foodspring.utils.LoggingFile;
 import com.juaracoding.foodspring.utils.MappingAttribute;
+import com.juaracoding.foodspring.utils.PageProperty;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -62,18 +62,16 @@ public class AdminController {
     }
 
     @GetMapping(value = ServicePath.DASHBOARD_CATEGORY)
-    public String categoryDashboard(@RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
-                                    @RequestParam(value = "limit", required = false, defaultValue = "10") Integer limit,
+    public String categoryDashboard(PageProperty pageProperty,
                                     Model model,
                                     WebRequest request) {
-        objectMapper = categoryService.getAllCategory(PageRequest.of(page - 1, limit));
-        Integer totalPages = (Integer) objectMapper.get("totalPages");
-        Long totalElements = (Long) objectMapper.get("totalElements");
-        List<CategorySimpleResponse> data = (List<CategorySimpleResponse>) objectMapper.get("data");
-        model.addAttribute("selectedRow", limit);
-        model.addAttribute("totalPages", totalPages);
-        model.addAttribute("totalElements", totalElements);
-        model.addAttribute("currentPage", Math.min(page, totalPages));
+        objectMapper = categoryService.getAllCategory(pageProperty.getPageable(), request);
+        objectMapper = (Map<String, Object>) objectMapper.get("data");
+        List<CategorySimpleResponse> data = (List<CategorySimpleResponse>) objectMapper.get("content");
+        model.addAttribute("selectedRow", pageProperty.getLimit());
+        model.addAttribute("totalPages", objectMapper.get("totalPages"));
+        model.addAttribute("totalElements", objectMapper.get("totalItems"));
+        model.addAttribute("currentPage",  (int) objectMapper.get("currentPage"));
         model.addAttribute("categories", data);
         model.addAttribute("category", new CategoryDTO());
         mappingAttribute.setAttribute(model, request);
@@ -81,19 +79,19 @@ public class AdminController {
     }
 
     @GetMapping(value = ServicePath.DASHBOARD_PRODUCT)
-    public String productDashboard(@RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
-                                    @RequestParam(value = "limit", required = false, defaultValue = "10") Integer limit,
+    public String productDashboard(PageProperty pageProperty,
                                     Model model,
                                    WebRequest request) {
-        objectMapper = productService.getAllProduct(PageRequest.of(page - 1, limit));
-        Integer totalPages = (Integer) objectMapper.get("totalPages");
-        Long totalElements = (Long) objectMapper.get("totalElements");
-        List<ProductSimpleResponse> data = (List< ProductSimpleResponse>) objectMapper.get("data");
-        model.addAttribute("selectedRow", limit);
-        model.addAttribute("totalPages", totalPages);
-        model.addAttribute("totalElements", totalElements);
-        model.addAttribute("currentPage", Math.min(page, totalPages));
-        model.addAttribute("products", data);
+
+        objectMapper = productService.getAllProduct(pageProperty.getPageable(), request);
+        objectMapper = (Map<String, Object>) objectMapper.get("data");
+        List<ProductSimpleResponse> products = (List<ProductSimpleResponse>) objectMapper.get("content");
+        model.addAttribute("selectedRow", pageProperty.getLimit());
+        model.addAttribute("totalPages", objectMapper.get("totalPages"));
+        model.addAttribute("totalElements", objectMapper.get("totalItems"));
+        model.addAttribute("currentPage",  (int) objectMapper.get("currentPage"));
+        model.addAttribute("products", products);
+
         mappingAttribute.setAttribute(model, request);
         return ViewPath.ADMIN_PRODUCT_DASHBOARD;
     }
@@ -183,8 +181,9 @@ public class AdminController {
     @GetMapping(value = ServicePath.PRODUCT_DELETE)
     public String deleteProductById(Model model,
                                     RedirectAttributes redirectAttributes,
-                                    @RequestParam String productId) {
-        objectMapper = productService.softDeleteById(productId);
+                                    @RequestParam String productId,
+                                    WebRequest request) {
+        objectMapper = productService.softDeleteById(productId,request);
         redirectAttributes.addFlashAttribute("message", objectMapper.get("message").toString());
         return ServicePath.REDIRECT_ADMIN_DASHBOARD_PRODUCT;
     }
@@ -238,18 +237,16 @@ public class AdminController {
 
 
     @GetMapping(value = ServicePath.DASHBOARD_DISCOUNT)
-    public String discountDashboard(@RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
-                                    @RequestParam(value = "limit", required = false, defaultValue = "10") Integer limit,
+    public String discountDashboard(PageProperty pageProperty,
                                     Model model,
                                     WebRequest request) {
-        objectMapper = discountService.getAllDiscount(PageRequest.of(page - 1, limit));
-        Integer totalPages = (Integer) objectMapper.get("totalPages");
-        Long totalElements = (Long) objectMapper.get("totalElements");
-        List<DiscountDTO> data = (List<DiscountDTO>) objectMapper.get("data");
-        model.addAttribute("selectedRow", limit);
-        model.addAttribute("totalPages", totalPages);
-        model.addAttribute("totalElements", totalElements);
-        model.addAttribute("currentPage", Math.min(page, totalPages));
+        objectMapper = discountService.getAllDiscount(pageProperty.getPageable(), request);
+        objectMapper = (Map<String, Object>) objectMapper.get("data");
+        List<DiscountDTO> data = (List<DiscountDTO>) objectMapper.get("content");
+        model.addAttribute("selectedRow", pageProperty.getLimit());
+        model.addAttribute("totalPages", objectMapper.get("totalPages"));
+        model.addAttribute("totalElements", objectMapper.get("totalItems"));
+        model.addAttribute("currentPage",  (int) objectMapper.get("currentPage"));
         model.addAttribute("discounts", data);
         model.addAttribute("discount", new DiscountDTO());
         mappingAttribute.setAttribute(model, request);

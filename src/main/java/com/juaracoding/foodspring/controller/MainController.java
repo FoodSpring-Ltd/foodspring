@@ -19,8 +19,8 @@ import com.juaracoding.foodspring.service.CategoryService;
 import com.juaracoding.foodspring.service.ProductService;
 import com.juaracoding.foodspring.utils.LoggingFile;
 import com.juaracoding.foodspring.utils.MappingAttribute;
+import com.juaracoding.foodspring.utils.PageProperty;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -46,36 +46,42 @@ public class MainController {
     private CategoryService categoryService;
 
     private String[] strExceptions = new String[2];
+    private Map<String, String> mapProps = new HashMap<>();
+
 
     public MainController() {
+        mapProps.put("priceasc", "Price Asc");
+        mapProps.put("pricedesc", "Price Desc");
+        mapProps.put("updatedatdesc", "Latest");
+        mapProps.put("updatedatasc", "Oldest");
+        mapProps.put("default", "Sort By");
         strExceptions[0] = "MainController";
     }
 
     private Map<String, Object> objectMapper = new HashMap<>();
 
     @GetMapping(value = "/home")
-    public String home(@RequestParam(value = "sortBy", required = false) String sortBy,
-                       @RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
-                       @RequestParam(value = "limit", required = false, defaultValue = "10") Integer limit,
+    public String home(PageProperty pageProperty,
                        @RequestParam(required = false) List<Long> selectedCategoryIds,
                        Model model,
                        WebRequest request) {
         if (Objects.isNull(selectedCategoryIds)) {
             selectedCategoryIds = new ArrayList<>();
         }
-        objectMapper = productService.getAllProduct(PageRequest.of(page - 1, limit), selectedCategoryIds);
-        Integer totalPages = (Integer) objectMapper.get("totalPages");
-        Long totalElements = (Long) objectMapper.get("totalElements");
-        List<ProductSimpleResponse> data = (List< ProductSimpleResponse>) objectMapper.get("data");
+
+        objectMapper = productService.getAllProduct(pageProperty.getPageable(), selectedCategoryIds, request);
+
+        objectMapper = (Map<String, Object>) objectMapper.get("data");
+        List<ProductSimpleResponse> products = (List<ProductSimpleResponse>) objectMapper.get("content");
         model.addAttribute("categories", categoryService.getAllCategory());
         model.addAttribute("selectedCategoryIds", selectedCategoryIds);
-        model.addAttribute("selectedRow", limit);
-        model.addAttribute("totalPages", totalPages);
-        model.addAttribute("totalElements", totalElements);
-        model.addAttribute("currentPage", Math.min(page, totalPages));
-        model.addAttribute("products", data);
-        model.addAttribute("selectedSort", sortBy);
-        model.addAttribute("productId", 1);
+        model.addAttribute("selectedRow", pageProperty.getLimit());
+        model.addAttribute("totalPages", objectMapper.get("totalPages"));
+        model.addAttribute("totalElements", objectMapper.get("totalItems"));
+        model.addAttribute("currentPage",  ((int) objectMapper.get("currentPage")) + 1);
+        model.addAttribute("products", products);
+        model.addAttribute("selectedSort", mapSelectedSort(pageProperty));
+
         mappingAttribute.setAttribute(model, request);
         return ViewPath.MAIN_VIEW_PRODUCTS;
     }
@@ -104,4 +110,37 @@ public class MainController {
         }
         return ViewPath.MAIN_PRODUCT_DETAILS;
     }
+
+    @GetMapping(value = ServicePath.HOME_SEARCH)
+    public String searchProductByName(PageProperty pageProperty,
+                                      @RequestParam String productName,
+                                      Model model,
+                                      WebRequest request) {
+
+        objectMapper = productService.searchProductByName(productName,
+                pageProperty.getPageable(), request);
+
+        objectMapper = (Map<String, Object>) objectMapper.get("data");
+        List<ProductSimpleResponse> products = (List<ProductSimpleResponse>) objectMapper.get("content");
+        model.addAttribute("categories", categoryService.getAllCategory());
+        model.addAttribute("selectedCategoryIds", new ArrayList<>());
+        model.addAttribute("selectedRow", pageProperty.getLimit());
+        model.addAttribute("totalPages", objectMapper.get("totalPages"));
+        model.addAttribute("totalElements", objectMapper.get("totalItems"));
+        model.addAttribute("currentPage",  ((int) objectMapper.get("currentPage")) + 1);
+        model.addAttribute("products", products);
+        model.addAttribute("selectedSort", mapSelectedSort(pageProperty));
+
+        mappingAttribute.setAttribute(model, request);
+        return ViewPath.MAIN_VIEW_PRODUCTS;
+    }
+
+    private String mapSelectedSort(PageProperty props) {
+       if (!Objects.isNull(props.getSortBy()) && !Objects.isNull(props.getSortTypeString())) {
+           String key = props.getSortBy().toLowerCase().concat(props.getSortTypeString().toLowerCase());
+           return  mapProps.get(key);
+       }
+       return mapProps.get("default");
+    }
+
 }

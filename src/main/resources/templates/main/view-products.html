@@ -95,30 +95,38 @@
                   <a
                     th:classappend="${selectedSort == 'Latest'}? 'active' : ''"
                     class="dropdown-item"
-                    href="?sortBy=Latest"
-                    th:attr="data-sortBy='Latest'"
+                    href="?sortBy=updatedAt"
+                    th:attr="data-sortBy='updatedAt', data-sortType='desc'"
                     th:onclick="setSelectedSort(this)"
                     >Latest</a
                   >
                 </li>
                 <li>
                   <a
-                    th:classappend="${selectedSort == 'Higher Price'}? 'active' : ''"
-                    class="dropdown-item"
-                    href="?sortBy=Higher Price"
-                    th:attr="data-sortBy='Higher Price'"
-                    th:onclick="setSelectedSort(this)"
-                    >Higher Price</a
+                          th:classappend="${selectedSort == 'Oldest'}? 'active' : ''"
+                          class="dropdown-item"
+                          href="?sortBy=updatedAt"
+                          th:attr="data-sortBy='updatedAt', data-sortType='asc'"
+                          th:onclick="setSelectedSort(this)"
+                  >Oldest</a
                   >
                 </li>
                 <li>
                   <a
                     th:classappend="${selectedSort == 'Lower Price'}? 'active' : ''"
                     class="dropdown-item"
-                    href="?sortBy=Lower Price"
-                    th:attr="data-sortBy='Lower Price'"
+                    th:attr="data-sortBy='price', data-sortType='desc'"
                     th:onclick="setSelectedSort(this)"
-                    >Lower Price</a
+                    >Price Desc</a
+                  >
+                </li>
+                <li>
+                  <a
+                    th:classappend="${selectedSort == 'Higher Price'}? 'active' : ''"
+                    class="dropdown-item"
+                    th:attr="data-sortBy='price', data-sortType='asc'"
+                    th:onclick="setSelectedSort(this)"
+                    >Price Asc</a
                   >
                 </li>
               </ul>
@@ -145,11 +153,13 @@
     <script>
       function setSelectedSort(link) {
         var selectedSortValue = link.getAttribute("data-sortBy");
+        var selectedSortType = link.getAttribute("data-sortType");
         link.classList.add("active");
         var dropdownButton = document.getElementById("dropdownMenuButton1");
 
         var newUrl = new URL(window.location.href);
         newUrl.searchParams.set("sortBy", selectedSortValue);
+        newUrl.searchParams.set("sortType", selectedSortType);
         window.location.href = newUrl.toString();
       }
       function redirectToProductDetail(button) {
@@ -158,6 +168,8 @@
         window.location.href = productDetailUrl;
       }
     </script>
+    <script th:src="@{/js/pagination.js}"></script>
+
 
     <script>
       var $j = jQuery.noConflict();

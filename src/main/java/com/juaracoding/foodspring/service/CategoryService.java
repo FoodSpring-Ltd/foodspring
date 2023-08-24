@@ -17,6 +17,7 @@ import com.juaracoding.foodspring.model.Category;
 import com.juaracoding.foodspring.repository.CategoryRepository;
 import com.juaracoding.foodspring.utils.ConstantMessage;
 import com.juaracoding.foodspring.utils.LoggingFile;
+import com.juaracoding.foodspring.utils.TransformToDTO;
 import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
@@ -43,6 +44,8 @@ public class CategoryService {
     @Autowired
     private ModelMapper modelMapper;
 
+    private TransformToDTO<Category, CategorySimpleResponse> transformer = new TransformToDTO<>();
+
     @Autowired
     public CategoryService(CategoryRepository categoryRepository) {
         this.categoryRepository = categoryRepository;
@@ -67,19 +70,21 @@ public class CategoryService {
         return new ResponseHandler().generateModelAttribut(ConstantMessage.SUCCESS_CREATE_CATEGORY, HttpStatus.CREATED, category, null, request);
     }
 
-    public Map<String, Object> getAllCategory(Pageable pageable) {
-        Map<String, Object> response = new HashMap<>();
+    public Map<String, Object> getAllCategory(Pageable pageable, WebRequest request) {
+        Map<String, Object> results = new HashMap<>();
         try{
-            Page<Category> results = categoryRepository.findAll(pageable);
-            List<CategorySimpleResponse> categories = modelMapper.map(results.getContent(), new TypeToken<List<CategorySimpleResponse>>() {}.getType());
-            response.put("data", categories);
-            response.put("totalPages", results.getTotalPages());
-            response.put("totalElements", results.getTotalElements());
+            Page<Category> page = categoryRepository.findAll(pageable);
+            List<CategorySimpleResponse> categories = modelMapper.map(page.getContent(), new TypeToken<List<CategorySimpleResponse>>() {}.getType());
+            results = transformer.transformObject(new HashMap<>(), categories, page);
+
         } catch (Exception ex) {
-            strExceptionArr[1] = "getAllCategory(Pageable pageable) --LINE 78";
+            strExceptionArr[1] = "getAllCategory(Pageable pageable, WebRequest request) --LINE 78";
             LoggingFile.exceptionString(strExceptionArr, ex, "y");
+            return new ResponseHandler().generateModelAttribut(ConstantMessage.SUCCESS_RETRIEVE_DATA,
+                    HttpStatus.INTERNAL_SERVER_ERROR, results, "FSC0001", request);
         }
-        return response;
+        return new ResponseHandler().generateModelAttribut(ConstantMessage.SUCCESS_RETRIEVE_DATA,
+                HttpStatus.OK, results, null, request);
     }
 
     @Transactional

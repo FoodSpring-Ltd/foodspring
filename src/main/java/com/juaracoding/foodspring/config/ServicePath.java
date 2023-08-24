@@ -52,4 +52,5 @@ public class ServicePath {
     public static final String REDIRECT_CART = "redirect:/cart";
     public static final String UPDATE_CART_ITEM_VARIANT = "/update-cart-item-variant/{itemId}";
     public static final String UPDATE_CART_ITEM_QUANTITY = "/update-cart-item-qty/{itemId}/{amount}";
+    public static final String HOME_SEARCH = "/home/search";
 }

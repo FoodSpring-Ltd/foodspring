@@ -10,6 +10,7 @@ Created on 8/20/2023 9:16 PM
 Version 1.0
 */
 
+import com.foodspring.utils.LoggingFile;
 import com.juaracoding.foodspring.dto.DiscountDTO;
 import com.juaracoding.foodspring.handler.ResourceNotFoundException;
 import com.juaracoding.foodspring.handler.ResponseHandler;
@@ -17,7 +18,6 @@ import com.juaracoding.foodspring.model.Discount;
 import com.juaracoding.foodspring.model.Product;
 import com.juaracoding.foodspring.repository.DiscountRepository;
 import com.juaracoding.foodspring.utils.ConstantMessage;
-import com.juaracoding.foodspring.utils.LoggingFile;
 import com.juaracoding.foodspring.utils.TransformToDTO;
 import org.modelmapper.Conditions;
 import org.modelmapper.ModelMapper;

@@ -10,9 +10,10 @@ Created on 8/3/2023 8:24 PM
 Version 1.0
 */
 
+import com.foodspring.utils.LoggingFile;
 import com.juaracoding.foodspring.config.AppConfig;
 import com.juaracoding.foodspring.utils.ConstantMessage;
-import com.juaracoding.foodspring.utils.LoggingFile;
+import org.springframework.core.annotation.Order;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -25,12 +26,14 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @RestControllerAdvice
+@Order(0)
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     private List<ApiValidationError> lsSubError = new ArrayList<ApiValidationError>();
     private String[] strException = new String[2];
@@ -79,6 +82,14 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         strException[1] = "handleAllUncaughtException(Exception ex, WebRequest request) -- LINE 70";
         LoggingFile.exceptionString(strException, ex, AppConfig.getFlagLogging());
         return buildResponseEntity(new ApiError(HttpStatus.INTERNAL_SERVER_ERROR, ConstantMessage.ERROR_INTERNAL_SERVER, ex, request.getDescription(false), "X2013"));
+    }
+
+    @ExceptionHandler(ResponseStatusException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public ResponseEntity<Object> handleUnauthorized(Exception ex, WebRequest request) {
+        strException[1] = "handleUnauthorized(Exception ex, WebRequest request) -- LINE 89";
+        LoggingFile.exceptionString(strException, ex, AppConfig.getFlagLogging());
+        return buildResponseEntity(new ApiError(HttpStatus.UNAUTHORIZED, ConstantMessage.ERROR_UNAUTHORIZE, ex, request.getDescription(false), "R403"));
     }
 
     @ExceptionHandler(DataIntegrityViolationException.class)

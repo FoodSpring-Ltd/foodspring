@@ -10,6 +10,8 @@ Created on 8/22/2023 9:21 AM
 Version 1.0
 */
 
+import com.foodspring.utils.CurrencyFormatter;
+import com.foodspring.utils.LoggingFile;
 import com.juaracoding.foodspring.dto.CartItemDTO;
 import com.juaracoding.foodspring.dto.CartItemResponse;
 import com.juaracoding.foodspring.dto.CartResponse;
@@ -18,8 +20,6 @@ import com.juaracoding.foodspring.model.*;
 import com.juaracoding.foodspring.model.mapper.CartItemMapper;
 import com.juaracoding.foodspring.repository.*;
 import com.juaracoding.foodspring.utils.ConstantMessage;
-import com.juaracoding.foodspring.utils.CurrencyFormatter;
-import com.juaracoding.foodspring.utils.LoggingFile;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -63,8 +63,9 @@ public class CartService {
                     : CompletableFuture.supplyAsync(() -> variantRepository.findFirstByProductProductId(cartItemDTO.getProductId()));
             CompletableFuture<Optional<Product>> product = CompletableFuture.supplyAsync(() -> productRepository.findById(cartItemDTO.getProductId()));
             CompletableFuture<Optional<User>> user = CompletableFuture.supplyAsync(() -> userRepository.findById(userId));
+            CompletableFuture<Cart> persistedCart = CompletableFuture.supplyAsync(() -> cartRepository.findByUserUserId(userId));
 
-            CompletableFuture.allOf(variant, product, user).join();
+            CompletableFuture.allOf(variant, product, user, persistedCart).join();
 
             if (product.get().isEmpty()) {
                 return new ResponseHandler().generateModelAttribut(ConstantMessage.FAILED_ADD_TO_CART_PRODUCT,
@@ -84,11 +85,11 @@ public class CartService {
             if (variant.get().isPresent()) {
                 cartItem.setVariant(variant.get().get());
             }
-            if (Objects.isNull(user.get().get().getCart())) {
+            if (Objects.isNull(persistedCart.get())) {
                 userCart.setUser(user.get().get());
                 cartRepository.save(userCart);
             } else {
-                userCart = user.get().get().getCart();
+                userCart = persistedCart.get();
             }
             Product productRes = product.get().get();
             Variant variantRes = variant.get().get();

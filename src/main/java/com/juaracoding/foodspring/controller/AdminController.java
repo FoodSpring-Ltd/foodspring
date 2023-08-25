@@ -10,7 +10,8 @@ Created on 8/10/2023 8:17 AM
 Version 1.0
 */
 
-import com.juaracoding.foodspring.accessannotation.AdminAccess;
+import com.foodspring.annotation.AdminAccess;
+import com.foodspring.utils.LoggingFile;
 import com.juaracoding.foodspring.config.ServicePath;
 import com.juaracoding.foodspring.config.ViewPath;
 import com.juaracoding.foodspring.dto.*;
@@ -18,7 +19,6 @@ import com.juaracoding.foodspring.service.CategoryService;
 import com.juaracoding.foodspring.service.DiscountService;
 import com.juaracoding.foodspring.service.ProductService;
 import com.juaracoding.foodspring.utils.ConstantMessage;
-import com.juaracoding.foodspring.utils.LoggingFile;
 import com.juaracoding.foodspring.utils.MappingAttribute;
 import com.juaracoding.foodspring.utils.PageProperty;
 import jakarta.validation.Valid;

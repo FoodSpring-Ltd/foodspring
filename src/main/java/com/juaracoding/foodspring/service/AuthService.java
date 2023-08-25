@@ -10,26 +10,22 @@ Created on 8/16/2023 7:49 AM
 Version 1.0
 */
 
+import com.foodspring.constant.EmailType;
+import com.foodspring.model.EmailVerification;
+import com.foodspring.utils.LoggingFile;
 import com.juaracoding.foodspring.config.AppConfig;
 import com.juaracoding.foodspring.core.BcryptImpl;
 import com.juaracoding.foodspring.dto.ForgetPasswordDTO;
 import com.juaracoding.foodspring.dto.LoginDTO;
-import com.juaracoding.foodspring.dto.UserDTO;
 import com.juaracoding.foodspring.handler.ResourceNotFoundException;
 import com.juaracoding.foodspring.handler.ResponseHandler;
 import com.juaracoding.foodspring.model.Cart;
 import com.juaracoding.foodspring.model.User;
+import com.juaracoding.foodspring.publisher.MailPublisher;
 import com.juaracoding.foodspring.repository.CartRepository;
 import com.juaracoding.foodspring.repository.UserRepository;
 import com.juaracoding.foodspring.utils.ConstantMessage;
-import com.juaracoding.foodspring.utils.ExecuteSMTP;
-import com.juaracoding.foodspring.utils.LoggingFile;
-import com.juaracoding.foodspring.utils.TransformToDTO;
-import org.modelmapper.ModelMapper;
-import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -44,15 +40,13 @@ public class AuthService {
 
     private final String[] strExceptionArr = new String[2];
     private final String[] strProfile = new String[3];
-    private final TransformToDTO transformToDTO = new TransformToDTO();
     private final Map<String, String> mapColumnSearch = new HashMap<String, String>();
-    private final Map<String, Object> objectMapper = new HashMap<String, Object>();
     private final UserRepository userRepository;
 
     private final CartRepository cartRepository;
 
     @Autowired
-    private ModelMapper modelMapper;
+    private MailPublisher mailPublisher;
 
     @Autowired
     public AuthService(UserRepository userRepository, CartRepository cartRepository) {
@@ -69,7 +63,7 @@ public class AuthService {
         mapColumnSearch.put("noHP", "NO HP");
     }
 
-    public Map<String, Object> checkRegis(User user, WebRequest request) {
+    public Map<String, Object> registerUser(User user, WebRequest request) {
         int intVerification = new Random().nextInt(100000, 999999);
         User userDB = userRepository.findFirstByEmailOrPhoneOrUsername(user.getEmail(), user.getPhone(), user.getUsername());//INI VALIDASI USER IS EXISTS
         String emailForSMTP = user.getEmail();
@@ -107,17 +101,21 @@ public class AuthService {
                 user.setToken(BcryptImpl.hash(String.valueOf(intVerification)));
                 userRepository.save(user);
             }
+            EmailVerification emailVerification = EmailVerification.builder()
+                    .email(emailForSMTP)
+                    .verification(String.valueOf(intVerification))
+                    .subject("TOKEN UNTUK VERIFIKASI EMAIL")
+                    .fullName(user.getFirstName().concat(" " + user.getLastName()))
+                    .emailType(EmailType.VER_REGIS)
+                    .build();
 
-            strProfile[0] = "TOKEN UNTUK VERIFIKASI EMAIL";
-            strProfile[1] = user.getFirstName().concat(" " + user.getLastName());
-            strProfile[2] = String.valueOf(intVerification);
 
             /*EMAIL NOTIFICATION*/
             if (AppConfig.getFlagSMTPActive().equalsIgnoreCase("y") && !emailForSMTP.equals("")) {
-                new ExecuteSMTP().sendSMTPToken(emailForSMTP, "VERIFIKASI TOKEN REGISTRASI", strProfile, "\\data\\ver_regis.html");
+                mailPublisher.sendEmailMessage(emailVerification);
             }
         } catch (Exception e) {
-            strExceptionArr[1] = "checkRegis(User user) --- LINE 70";
+            strExceptionArr[1] = "registerUser(User user, WebRequest request) --- LINE 70";
             LoggingFile.exceptionString(strExceptionArr, e, AppConfig.getFlagLogging());
             return new ResponseHandler().generateModelAttribut(ConstantMessage.ERROR_FLOW_INVALID,
                     HttpStatus.NOT_FOUND, null, "FE01001", request);
@@ -140,7 +138,7 @@ public class AuthService {
                 Cart userCart = new Cart();
                 userCart.setUser(listUserResult.get(0));
                 cartRepository.save(userCart);
-                nextUser.setIsDelete(true);//SET REGISTRASI BERHASIL
+                nextUser.setIsDelete(false);//SET REGISTRASI BERHASIL
             } else {
                 return new ResponseHandler().generateModelAttribut(ConstantMessage.ERROR_USER_NOT_EXISTS,
                         HttpStatus.NOT_FOUND, null, "FV01006", request);
@@ -211,14 +209,17 @@ public class AuthService {
         /*
                 call method send SMTP
          */
-
-        strProfile[0] = "TOKEN BARU UNTUK VERIFIKASI EMAIL";
-        strProfile[1] = user.getFirstName().concat(" " + user.getLastName());
-        strProfile[2] = String.valueOf(intVerification);
+        EmailVerification emailVerification = EmailVerification.builder()
+                .email(emailForSMTP)
+                .verification(String.valueOf(intVerification))
+                .subject("TOKEN BARU UNTUK VERIFIKASI EMAIL")
+                .fullName(user.getFirstName().concat(" " + user.getLastName()))
+                .emailType(EmailType.VER_NEW_TOKEN_EMAIL)
+                .build();
 
         /*EMAIL NOTIFICATION*/
         if (AppConfig.getFlagSMTPActive().equalsIgnoreCase("y") && !emailForSMTP.equals("")) {
-            new ExecuteSMTP().sendSMTPToken(emailForSMTP, "VERIFIKASI TOKEN REGISTRASI", strProfile, "\\data\\ver_token_baru.html");
+            mailPublisher.sendEmailMessage(emailVerification);
         }
 
 
@@ -247,14 +248,18 @@ public class AuthService {
             return new ResponseHandler().generateModelAttribut(ConstantMessage.ERROR_FLOW_INVALID,
                     HttpStatus.INTERNAL_SERVER_ERROR, null, "FE01005", request);
         }
+        EmailVerification emailVerification = EmailVerification.builder()
+                .email(user.getEmail())
+                .verification(String.valueOf(intVerification))
+                .subject("TOKEN UNTUK VERIFIKASI LUPA PASSWORD")
+                .fullName(user.getFirstName().concat(" " + user.getLastName()))
+                .emailType(EmailType.FORGOT_PASSWORD)
+                .build();
 
-        strProfile[0] = "TOKEN UNTUK VERIFIKASI LUPA PASSWORD";
-        strProfile[1] = user.getFirstName().concat(" " + user.getLastName());
-        strProfile[2] = String.valueOf(intVerification);
 
         /*EMAIL NOTIFICATION*/
         if (AppConfig.getFlagSMTPActive().equalsIgnoreCase("y") && !user.getEmail().equals("")) {
-            new ExecuteSMTP().sendSMTPToken(user.getEmail(), "VERIFIKASI TOKEN REGISTRASI", strProfile, "\\data\\ver_lupa_pwd.html");
+           mailPublisher.sendEmailMessage(emailVerification);
         }
 
         return new ResponseHandler().generateModelAttribut(ConstantMessage.SUCCESS_SEND_NEW_TOKEN,
@@ -312,7 +317,7 @@ public class AuthService {
             }
 
             user.setPassword(BcryptImpl.hash(String.valueOf(newPassword + user.getUsername())));
-            user.setIsDelete(true);
+            user.setIsDelete(false);
             user.setModifiedDate(new Date());
             user.setModifiedBy(Math.toIntExact(user.getUserId()));
         } catch (Exception e) {
@@ -325,157 +330,6 @@ public class AuthService {
                 HttpStatus.OK, null, null, request);
     }
 
-
-    public Map<String, Object> findAllUser(Pageable pageable, WebRequest request) {
-        List<UserDTO> listUserDTO = null;
-        Map<String, Object> mapResult = null;
-        Page<User> pageUser = null;
-        List<User> listUser = null;
-
-        try {
-            pageUser = userRepository.findByIsDelete(pageable, true);
-            listUser = pageUser.getContent();
-            if (listUser.size() == 0) {
-                return new ResponseHandler().
-                        generateModelAttribut(ConstantMessage.WARNING_DATA_EMPTY,
-                                HttpStatus.OK,
-                                transformToDTO.transformObjectDataEmpty(objectMapper, pageable, mapColumnSearch),//HANDLE NILAI PENCARIAN
-                                "FV03005",
-                                request);
-            }
-            listUserDTO = modelMapper.map(listUser, new TypeToken<List<UserDTO>>() {
-            }.getType());
-            mapResult = transformToDTO.transformObject(objectMapper, listUserDTO, pageUser, mapColumnSearch);
-
-        } catch (Exception e) {
-            strExceptionArr[1] = "findAllUser(Pageable pageable, WebRequest request) --- LINE 178";
-            LoggingFile.exceptionString(strExceptionArr, e, AppConfig.getFlagLogging());
-            return new ResponseHandler().generateModelAttribut(ConstantMessage.ERROR_INTERNAL_SERVER,
-                    HttpStatus.INTERNAL_SERVER_ERROR,
-                    transformToDTO.transformObjectDataEmpty(objectMapper, pageable, mapColumnSearch),//HANDLE NILAI PENCARIAN
-                    "FE03003", request);
-        }
-
-        return new ResponseHandler().
-                generateModelAttribut(ConstantMessage.SUCCESS_FIND_BY,
-                        HttpStatus.OK,
-                        mapResult,
-                        null,
-                        null);
-    }
-
-    public Map<String, Object> findByPage(Pageable pageable, WebRequest request, String columFirst, String valueFirst) {
-        Page<User> pageUserz = null;
-        List<User> listUserz = null;
-        List<UserDTO> listUserDTO = null;
-        Map<String, Object> mapResult = null;
-
-        try {
-            if (columFirst.equals("id")) {
-                try {
-                    Long.parseLong(valueFirst);
-                } catch (Exception e) {
-                    strExceptionArr[1] = "findByPage(Pageable pageable,WebRequest request,String columFirst,String valueFirst) --- LINE 209";
-                    LoggingFile.exceptionString(strExceptionArr, e, AppConfig.getFlagLogging());
-                    return new ResponseHandler().
-                            generateModelAttribut(ConstantMessage.WARNING_DATA_EMPTY,
-                                    HttpStatus.OK,
-                                    transformToDTO.transformObjectDataEmpty(objectMapper, pageable, mapColumnSearch),//HANDLE NILAI PENCARIAN
-                                    "FE03004",
-                                    request);
-                }
-            }
-            pageUserz = getDataByValue(pageable, columFirst, valueFirst);
-            listUserz = pageUserz.getContent();
-            if (listUserz.size() == 0) {
-                return new ResponseHandler().
-                        generateModelAttribut(ConstantMessage.WARNING_DATA_EMPTY,
-                                HttpStatus.OK,
-                                transformToDTO.transformObjectDataEmpty(objectMapper, pageable, mapColumnSearch),//HANDLE NILAI PENCARIAN EMPTY
-                                "FV03006",
-                                request);
-            }
-            listUserDTO = modelMapper.map(listUserz, new TypeToken<List<UserDTO>>() {
-            }.getType());
-            mapResult = transformToDTO.transformObject(objectMapper, listUserDTO, pageUserz, mapColumnSearch);
-            System.out.println("LIST DATA => " + listUserDTO.size());
-        } catch (Exception e) {
-            strExceptionArr[1] = "findByPage(Pageable pageable,WebRequest request,String columFirst,String valueFirst) --- LINE 237";
-            LoggingFile.exceptionString(strExceptionArr, e, AppConfig.getFlagLogging());
-            return new ResponseHandler().generateModelAttribut(ConstantMessage.ERROR_FLOW_INVALID,
-                    HttpStatus.INTERNAL_SERVER_ERROR,
-                    transformToDTO.transformObjectDataEmpty(objectMapper, pageable, mapColumnSearch),
-                    "FE03005", request);
-        }
-        return new ResponseHandler().
-                generateModelAttribut(ConstantMessage.SUCCESS_FIND_BY,
-                        HttpStatus.OK,
-                        mapResult,
-                        null,
-                        request);
-    }
-
-    public Map<String, Object> findById(Long id, WebRequest request) {
-        User user = userRepository.findById(id).orElseThrow(
-                () -> null
-        );
-        if (user == null) {
-            return new ResponseHandler().generateModelAttribut(ConstantMessage.WARNING_MENU_NOT_EXISTS,
-                    HttpStatus.NOT_ACCEPTABLE,
-                    transformToDTO.transformObjectDataEmpty(objectMapper, mapColumnSearch),
-                    "FV03005", request);
-        }
-        UserDTO userDTO = modelMapper.map(user, new TypeToken<UserDTO>() {
-        }.getType());
-        return new ResponseHandler().
-                generateModelAttribut(ConstantMessage.SUCCESS_FIND_BY,
-                        HttpStatus.OK,
-                        userDTO,
-                        null,
-                        request);
-    }
-
-
-    public List<UserDTO> getAllUser()//KHUSUS UNTUK FORM INPUT SAJA
-    {
-        List<UserDTO> listUserDTO = null;
-        Map<String, Object> mapResult = null;
-        List<User> listUser = null;
-
-        try {
-            listUser = userRepository.findByIsDelete(true);
-            if (listUser.size() == 0) {
-                return new ArrayList<>();
-            }
-            listUserDTO = modelMapper.map(listUser, new TypeToken<List<UserDTO>>() {
-            }.getType());
-        } catch (Exception e) {
-            strExceptionArr[1] = "getAllUser() --- LINE 521";
-            LoggingFile.exceptionString(strExceptionArr, e, AppConfig.getFlagLogging());
-            return listUserDTO;
-        }
-        return listUserDTO;
-    }
-
-
-    private Page<User> getDataByValue(Pageable pageable, String paramColumn, String paramValue) {
-        if (paramValue.equals("")) {
-            return userRepository.findByIsDelete(pageable, true);
-        }
-        if (paramColumn.equals("id")) {
-            return userRepository.findByIsDeleteAndUserId(pageable, true, Long.parseLong(paramValue));
-        } else if (paramColumn.equals("nama")) {
-            return userRepository.findByIsDeleteAndFirstNameContainsIgnoreCase(pageable, true, paramValue);
-        } else if (paramColumn.equals("email")) {
-            return userRepository.findByIsDeleteAndEmailContainsIgnoreCase(pageable, true, paramValue);
-        } else if (paramColumn.equals("username")) {
-            return userRepository.findByIsDeleteAndUsernameContainsIgnoreCase(pageable, true, paramValue);
-        } else if (paramColumn.equals("phone")) {
-            return userRepository.findByIsDeleteAndPhoneContainsIgnoreCase(pageable, true, paramValue);
-        }
-
-        return userRepository.findByIsDelete(pageable, true);
-    }
 
     public Map<String, Object> linkMailVerify(String usrId, String token, String mail) {
 

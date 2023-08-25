@@ -117,7 +117,7 @@ public class User {
     private LocalDateTime updatedAt;
 
     @Column(name = "IsDelete")
-    private Boolean isDelete = false;
+    private Boolean isDelete = true;
 
     @Column(name = "IsAdmin")
     private Boolean isAdmin = false;

@@ -10,10 +10,10 @@ Created on 8/16/2023 8:18 AM
 Version 1.0
 */
 
+import com.foodspring.utils.LoggingFile;
 import com.juaracoding.foodspring.config.AppConfig;
 import com.juaracoding.foodspring.config.MailerConfig;
 import com.juaracoding.foodspring.handler.ResourceNotFoundException;
-import com.juaracoding.foodspring.utils.LoggingFile;
 
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;

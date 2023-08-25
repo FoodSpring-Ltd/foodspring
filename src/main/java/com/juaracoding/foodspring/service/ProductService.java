@@ -10,6 +10,8 @@ Created on 8/20/2023 4:42 PM
 Version 1.0
 */
 
+import com.foodspring.utils.CurrencyFormatter;
+import com.foodspring.utils.LoggingFile;
 import com.juaracoding.foodspring.dto.ProductDTO;
 import com.juaracoding.foodspring.dto.ProductSimpleResponse;
 import com.juaracoding.foodspring.handler.ResourceNotFoundException;
@@ -19,7 +21,10 @@ import com.juaracoding.foodspring.model.Discount;
 import com.juaracoding.foodspring.model.Product;
 import com.juaracoding.foodspring.model.Variant;
 import com.juaracoding.foodspring.repository.*;
-import com.juaracoding.foodspring.utils.*;
+import com.juaracoding.foodspring.utils.CalcUtils;
+import com.juaracoding.foodspring.utils.CloudinaryUtils;
+import com.juaracoding.foodspring.utils.ConstantMessage;
+import com.juaracoding.foodspring.utils.TransformToDTO;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;

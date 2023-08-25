@@ -10,7 +10,7 @@ Created on 8/20/2023 11:00 AM
 Version 1.0
 */
 
-import com.juaracoding.foodspring.accessannotation.NoLogin;
+import com.foodspring.annotation.NoLogin;
 import com.juaracoding.foodspring.config.ServicePath;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

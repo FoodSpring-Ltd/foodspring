@@ -10,12 +10,12 @@ Created on 8/23/2023 7:58 PM
 Version 1.0
 */
 
+import com.foodspring.utils.CurrencyFormatter;
 import com.juaracoding.foodspring.dto.CartItemResponse;
 import com.juaracoding.foodspring.model.CartItem;
 import com.juaracoding.foodspring.model.Discount;
 import com.juaracoding.foodspring.model.Variant;
 import com.juaracoding.foodspring.utils.CalcUtils;
-import com.juaracoding.foodspring.utils.CurrencyFormatter;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;

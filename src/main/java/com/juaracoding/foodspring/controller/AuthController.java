@@ -10,7 +10,7 @@ Created on 8/10/2023 12:16 PM
 Version 1.0
 */
 
-import com.juaracoding.foodspring.accessannotation.NoLogin;
+import com.foodspring.annotation.NoLogin;
 import com.juaracoding.foodspring.config.ServicePath;
 import com.juaracoding.foodspring.config.ViewPath;
 import com.juaracoding.foodspring.dto.ForgetPasswordDTO;
@@ -86,7 +86,7 @@ public class AuthController {
 
         User users = modelMapper.map(user, new TypeToken<User>() {
         }.getType());
-        objectMapper = authService.checkRegis(users, request);
+        objectMapper = authService.registerUser(users, request);
         if (objectMapper.get("message").toString().equals(ConstantMessage.ERROR_FLOW_INVALID))//AUTO LOGOUT JIKA ADA PESAN INI
         {
             return ViewPath.REDIRECT_LOGOUT;

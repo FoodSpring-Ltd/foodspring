@@ -10,15 +10,16 @@ Created on 8/10/2023 4:11 PM
 Version 1.0
 */
 
+import com.foodspring.model.EmailVerification;
+import com.foodspring.utils.LoggingFile;
 import com.juaracoding.foodspring.config.ServicePath;
 import com.juaracoding.foodspring.config.ViewPath;
-import com.juaracoding.foodspring.core.MailPublisher;
 import com.juaracoding.foodspring.dto.CartItemDTO;
 import com.juaracoding.foodspring.dto.ProductSimpleResponse;
 import com.juaracoding.foodspring.model.Product;
+import com.juaracoding.foodspring.publisher.MailPublisher;
 import com.juaracoding.foodspring.service.CategoryService;
 import com.juaracoding.foodspring.service.ProductService;
-import com.juaracoding.foodspring.utils.LoggingFile;
 import com.juaracoding.foodspring.utils.MappingAttribute;
 import com.juaracoding.foodspring.utils.PageProperty;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,7 +67,7 @@ public class MainController {
 
     @GetMapping("/test")
     public String test() {
-        mailPublisher.sendEmailMessage();
+        mailPublisher.sendEmailMessage(new EmailVerification(""));
         return ServicePath.REDIRECT_HOME;
     }
     @GetMapping(value = "/home")

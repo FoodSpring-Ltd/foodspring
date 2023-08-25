@@ -57,10 +57,6 @@ public class Product {
     @JoinColumn(name = "ProductId", referencedColumnName = "ProductId")
     private List<Variant> variants;
 
-    @OneToMany
-    @JoinColumn(name = "ProductId", referencedColumnName = "ProductId")
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    private List<CartItem> cartItems;
 
     @ManyToOne
     @OnDelete(action = OnDeleteAction.SET_NULL)

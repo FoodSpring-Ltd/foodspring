@@ -1,4 +1,4 @@
-package com.juaracoding.foodspring.core;
+package com.juaracoding.foodspring.publisher;
 /*
 IntelliJ IDEA 2022.2.2 (Community Edition)
 Build #IC-222.4167.29, built on September 13, 2022
@@ -25,9 +25,7 @@ public class MailPublisher {
         this.rabbitTemplate = rabbitTemplate;
     }
 
-    public void sendEmailMessage() {
-        EmailVerification emailVerification = EmailVerification.builder()
-                        .email("hakim@gmail.com").build();
-        rabbitTemplate.convertAndSend("email-queue", emailVerification);
+    public void sendEmailMessage(EmailVerification emailVerification) {
+        rabbitTemplate.convertAndSend("email-verification-queue", emailVerification);
     }
 }

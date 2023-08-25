@@ -10,6 +10,8 @@ Created on 8/22/2023 5:02 PM
 Version 1.0
 */
 
+import com.foodspring.utils.CurrencyFormatter;
+
 public class CalcUtils {
 
     public static double getDiscountedPrice(Double initialPrice, Float discountPercent) {

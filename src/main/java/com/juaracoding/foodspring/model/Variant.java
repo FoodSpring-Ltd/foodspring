@@ -23,7 +23,6 @@ import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.validator.constraints.Length;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Entity
 @Table(name = "Variant")
@@ -47,10 +46,6 @@ public class Variant {
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "ProductId")
     private Product product;
-
-    @OneToMany
-    @JoinColumn(name = "VariantId", referencedColumnName = "VariantId")
-    private List<CartItem> cartItems;
 
     @Column(name = "CreatedAt")
     @CreationTimestamp

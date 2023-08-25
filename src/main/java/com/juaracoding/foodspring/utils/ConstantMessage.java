@@ -109,5 +109,6 @@ public class ConstantMessage {
     public static final String SUCCESS_DELETE_CART_ITEM = "Cart Item has been deleted";
     public static final String SUCCESS_RETRIEVE_DATA = "Data retrieval success";
     public static final String ERROR_RETRIEVE_DATA = "Failed to retrieve data";
+    public static final String ERROR_UNAUTHORIZE = "You're not logged in";
 }
 

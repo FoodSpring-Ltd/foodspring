@@ -10,8 +10,9 @@ Created on 8/13/2023 3:07 PM
 Version 1.0
 */
 
+import com.foodspring.utils.LoggingFile;
 import com.juaracoding.foodspring.config.AppConfig;
-import com.juaracoding.foodspring.utils.LoggingFile;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -21,6 +22,7 @@ import org.springframework.web.servlet.NoHandlerFoundException;
 import org.thymeleaf.exceptions.TemplateInputException;
 
 @ControllerAdvice
+@Order(1)
 public class ControllerAdvisor {
     private String[] strException = new String[2];
 

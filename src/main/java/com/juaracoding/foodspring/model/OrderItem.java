@@ -39,11 +39,24 @@ public class OrderItem {
     @JoinColumn(name = "ShopOrderId")
     private ShopOrder shopOrder;
 
-    @ManyToOne
-    private Product product;
 
-    @ManyToOne
-    private Variant variant;
+    @Column(name = "ProductName")
+    private String productName;
+
+    @Column(name = "ProductCategory")
+    private String productCategory;
+
+    @Column(name = "Variant")
+    private String variant;
+
+    @Column(name = "DiscountName")
+    private String discountName;
+
+    @Column(name = "DiscountPercentage")
+    private Float discountPercentage;
+
+    @Column(name = "UnitPrice")
+    private Double unitPrice;
 
     @Column(name = "Qty")
     @Comment(value = "Product Item Quantity")

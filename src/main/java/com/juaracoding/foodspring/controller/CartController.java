@@ -10,7 +10,7 @@ Created on 8/22/2023 10:27 AM
 Version 1.0
 */
 
-import com.juaracoding.foodspring.accessannotation.BasicAccess;
+import com.foodspring.annotation.BasicAccess;
 import com.juaracoding.foodspring.config.MidtransConfig;
 import com.juaracoding.foodspring.config.ServicePath;
 import com.juaracoding.foodspring.config.ViewPath;

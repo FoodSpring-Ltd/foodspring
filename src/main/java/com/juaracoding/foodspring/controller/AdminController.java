@@ -58,6 +58,7 @@ public class AdminController {
     @GetMapping(value = "")
     public String adminHome(Model model, WebRequest request) {
         mappingAttribute.setAttribute(model, request);
+        model.addAttribute("HIDE_TOP_SEARCH_BAR", true);
         return ViewPath.ADMIN_HOME;
     }
 
@@ -74,6 +75,7 @@ public class AdminController {
         model.addAttribute("currentPage", ((int) objectMapper.get("currentPage")) + 1);
         model.addAttribute("categories", data);
         model.addAttribute("category", new CategoryDTO());
+        model.addAttribute("HIDE_TOP_SEARCH_BAR", true);
         mappingAttribute.setAttribute(model, request);
         return ViewPath.ADMIN_CATEGORY_DASHBOARD;
     }
@@ -91,7 +93,7 @@ public class AdminController {
         model.addAttribute("totalElements", objectMapper.get("totalItems"));
         model.addAttribute("currentPage", ((int) objectMapper.get("currentPage")) + 1);
         model.addAttribute("products", products);
-
+        model.addAttribute("HIDE_TOP_SEARCH_BAR", true);
         mappingAttribute.setAttribute(model, request);
         return ViewPath.ADMIN_PRODUCT_DASHBOARD;
     }
@@ -101,6 +103,7 @@ public class AdminController {
         model.addAttribute("categories", categoryService.getAllCategory());
         model.addAttribute("product", new ProductDTO());
         model.addAttribute("discounts", discountService.getAllDiscount());
+        model.addAttribute("HIDE_TOP_SEARCH_BAR", true);
         mappingAttribute.setAttribute(model, request);
         return ViewPath.ADMIN_ADD_PRODUCT_FORM;
     }
@@ -114,6 +117,7 @@ public class AdminController {
                              @RequestParam MultipartFile productImage
     ) {
         mappingAttribute.setAttribute(model, request);
+        model.addAttribute("HIDE_TOP_SEARCH_BAR", true);
         model.addAttribute("categories", categoryService.getAllCategory());
         model.addAttribute("discounts", discountService.getAllDiscount());
         if (bindingResult.hasErrors()) {
@@ -140,7 +144,7 @@ public class AdminController {
                                        @PathVariable String productId,
                                        RedirectAttributes redirectAttributes,
                                        WebRequest request) {
-
+        model.addAttribute("HIDE_TOP_SEARCH_BAR", true);
         mappingAttribute.setAttribute(model, request);
         model.addAttribute("categories", categoryService.getAllCategory());
         model.addAttribute("discounts", discountService.getAllDiscount());
@@ -162,6 +166,7 @@ public class AdminController {
                                 Model model,
                                 RedirectAttributes redirectAttributes,
                                 WebRequest request) {
+        model.addAttribute("HIDE_TOP_SEARCH_BAR", true);
         mappingAttribute.setAttribute(model, request);
         model.addAttribute("product", productDTO);
         model.addAttribute("categories", categoryService.getAllCategory());
@@ -183,6 +188,7 @@ public class AdminController {
                                     RedirectAttributes redirectAttributes,
                                     @RequestParam String productId,
                                     WebRequest request) {
+        model.addAttribute("HIDE_TOP_SEARCH_BAR", true);
         objectMapper = productService.softDeleteById(productId, request);
         redirectAttributes.addFlashAttribute("message", objectMapper.get("message").toString());
         return ServicePath.REDIRECT_ADMIN_DASHBOARD_PRODUCT;
@@ -193,6 +199,7 @@ public class AdminController {
                               BindingResult bindingResult,
                               Model model,
                               WebRequest request) {
+        model.addAttribute("HIDE_TOP_SEARCH_BAR", true);
         if (bindingResult.hasErrors()) {
             return ViewPath.ADMIN_CATEGORY_DASHBOARD;
         }
@@ -210,6 +217,7 @@ public class AdminController {
     public String deleteCategoryById(Model model,
                                      RedirectAttributes redirectAttributes,
                                      @RequestParam Long categoryId) {
+        model.addAttribute("HIDE_TOP_SEARCH_BAR", true);
         objectMapper = categoryService.deleteCategoryById(categoryId);
         if ((Boolean) objectMapper.get("success")) {
             redirectAttributes.addFlashAttribute("message", "Category deleted successfully");
@@ -224,6 +232,7 @@ public class AdminController {
                                      BindingResult bindingResult,
                                      RedirectAttributes redirectAttributes,
                                      Model model) {
+        model.addAttribute("HIDE_TOP_SEARCH_BAR", true);
         if (bindingResult.hasErrors()) {
             return ServicePath.REDIRECT_ADMIN_DASHBOARD_CATEGORY;
         }
@@ -241,6 +250,7 @@ public class AdminController {
     public String discountDashboard(PageProperty pageProperty,
                                     Model model,
                                     WebRequest request) {
+        model.addAttribute("HIDE_TOP_SEARCH_BAR", true);
         objectMapper = discountService.getAllDiscount(pageProperty.getPageable(), request);
         objectMapper = (Map<String, Object>) objectMapper.get("data");
         List<DiscountDTO> data = (List<DiscountDTO>) objectMapper.get("content");
@@ -260,6 +270,7 @@ public class AdminController {
                               Model model,
                               RedirectAttributes redirectAttributes,
                               WebRequest request) {
+        model.addAttribute("HIDE_TOP_SEARCH_BAR", true);
         if (bindingResult.hasErrors()) {
             return ViewPath.ADMIN_DISCOUNT_DASHBOARD;
         }
@@ -275,6 +286,7 @@ public class AdminController {
                                      RedirectAttributes redirectAttributes,
                                      Model model,
                                      WebRequest request) {
+        model.addAttribute("HIDE_TOP_SEARCH_BAR", true);
         if (bindingResult.hasErrors()) {
             redirectAttributes.addFlashAttribute("messages", ConstantMessage.ERROR_UPDATE_DISCOUNT);
             return ServicePath.REDIRECT_ADMIN_DASHBOARD_DISCOUNT;
@@ -293,6 +305,7 @@ public class AdminController {
                                      RedirectAttributes redirectAttributes,
                                      WebRequest request,
                                      @RequestParam Long discountId) {
+        model.addAttribute("HIDE_TOP_SEARCH_BAR", true);
         objectMapper = discountService.softDeleteDiscountById(discountId, request);
         if ((Boolean) objectMapper.get("success")) {
             redirectAttributes.addFlashAttribute("message", "Discount deleted successfully");

@@ -53,4 +53,9 @@ public class ServicePath {
     public static final String UPDATE_CART_ITEM_VARIANT = "/update-cart-item-variant/{itemId}";
     public static final String UPDATE_CART_ITEM_QUANTITY = "/update-cart-item-qty/{itemId}/{amount}";
     public static final String HOME_SEARCH = "/home/search";
+
+    public static final String ORDER = "/order";
+    public static final String UNPAID = "/unpaid";
+    public static final String COMPLETED = "/completed";
+    public static final String ON_PROCESS = "/onprocess";
 }

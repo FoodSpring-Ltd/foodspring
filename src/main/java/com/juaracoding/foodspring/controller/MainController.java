@@ -106,6 +106,7 @@ public class MainController {
                                 Model model,
                                 RedirectAttributes redirectAttributes,
                                 WebRequest request) {
+        model.addAttribute("HIDE_TOP_SEARCH_BAR", true);
         mappingAttribute.setAttribute(model, request);
         model.addAttribute("cartItem", new CartItemDTO());
         try {

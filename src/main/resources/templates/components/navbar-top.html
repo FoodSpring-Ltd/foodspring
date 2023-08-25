@@ -1,46 +1,49 @@
 <nav th:fragment="navbar-top" class="navbar main-nav py-4 py-lg-4 sticky-top navbar-expand-lg" xmlns:th="http://www.thymeleaf.org">
   <div class="container-fluid">
-    <a class="navbar-brand" th:href="@{/}"><strong>FoodSpring</strong></a>
+    <a class="navbar-brand" th:href="@{/}"><strong>FoodSpring</strong><i class="fas fa-leaf fa-lg"></i></a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
         <li class="nav-item">
-          <a class="nav-link" aria-current="page" th:href="@{/}">Home</a>
+          <a class="nav-link" aria-current="page" th:href="@{/}"><i class="fas fa-home fa-lg"></i></a>
         </li>
-        <li class="nav-item dropdown">
+        <li th:if="${USR_ID != null}" class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-            My Order
+            <i class="fas fa-shopping-bag fa-lg"></i> My Order
           </a>
-          <ul class="dropdown-menu">
-            <li><a class="dropdown-item" href="#">On Process</a></li>
-            <li><a class="dropdown-item" href="#">Completed</a></li>
+          <ul  class="dropdown-menu">
+            <li><a class="dropdown-item" th:href="@{/order/unpaid}">Unpaid</a></li>
+            <li><a class="dropdown-item" th:href="@{/order/onprocess}">On Process</a></li>
+            <li><a class="dropdown-item" th:href="@{/order/completed}">Completed</a></li>
           </ul>
         </li>
         <li th:if="${IS_ADMIN != null} and ${IS_ADMIN}" class="nav-item">
-          <a class="nav-link" th:href="@{/admin}">Dashboard</a>
+          <a class="nav-link" th:href="@{/admin}"> <i class="fas fa-user-shield fa-lg"></i></a>
         </li>
       </ul>
-      <form class="d-flex align-items-center" role="search" th:action="@{/home/search}" method="GET">
+      <form th:if="${HIDE_TOP_SEARCH_BAR != true}" class="search-form" role="search" th:action="@{/home/search}" method="GET">
         <!-- Add a custom class to the form -->
         <input class="form-control me-2 custom-search-input" type="search" placeholder="Search" aria-label="Search" name="productName">
         <input type="hidden" name="page" th:value="${currentPage}"> <!-- Set the initial page value -->
         <input type="hidden" name="limit" th:value="${selectedRow}"> <!-- Set the initial limit value -->
         <button class="btn btn-outline-success" type="submit">Search</button>
       </form>
+     <div class="d-flex justify-content-start align-items-center gap-3" style="left: 0">
+       <a th:if="${USR_ID != null}" class="nav-link" th:href="@{/cart}"><i class="fas fa-shopping-cart fa-lg"></i></a>
+       <div th:if="${USR_ID != null}" class="nav-item dropdown">
+         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+           <i class="fas fa-user-circle fa-lg me-2"></i>[[${USERNAME}]]
+         </a>
+         <ul  class="dropdown-menu">
+           <li><a class="dropdown-item" th:href="@{/auth/logout}">Logout</a></li>
+         </ul>
+       </div>
+       <a th:if="${USR_ID == null}" class="nav-link" th:href="@{/auth/login}"><i class="fas fa-sign-in-alt fa-lg"></i> Login</a>
+     </div>
+     </div>
 
-      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-        <li th:if="${USR_ID != null}" class="nav-item">
-          <a class="nav-link" th:href="@{/cart}">Cart</a>
-        </li>
-        <li th:if="${USR_ID == null}" class="nav-item">
-          <a class="nav-link" th:href="@{/auth/login}">Login</a>
-        </li>
-        <li th:if="${USR_ID != null}" class="nav-item">
-          <a class="nav-link" th:href="@{/auth/logout}">Logout</a>
-        </li>
-      </ul>
     </div>
   </div>
 </nav>

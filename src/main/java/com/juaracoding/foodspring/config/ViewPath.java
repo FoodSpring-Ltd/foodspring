@@ -32,4 +32,7 @@ public class ViewPath {
     public static final String REDIRECT_ADMIN_CATEGORY_DASHBOARD = "redirect:/admin/dashboard/category";
     public static final String ADMIN_DISCOUNT_DASHBOARD = "admin/discount-dashboard";
     public static final String CART = "cart/cart";
+    public static final String ORDER_UNPAID = "user_order/unpaid-page";
+    public static final String ORDER_ON_PROCESS = "user_order/onprocess-page";
+    public static final String ORDER_COMPLETED = "user_order/completed-order";
 }

@@ -76,7 +76,7 @@ public class AuthController {
 
         if (!FormatValidation.emailFormatValidation(user.getEmail())) {
             isValid = false;
-           bindingResult.rejectValue("email", "email.invalid", ConstantMessage.ERROR_EMAIL_FORMAT_INVALID);
+            bindingResult.rejectValue("email", "email.invalid", ConstantMessage.ERROR_EMAIL_FORMAT_INVALID);
         }
         if (!isValid) {
             model.addAttribute("user", user);
@@ -84,7 +84,8 @@ public class AuthController {
         }
         /* END OF VALIDATION */
 
-        User users = modelMapper.map(user, new TypeToken<User>() {}.getType());
+        User users = modelMapper.map(user, new TypeToken<User>() {
+        }.getType());
         objectMapper = authService.checkRegis(users, request);
         if (objectMapper.get("message").toString().equals(ConstantMessage.ERROR_FLOW_INVALID))//AUTO LOGOUT JIKA ADA PESAN INI
         {
@@ -105,17 +106,19 @@ public class AuthController {
     }
 
     @GetMapping(ServicePath.VERIFY)
-    public String getVerifyRegisForm(Model model, @RequestParam String email){
+    public String getVerifyRegisForm(Model model, @RequestParam String email) {
         model.addAttribute("verifyEmail", email);
         model.addAttribute("user", new User());
         return ViewPath.AUTH_VERIFY;
     }
+
     @GetMapping(ServicePath.REGISTER)
     @NoLogin
     public String getRegisterForm(Model model) {
         model.addAttribute("user", new UserDTO());
         return ViewPath.AUTH_REGISTER_PAGE;
     }
+
     /*
         VERIFIKASI TOKEN SETELAH MENGINPUT FORM REGISTRASI
      */
@@ -136,8 +139,8 @@ public class AuthController {
         Boolean isSuccess = (Boolean) objectMapper.get("success");
         if (isSuccess) {
             model.addAttribute("verifyEmail", email);
-            model.addAttribute("user",user);
-           return ViewPath.AUTH_VERIFY;
+            model.addAttribute("user", user);
+            return ViewPath.AUTH_VERIFY;
         }
         return ViewPath.LOGIN;
     }
@@ -244,9 +247,9 @@ public class AuthController {
     @PostMapping(ServicePath.FORGET_PASSWORD)
     public String sendMailForgetPwd(@ModelAttribute("forgetpassword")
                                     @Valid ForgetPasswordDTO forgetPasswordDTO,
-                                    BindingResult bindingResult
-            , Model model
-            , WebRequest request
+                                    BindingResult bindingResult,
+                                    Model model,
+                                    WebRequest request
     ) {
         String email = forgetPasswordDTO.getEmail();
         Boolean isInvalid = false;

@@ -12,6 +12,7 @@ Version 1.0
 
 import com.juaracoding.foodspring.config.ServicePath;
 import com.juaracoding.foodspring.config.ViewPath;
+import com.juaracoding.foodspring.core.MailPublisher;
 import com.juaracoding.foodspring.dto.CartItemDTO;
 import com.juaracoding.foodspring.dto.ProductSimpleResponse;
 import com.juaracoding.foodspring.model.Product;
@@ -45,6 +46,9 @@ public class MainController {
     @Autowired
     private CategoryService categoryService;
 
+    @Autowired
+    private MailPublisher mailPublisher;
+
     private String[] strExceptions = new String[2];
     private Map<String, String> mapProps = new HashMap<>();
 
@@ -60,6 +64,11 @@ public class MainController {
 
     private Map<String, Object> objectMapper = new HashMap<>();
 
+    @GetMapping("/test")
+    public String test() {
+        mailPublisher.sendEmailMessage();
+        return ServicePath.REDIRECT_HOME;
+    }
     @GetMapping(value = "/home")
     public String home(PageProperty pageProperty,
                        @RequestParam(required = false) List<Long> selectedCategoryIds,

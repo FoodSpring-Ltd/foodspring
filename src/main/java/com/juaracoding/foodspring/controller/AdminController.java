@@ -71,7 +71,7 @@ public class AdminController {
         model.addAttribute("selectedRow", pageProperty.getLimit());
         model.addAttribute("totalPages", objectMapper.get("totalPages"));
         model.addAttribute("totalElements", objectMapper.get("totalItems"));
-        model.addAttribute("currentPage",  (int) objectMapper.get("currentPage"));
+        model.addAttribute("currentPage", ((int) objectMapper.get("currentPage")) + 1);
         model.addAttribute("categories", data);
         model.addAttribute("category", new CategoryDTO());
         mappingAttribute.setAttribute(model, request);
@@ -80,7 +80,7 @@ public class AdminController {
 
     @GetMapping(value = ServicePath.DASHBOARD_PRODUCT)
     public String productDashboard(PageProperty pageProperty,
-                                    Model model,
+                                   Model model,
                                    WebRequest request) {
 
         objectMapper = productService.getAllProduct(pageProperty.getPageable(), request);
@@ -89,7 +89,7 @@ public class AdminController {
         model.addAttribute("selectedRow", pageProperty.getLimit());
         model.addAttribute("totalPages", objectMapper.get("totalPages"));
         model.addAttribute("totalElements", objectMapper.get("totalItems"));
-        model.addAttribute("currentPage",  (int) objectMapper.get("currentPage"));
+        model.addAttribute("currentPage", ((int) objectMapper.get("currentPage")) + 1);
         model.addAttribute("products", products);
 
         mappingAttribute.setAttribute(model, request);
@@ -112,7 +112,7 @@ public class AdminController {
                              WebRequest request,
                              RedirectAttributes redirectAttributes,
                              @RequestParam MultipartFile productImage
-                             ) {
+    ) {
         mappingAttribute.setAttribute(model, request);
         model.addAttribute("categories", categoryService.getAllCategory());
         model.addAttribute("discounts", discountService.getAllDiscount());
@@ -122,7 +122,7 @@ public class AdminController {
         }
         try {
             objectMapper = productService.createProduct(productDTO, productImage);
-            if((Boolean) objectMapper.get("success")) {
+            if ((Boolean) objectMapper.get("success")) {
                 redirectAttributes.addFlashAttribute("message", ConstantMessage.SUCCESS_CREATED_PRODUCT);
                 return ServicePath.REDIRECT_ADMIN_DASHBOARD_PRODUCT;
             }
@@ -183,10 +183,11 @@ public class AdminController {
                                     RedirectAttributes redirectAttributes,
                                     @RequestParam String productId,
                                     WebRequest request) {
-        objectMapper = productService.softDeleteById(productId,request);
+        objectMapper = productService.softDeleteById(productId, request);
         redirectAttributes.addFlashAttribute("message", objectMapper.get("message").toString());
         return ServicePath.REDIRECT_ADMIN_DASHBOARD_PRODUCT;
     }
+
     @PostMapping(value = ServicePath.CATEGORY)
     public String addCategory(@ModelAttribute("category") CategoryDTO categoryDTO,
                               BindingResult bindingResult,
@@ -246,12 +247,13 @@ public class AdminController {
         model.addAttribute("selectedRow", pageProperty.getLimit());
         model.addAttribute("totalPages", objectMapper.get("totalPages"));
         model.addAttribute("totalElements", objectMapper.get("totalItems"));
-        model.addAttribute("currentPage",  (int) objectMapper.get("currentPage"));
+        model.addAttribute("currentPage", ((int) objectMapper.get("currentPage")) + 1);
         model.addAttribute("discounts", data);
         model.addAttribute("discount", new DiscountDTO());
         mappingAttribute.setAttribute(model, request);
         return ViewPath.ADMIN_DISCOUNT_DASHBOARD;
     }
+
     @PostMapping(value = ServicePath.DISCOUNT)
     public String addDiscount(@ModelAttribute("discount") DiscountDTO discountDTO,
                               BindingResult bindingResult,
@@ -285,6 +287,7 @@ public class AdminController {
         redirectAttributes.addFlashAttribute("message", objectMapper.get("message").toString());
         return ServicePath.REDIRECT_ADMIN_DASHBOARD_DISCOUNT;
     }
+
     @GetMapping(value = ServicePath.DISCOUNT_DELETE)
     public String deleteCategoryById(Model model,
                                      RedirectAttributes redirectAttributes,

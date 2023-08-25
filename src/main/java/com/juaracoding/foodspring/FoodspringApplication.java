@@ -12,7 +12,9 @@ import java.util.concurrent.Executor;
 @EnableAsync
 public class FoodspringApplication {
 
+
 	public static void main(String[] args) {
+
 		SpringApplication.run(FoodspringApplication.class, args);
 	}
 

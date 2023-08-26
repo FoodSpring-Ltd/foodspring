@@ -17,6 +17,7 @@ import com.juaracoding.foodspring.config.AppConfig;
 import com.juaracoding.foodspring.core.BcryptImpl;
 import com.juaracoding.foodspring.dto.ForgetPasswordDTO;
 import com.juaracoding.foodspring.dto.LoginDTO;
+import com.juaracoding.foodspring.exceptions.EmailPublisherException;
 import com.juaracoding.foodspring.handler.ResourceNotFoundException;
 import com.juaracoding.foodspring.handler.ResponseHandler;
 import com.juaracoding.foodspring.model.Cart;
@@ -63,6 +64,7 @@ public class AuthService {
         mapColumnSearch.put("noHP", "NO HP");
     }
 
+    @Transactional(rollbackFor = Exception.class)
     public Map<String, Object> registerUser(User user, WebRequest request) {
         int intVerification = new Random().nextInt(100000, 999999);
         User userDB = userRepository.findFirstByEmailOrPhoneOrUsername(user.getEmail(), user.getPhone(), user.getUsername());//INI VALIDASI USER IS EXISTS
@@ -158,7 +160,7 @@ public class AuthService {
     public Map<String, Object> doLogin(LoginDTO loginDTO, WebRequest request) {
         User user = userRepository.findFirstByEmailOrPhoneOrUsername(loginDTO.getCredential(), loginDTO.getCredential(), loginDTO.getCredential());//DATANYA PASTI HANYA 1
         try {
-            if (user != null) {
+            if (user != null && !user.getIsDelete()) {
                 if (!BcryptImpl.verifyHash(loginDTO.getPassword() + user.getUsername(), user.getPassword()))//dicombo dengan userName
                 {
                     return new ResponseHandler().generateModelAttribut(ConstantMessage.ERROR_LOGIN_FAILED,
@@ -167,8 +169,11 @@ public class AuthService {
                 user.setLastLogin(LocalDateTime.now());
                 user.setTokenCounter(0);//SETIAP KALI LOGIN BERHASIL , BERAPA KALIPUN UJI COBA REQUEST TOKEN YANG SEBELUMNYA GAGAL AKAN SECARA OTOMATIS DIRESET MENJADI 0
                 user.setPasswordCounter(0);//SETIAP KALI LOGIN BERHASIL , BERAPA KALIPUN UJI COBA YANG SEBELUMNYA GAGAL AKAN SECARA OTOMATIS DIRESET MENJADI 0
-            } else {
+            } else if (user == null){
                 return new ResponseHandler().generateModelAttribut(ConstantMessage.ERROR_USER_NOT_EXISTS,
+                        HttpStatus.NOT_ACCEPTABLE, null, "FV01008", request);
+            } else if (user.getIsDelete()) {
+                return new ResponseHandler().generateModelAttribut(ConstantMessage.ERROR_ACCOUNT_INACTIVE,
                         HttpStatus.NOT_ACCEPTABLE, null, "FV01008", request);
             }
         } catch (Exception e) {
@@ -182,7 +187,8 @@ public class AuthService {
                 HttpStatus.OK, user, null, request);
     }
 
-    public Map<String, Object> getNewToken(String email, WebRequest request) {
+    @Transactional(rollbackFor = Exception.class)
+    public Map<String, Object> getNewToken(String email, WebRequest request) throws EmailPublisherException {
         List<User> listUserResult = userRepository.findByEmail(email);//DATANYA PASTI HANYA 1
         String emailForSMTP = "";
         int intVerification = 0;
@@ -228,7 +234,7 @@ public class AuthService {
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public Map<String, Object> sendMailForgetPwd(String email, WebRequest request) {
+    public Map<String, Object> sendMailForgetPwd(String email, WebRequest request) throws EmailPublisherException {
         int intVerification = 0;
         List<User> listUserResults = userRepository.findByEmail(email);
         User user = null;

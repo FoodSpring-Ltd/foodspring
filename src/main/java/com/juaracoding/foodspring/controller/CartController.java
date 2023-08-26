@@ -56,6 +56,7 @@ public class CartController {
         mappingAttribute.setAttribute(model, request);
         objectMapper = cartService.getAllCartItem(request);
         CartResponse cartResponse = (CartResponse) objectMapper.get("data");
+        model.addAttribute("HIDE_TOP_SEARCH_BAR", true);
         model.addAttribute("cart", cartResponse);
         model.addAttribute("SNAP_URL", MidtransConfig.getSnapURL());
         model.addAttribute("MIDTRANS_CLIENT_KEY", MidtransConfig.getClientKey());

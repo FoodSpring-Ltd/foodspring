@@ -11,6 +11,8 @@ Version 1.0
 */
 
 import com.foodspring.model.EmailVerification;
+import com.juaracoding.foodspring.exceptions.EmailPublisherException;
+import org.springframework.amqp.AmqpException;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -25,7 +27,11 @@ public class MailPublisher {
         this.rabbitTemplate = rabbitTemplate;
     }
 
-    public void sendEmailMessage(EmailVerification emailVerification) {
-        rabbitTemplate.convertAndSend("email-verification-queue", emailVerification);
+    public void sendEmailMessage(EmailVerification emailVerification) throws EmailPublisherException {
+       try {
+           rabbitTemplate.convertAndSend("email-verification-queue", emailVerification);
+       } catch (AmqpException ex) {
+           throw new EmailPublisherException("Failed to send message to queue", ex);
+       }
     }
 }

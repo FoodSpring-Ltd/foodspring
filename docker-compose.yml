@@ -1,0 +1,85 @@
+version: '3.8'
+services:
+
+  # MySQL
+  mysql-db:
+    restart: on-failure
+    image: mysql:5.7
+    container_name: mysql-db
+    networks:
+      - foodnet
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: FoodSpring
+      MYSQL_PASSWORD: root
+    ports:
+      - "3308:3306"
+    volumes:
+      - db-data:/var/lib/mysql
+
+  # Spring Boot App
+  spring-app:
+    restart: on-failure
+    networks:
+      - foodnet
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    container_name: foodspring
+    ports:
+      - "8080:8081"
+    environment:
+      SPRING_PROFILES_ACTIVE: staging
+      SPRING_RABBITMQ_HOST: rabbitmq
+      SPRING_RABBITMQ_PORT: 5672
+      SPRING_RABBITMQ_USERNAME: guest
+      SPRING_RABBITMQ_PASSWORD: guest
+      SPRING_RABBITMQ_LISTENER_ACKNOWLEDGE-MODE: manual
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql-db:3306/FoodSpring?useSSL=false&serverTimezone=Asia/Jakarta&allowPublicKeyRetrieval=true
+    depends_on:
+      - mysql-db
+
+  mailer:
+    restart: always
+    image: hakimamarullah/foodspring-mailer:v1.0.0
+    container_name: foodspring-mailer
+    networks:
+      - foodnet
+    ports:
+      - "8000:8000"
+    environment:
+      SPRING_PROFILES_ACTIVE: staging
+      SPRING_RABBITMQ_HOST: rabbitmq
+      SPRING_RABBITMQ_PORT: 5672
+      SPRING_RABBITMQ_USERNAME: guest
+      SPRING_RABBITMQ_PASSWORD: guest
+      SPRING_RABBITMQ_LISTENER_ACKNOWLEDGE-MODE: manual
+    depends_on:
+      - rabbitmq
+
+    # RabbitMQ
+  rabbitmq:
+    restart: always
+    hostname: 'rabbitmq'
+    image: rabbitmq:management
+    container_name: rabbitmq
+    networks:
+      - foodnet
+    ports:
+      - "5673:5672"
+      - "15673:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    volumes:
+        - rabbitmq-data:/var/lib/rabbitmq/mnesia
+
+volumes:
+  db-data:
+    driver: local
+  rabbitmq-data:
+    driver: local
+
+networks:
+  foodnet:
+    driver: bridge

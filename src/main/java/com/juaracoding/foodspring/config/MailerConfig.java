@@ -1,7 +1,6 @@
 package com.juaracoding.foodspring.config;
 
-import com.juaracoding.foodspring.core.Crypto;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.foodspring.core.Crypto;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

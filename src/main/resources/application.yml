@@ -1,8 +1,8 @@
 spring:
   profiles:
-    active: local
+    active: staging
   rabbitmq:
-    host: localhost
-    port: 5672
+    host: rabbitmq
+    port: 5673
     username: guest
     password: guest

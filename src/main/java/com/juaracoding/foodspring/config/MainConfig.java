@@ -12,7 +12,7 @@ Version 1.0
 
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
-import com.juaracoding.foodspring.core.Crypto;
+import com.foodspring.core.Crypto;
 import com.juaracoding.foodspring.utils.MappingAttribute;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -11,13 +11,12 @@ Version 1.0
 */
 
 import jakarta.persistence.*;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.Comment;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.annotations.*;
 import org.hibernate.validator.constraints.Length;
 
 import java.time.LocalDateTime;
@@ -44,6 +43,7 @@ public class CartItem {
     private Product product;
 
     @ManyToOne
+    @OnDelete(action = OnDeleteAction.SET_NULL)
     @JoinColumn(name = "VariantId")
     private Variant variant;
 

@@ -16,6 +16,7 @@ import com.juaracoding.foodspring.config.ServicePath;
 import com.juaracoding.foodspring.config.ViewPath;
 import com.juaracoding.foodspring.dto.CartItemDTO;
 import com.juaracoding.foodspring.dto.ProductSimpleResponse;
+import com.juaracoding.foodspring.exceptions.EmailPublisherException;
 import com.juaracoding.foodspring.model.Product;
 import com.juaracoding.foodspring.publisher.MailPublisher;
 import com.juaracoding.foodspring.service.CategoryService;
@@ -66,7 +67,7 @@ public class MainController {
     private Map<String, Object> objectMapper = new HashMap<>();
 
     @GetMapping("/test")
-    public String test() {
+    public String test() throws EmailPublisherException {
         mailPublisher.sendEmailMessage(new EmailVerification(""));
         return ServicePath.REDIRECT_HOME;
     }

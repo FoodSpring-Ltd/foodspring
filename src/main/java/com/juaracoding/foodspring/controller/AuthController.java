@@ -16,6 +16,7 @@ import com.juaracoding.foodspring.config.ViewPath;
 import com.juaracoding.foodspring.dto.ForgetPasswordDTO;
 import com.juaracoding.foodspring.dto.LoginDTO;
 import com.juaracoding.foodspring.dto.UserDTO;
+import com.juaracoding.foodspring.exceptions.EmailPublisherException;
 import com.juaracoding.foodspring.handler.FormatValidation;
 import com.juaracoding.foodspring.model.User;
 import com.juaracoding.foodspring.service.AuthService;
@@ -89,6 +90,7 @@ public class AuthController {
         objectMapper = authService.registerUser(users, request);
         if (objectMapper.get("message").toString().equals(ConstantMessage.ERROR_FLOW_INVALID))//AUTO LOGOUT JIKA ADA PESAN INI
         {
+            model.addAttribute("message", objectMapper.get("message"));
             return ViewPath.REDIRECT_LOGOUT;
         }
 
@@ -125,7 +127,7 @@ public class AuthController {
     @GetMapping(ServicePath.NEW_TOKEN)
     public String requestToken(@ModelAttribute("user")
                                @Valid UserDTO user,
-                               BindingResult bindingResult, Model model, @RequestParam String email, WebRequest request) {
+                               BindingResult bindingResult, Model model, @RequestParam String email, WebRequest request) throws EmailPublisherException {
 
         if (email == null || email.equals("") || !FormatValidation.emailFormatValidation(email)) {
             return ViewPath.REDIRECT_LOGOUT;//LANGSUNG LOGOUT KARENA FLOW TIDAK VALID / MUNGKIN HIT API INI BUKAN DARI WEB
@@ -223,11 +225,6 @@ public class AuthController {
         }
         if (isSuccess) {
             User nextUser = (User) objectMapper.get("data");
-//            nextUser.getAkses().getListMenuAkses().get(0).getMenuHeader().getNamaMenuHeader();
-            //        System.out.println(WebRequest.SCOPE_REQUEST);//0
-            //        System.out.println(WebRequest.SCOPE_SESSION);//1
-            //0 = scope request artinya hanya saat login saja tidak menyimpan di memory server / database
-            //1 = scope session artinya setelah login dan akan menyimpan data selama session masih aktif
             request.setAttribute("USR_ID", nextUser.getUserId(), 1);//cara ambil request.getAttribute("USR_ID",1)
             request.setAttribute("EMAIL", nextUser.getEmail(), 1);//cara ambil request.getAttribute("EMAIL",1)
             request.setAttribute("PHONE", nextUser.getPhone(), 1);//cara ambil request.getAttribute("NO_HP",1)
@@ -250,7 +247,7 @@ public class AuthController {
                                     BindingResult bindingResult,
                                     Model model,
                                     WebRequest request
-    ) {
+    ) throws EmailPublisherException {
         String email = forgetPasswordDTO.getEmail();
         Boolean isInvalid = false;
 
@@ -405,7 +402,7 @@ public class AuthController {
                                         BindingResult bindingResult,
                                         Model model,
                                         @RequestParam String email,
-                                        WebRequest request) {
+                                        WebRequest request) throws EmailPublisherException {
         forgetPasswordDTO.setToken("");//DIKOSONGKAN UNTUK MENGHILANGKAN INPUTAN USER DI FIELD TOKEN
         forgetPasswordDTO.setEmail(email);
 

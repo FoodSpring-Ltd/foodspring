@@ -21,6 +21,18 @@
   }
 }
 
+
+      .subscribe-btn {
+          background-color: #04d4f0;
+          border: none;
+
+           &:hover {
+             opacity: 0.6;
+             background-color: #04d4f0;
+           }
+      }
+
+
 .error {
   color: red;
   font-size: 12px;

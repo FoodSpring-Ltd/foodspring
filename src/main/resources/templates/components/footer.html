@@ -1,0 +1,43 @@
+<footer th:fragment="footer" class="bg-light text-center" style="margin-top: 20%" xmlns:th="http://www.thymeleaf.org">
+  <div class="container p-4">
+    <section class="mb-4">
+      <a target="_blank" class="btn btn-primary btn-floating m-1" style="background-color: #3b5998; border: none" href="https://facebook.com/hakim.amarullah15" role="button"><i class="fab fa-facebook-f"></i></a>
+      <a target="_blank" class="btn btn-primary btn-floating m-1" style="background-color: #55acee; border: none" href="https://twitter.com/hakim_amarullah" role="button"><i class="fab fa-twitter"></i></a>
+      <a target="_blank" class="btn btn-primary btn-floating m-1" style="background-color: #ac2bac; border: none" href="https://www.instagram.com/hakim.amarullah/" role="button"><i class="fab fa-instagram"></i></a>
+      <a target="_blank" class="btn btn-primary btn-floating m-1" style="background-color: #0082ca; border: none" href="https://linkedin.com/in/hakimamarullah" role="button"><i class="fab fa-linkedin-in"></i></a>
+      <a target="_blank" class="btn btn-primary btn-floating m-1" style="background-color: #333333; border: none" href="https://github.com/hakimamarullah" role="button"><i class="fab fa-github"></i></a>
+    </section>
+    <section class="">
+      <form action="">
+        <div class="row d-flex justify-content-center">
+          <div class="col-auto">
+            <p class="pt-2">
+              <strong>Sign up for our newsletter</strong>
+            </p>
+          </div>
+          <div class="col-md-5 col-12">
+            <div class="form-outline mb-4">
+              <input placeholder="Email" type="email" id="form5Example2" class="form-control" />
+            </div>
+          </div>
+          <div class="col-auto">
+            <button type="submit" class="btn btn-primary mb-4 subscribe-btn">
+              Subscribe
+            </button>
+          </div>
+        </div>
+      </form>
+    </section>
+    <section class="mb-4">
+      <p style="font-style: italic; font-weight: 700">
+        "Elevate your culinary journey with FoodSpring Ltd – Savoring life, one flavor at a time."
+        <br>
+        <span ><a th:href="@{/about}" style="color: #888">- FoodSpring</a></span>
+      </p>
+    </section>
+  </div>
+  <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2)">
+    © 2023 Copyright:
+    <a class="text-dark" href="#!">FoodSpring Ltd</a>
+  </div>
+</footer>

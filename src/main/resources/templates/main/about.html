@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link
+          th:href="@{/css/bootstrap@5.3.1.min.css}"
+          rel="stylesheet"
+  />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+
+  <script
+          th:src="@{/js/jquery@3.5.1.slim.min.js}"
+
+  ></script>
+  <title>About FoodSpring Ltd</title>
+  <style>
+
+    .quote {
+        font-size: 18px;
+        margin-top: 20px;
+        margin-bottom: 15px;
+        color: #333;
+        line-height: 1.5;
+    }
+    .writer {
+        font-style: italic;
+        color: #888;
+    }
+  </style>
+</head>
+<body>
+<div class="d-flex justify-content-center align-items-center flex-column text-center p-4">
+  <div class="quote p-4">
+    "Introducing <strong>FoodSpring Ltd</strong>: Where Cravings Spring to Life.
+    <br><hr>
+    Discover FoodSpring – your culinary sanctuary curated by us, FoodSpring Ltd. 🍽️ We're more than just a restaurant website – we're a prelude to an unforgettable dining experience.
+    <br><br>
+    Imagine a world where cravings are embraced with a tapestry of flavors, where your favorites await. Pre-order effortlessly, embracing the convenience of FoodSpring. 🍔🥗☕
+    <br><br>
+    Embark on a flavor-rich journey before you step through our doors. That burger or crisp salad you desire? Our platform awaits your order. Busy workday or leisurely dinner, FoodSpring caters to you.
+    <br><br>
+    Crafted by <strong>FoodSpring Ltd</strong>, our online haven echoes the essence of exquisite dining. We transcend mere meals, creating dining adventures. 🍴✨
+    <br><br>
+    Why wait? Let FoodSpring heighten your anticipation, making every restaurant visit a cherished moment. Join us in savoring the joy of pre-tasting, pre-experiencing, and pre-savoring. Your cravings deserve the extraordinary.
+    <br><br>
+    Immerse yourself in flavor-rich moments with FoodSpring Ltd – where cravings launch into perfection. 🌱🍕🚀"
+  </div>
+  <div class="writer">
+    - FoodSpring Ltd
+  </div>
+</div>
+<div th:replace="~{components/footer :: footer}"></div>
+<script
+        th:src="@{/js/popper@2.11.8.min.js}"
+
+></script>
+
+<script
+        th:src="@{/js/bootstrap@5.3.1.min.js}"
+></script>
+</body>
+</html>

@@ -19,7 +19,7 @@ Version 1.0
 */
 
 @Configuration
-@PropertySource("classpath:mailer-config.properties")
+@PropertySource("classpath:mailer-config-local.properties")
 public class MailerConfig {
     private static String emailUserName;
     private static String emailPassword;

@@ -1,6 +1,6 @@
 spring:
   profiles:
-    active: staging
+    active: local
   rabbitmq:
     host: rabbitmq
     port: 5673

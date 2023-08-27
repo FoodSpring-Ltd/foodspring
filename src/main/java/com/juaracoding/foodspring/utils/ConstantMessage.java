@@ -111,5 +111,8 @@ public class ConstantMessage {
     public static final String ERROR_RETRIEVE_DATA = "Failed to retrieve data";
     public static final String ERROR_UNAUTHORIZE = "You're not logged in";
     public static final String ERROR_ACCOUNT_INACTIVE = "Your account is activated or deleted";
+    public static final String ERROR_CREATE_ORDER = "Something went wrong, can't proceed order";
+    public static final String CART_EMPTY = "Cart is empty";
+    public static final String SUCCESS_CREATE_ORDER = "Order created successfully";
 }
 

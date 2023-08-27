@@ -7,7 +7,15 @@
 .home-container {
   display: flex;
 }
+ .subscribe-btn {
+          background-color: #04d4f0;
+          border: none;
 
+           &:hover {
+             opacity: 0.6;
+             background-color: #04d4f0;
+           }
+      }
 .search-form {
   display: flex;
   align-items-center;
@@ -266,6 +274,10 @@
 .home-wrapper {
   padding: 20px;
 }
+
+
+
+
 @media only screen and (max-width: 376px) {
     .home-wrapper {
        padding: 10px;
@@ -364,7 +376,7 @@
     }
 
     .card-img-top {
-       height: 15vh;
+       height: 20vh;
     }
 
     .card-title {
@@ -436,7 +448,7 @@
       }
 
       .card-img-top {
-         height: 15vh;
+         height: 20vh;
       }
 
       .card-title {

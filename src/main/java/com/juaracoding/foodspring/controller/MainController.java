@@ -71,6 +71,11 @@ public class MainController {
         mailPublisher.sendEmailMessage(new EmailVerification(""));
         return ServicePath.REDIRECT_HOME;
     }
+
+    @GetMapping(value = ServicePath.ABOUT)
+    public String about() {
+        return ViewPath.MAIN_ABOUT;
+    }
     @GetMapping(value = "/home")
     public String home(PageProperty pageProperty,
                        @RequestParam(required = false) List<Long> selectedCategoryIds,

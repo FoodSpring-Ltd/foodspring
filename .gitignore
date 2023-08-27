@@ -33,3 +33,5 @@ build/
 .vscode/
 /src/main/resources/application-local.yml
 /src/main/resources/application-staging.yml
+/src/main/resources/midtrans-config.properties
+/src/main/resources/mailer-config-local.properties

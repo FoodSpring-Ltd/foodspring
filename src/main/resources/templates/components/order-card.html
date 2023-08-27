@@ -1,0 +1,14 @@
+<div th:fragment="order-card" class="card" xmlns:th="http://www.w3.org/1999/xhtml">
+    <div class="card-header">
+        <div class="d-flex flex-column g-0">
+            <p><strong>Order ID:</strong> [[${shopOrder.shopOrderId}]]</p>
+            <p style="margin-top: -15px"><strong>Order Date:</strong> [[${#temporals.format(shopOrder.createdAt, 'dd/MM/yyyy HH:mm') + ' WIB'}]]</p>
+            <p style="margin-top: -15px"><strong>Grand Total:</strong> [[${shopOrder.grandTotal}]]</p>
+        </div>
+    </div>
+    <div class="card-body">
+       <div th:each="item : ${shopOrder.orderItems}">
+           <div th:replace="~{components/order-item :: order-item(item=${item})}"></div>
+       </div>
+    </div>
+</div>

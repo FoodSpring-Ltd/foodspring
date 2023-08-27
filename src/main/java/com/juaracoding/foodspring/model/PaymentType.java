@@ -20,7 +20,6 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Entity
 @Table(name = "MstPaymentType")
@@ -38,10 +37,6 @@ public class PaymentType {
     @Column(name = "name")
     @NotBlank(message = "Payment type name can't be blank")
     private String name;
-
-    @OneToMany
-    @JoinColumn(name = "PaymentTypeId", referencedColumnName = "PaymentTypeId")
-    private List<ShopOrder> shopOrders;
 
     @Column(name = "CreatedAt")
     @CreationTimestamp

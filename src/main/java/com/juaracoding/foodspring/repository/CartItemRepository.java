@@ -15,6 +15,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface CartItemRepository extends JpaRepository<CartItem, Long> {
 
@@ -22,4 +24,6 @@ public interface CartItemRepository extends JpaRepository<CartItem, Long> {
     CartItem findByProductIdAndVariantIdAndCartId(String productId, Long variantId, Long cartId);
 
     void deleteByProductProductId(String productId);
+
+    List<CartItem> findByCartUserUserId(Long userId);
 }

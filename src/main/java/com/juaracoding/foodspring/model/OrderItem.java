@@ -11,10 +11,7 @@ Version 1.0
 */
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.Comment;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -28,6 +25,7 @@ import java.time.LocalDateTime;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString
 public class OrderItem {
 
     @Id
@@ -45,6 +43,9 @@ public class OrderItem {
 
     @Column(name = "ProductCategory")
     private String productCategory;
+
+    @Column(name = "ProductImageURL")
+    private String productImageURL;
 
     @Column(name = "Variant")
     private String variant;

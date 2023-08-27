@@ -33,3 +33,14 @@
 .modal-body p {
   text-align: justify;
 }
+
+
+      .subscribe-btn {
+          background-color: #04d4f0;
+          border: none;
+
+           &:hover {
+             opacity: 0.6;
+             background-color: #04d4f0;
+           }
+      }

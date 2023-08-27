@@ -11,11 +11,11 @@ Version 1.0
 */
 
 import com.foodspring.annotation.BasicAccess;
-import com.juaracoding.foodspring.config.MidtransConfig;
 import com.juaracoding.foodspring.config.ServicePath;
 import com.juaracoding.foodspring.config.ViewPath;
 import com.juaracoding.foodspring.dto.CartResponse;
 import com.juaracoding.foodspring.service.CartService;
+import com.juaracoding.foodspring.service.OrderService;
 import com.juaracoding.foodspring.service.TransactionService;
 import com.juaracoding.foodspring.utils.MappingAttribute;
 import com.midtrans.httpclient.error.MidtransError;
@@ -38,6 +38,9 @@ public class CartController {
     private CartService cartService;
 
     @Autowired
+    private OrderService orderService;
+
+    @Autowired
     private MappingAttribute mappingAttribute;
 
     @Autowired
@@ -58,9 +61,6 @@ public class CartController {
         CartResponse cartResponse = (CartResponse) objectMapper.get("data");
         model.addAttribute("HIDE_TOP_SEARCH_BAR", true);
         model.addAttribute("cart", cartResponse);
-        model.addAttribute("SNAP_URL", MidtransConfig.getSnapURL());
-        model.addAttribute("MIDTRANS_CLIENT_KEY", MidtransConfig.getClientKey());
-        model.addAttribute("snapToken", "transactionService.createOrder(request");
         return ViewPath.CART;
     }
 

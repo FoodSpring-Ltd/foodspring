@@ -24,8 +24,17 @@
     <div th:replace="~{components/navbar-top :: navbar-top}"></div>
 </div>
 <div class="container">
-    <h2>Unpaid Order</h2>
+    <div th:each="shopOrder : ${shopOrders}">
+        <div th:replace="~{components/order-card :: order-card(shopOrder=${shopOrder})}"></div>
+    </div>
+    <div class="d-flex justify-content-center align-items-center mt-2">
+        <div
+                th:replace="~{components/pagination-bar :: pagination-bar(path='/order/unpaid', label='Order Unpaid Page')}"
+        ></div>
+    </div>
 </div>
+<!-- Footer -->
+<div th:replace="~{components/footer :: footer}"></div>
 <script
         src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
         integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"

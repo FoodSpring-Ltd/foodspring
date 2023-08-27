@@ -10,17 +10,22 @@ Created on 8/14/2023 12:28 PM
 Version 1.0
 */
 
+import com.juaracoding.foodspring.enums.OrderStatus;
 import jakarta.persistence.*;
-import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 import java.util.List;
+
+import static jakarta.persistence.EnumType.STRING;
 
 @Entity
 @Table(name = "ShopOrder")
@@ -31,9 +36,9 @@ import java.util.List;
 public class ShopOrder {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "ShopOrderId")
-    private Long shopOrderId;
+    private String shopOrderId;
 
     @ManyToOne
     @JoinColumn(name = "UserId")
@@ -46,18 +51,29 @@ public class ShopOrder {
     @Transient
     private Double grandTotal;
 
+    @Transient
+    private String grandTotalIDR;
+
     @OneToMany
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "ShopOrderId", referencedColumnName = "ShopOrderId")
     private List<OrderItem> orderItems;
 
-    @ManyToOne
-    @JoinColumn(name = "OrderStatusId")
-    private OrderStatus orderStatus;
+    @Column(name = "OrderStatus")
+    @Enumerated(STRING)
+    private OrderStatus orderStatus = OrderStatus.UNPAID;
 
-    @ManyToOne
-    @JoinColumn(name = "PaymentTypeId")
-    private PaymentType paymentType;
+    @Column(name = "PaymentType")
+    private String paymentType;
+
+    @Column(name = "MidtransTransactionId")
+    private String midtransTransactionId;
+
+    @Column(name = "SnapToken")
+    private String snapToken;
+
+    @Column(name = "ModifiedBy")
+    private Long modifiedBy;
 
     @Column(name = "CreatedAt")
     @CreationTimestamp

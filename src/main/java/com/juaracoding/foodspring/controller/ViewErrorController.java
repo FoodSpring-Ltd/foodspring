@@ -15,6 +15,7 @@ import com.juaracoding.foodspring.config.AppConfig;
 import com.juaracoding.foodspring.config.ServicePath;
 import com.juaracoding.foodspring.exceptions.EmailPublisherException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.annotation.Order;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -22,6 +23,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.thymeleaf.exceptions.TemplateInputException;
 
 @ControllerAdvice
+@Order(1)
 public class ViewErrorController {
 
     private String[] strException = new String[2];
@@ -34,7 +36,7 @@ public class ViewErrorController {
     @ExceptionHandler({EmailPublisherException.class})
     public String errorSendEmail(Exception ex,
                                  RedirectAttributes redirectAttributes) {
-        strException[1] = "error500() -- LINE 32";
+        strException[1] = "errorSendEmail(Exception ex, RedirectAttributes redirectAttributes) -- LINE 32";
         LoggingFile.exceptionString(strException, ex, AppConfig.getFlagLogging());
         redirectAttributes.addFlashAttribute("message", ex.getMessage());
         return ServicePath.REDIRECT_HOME;

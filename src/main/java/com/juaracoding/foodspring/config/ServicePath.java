@@ -58,4 +58,10 @@ public class ServicePath {
     public static final String UNPAID = "/unpaid";
     public static final String COMPLETED = "/completed";
     public static final String ON_PROCESS = "/onprocess";
+    public static final String ABOUT = "/about";
+    public static final String CHECKOUT = "/checkout";
+    public static final String MIDTRANS = "/midtrans";
+    public static final String NOTIFICATION = "/notification" ;
+    public static final String CHECKOUT_PAYMENT = "/checkout/payment";
+    public static final String REDIRECT_ORDER_UNPAID = "redirect:/order/unpaid";
 }

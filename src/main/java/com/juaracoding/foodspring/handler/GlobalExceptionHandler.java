@@ -13,6 +13,7 @@ Version 1.0
 import com.foodspring.utils.LoggingFile;
 import com.juaracoding.foodspring.config.AppConfig;
 import com.juaracoding.foodspring.utils.ConstantMessage;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,6 +32,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestControllerAdvice
+@Order(0)
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     private List<ApiValidationError> lsSubError = new ArrayList<ApiValidationError>();
     private String[] strException = new String[2];

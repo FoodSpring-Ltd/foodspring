@@ -1,197 +1,207 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link th:href="@{/css/bootstrap@5.3.1.min.css}" rel="stylesheet" />
     <link
-            th:href="@{/css/bootstrap@5.3.1.min.css}"
-            rel="stylesheet"
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
     />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 
-    <script
-            th:src="@{/js/jquery@3.5.1.slim.min.js}"
-
-    ></script>
-    <link th:href="@{/css/product-detail.css}" rel="stylesheet"/>
-    <link th:href="@{/css/navbar-top.css}" rel="stylesheet"/>
+    <script th:src="@{/js/jquery@3.5.1.slim.min.js}"></script>
+    <link th:href="@{/css/product-detail.css}" rel="stylesheet" />
+    <link th:href="@{/css/navbar-top.css}" rel="stylesheet" />
     <title th:text="${product.productName}"></title>
-</head>
-<body>
-<div class="detail-page">
-    <div th:replace="~{components/navbar-top :: navbar-top}"></div>
+  </head>
+  <body style="overflow-x: hidden">
+    <div class="detail-page">
+      <div th:replace="~{components/navbar-top :: navbar-top}"></div>
 
-    <div class="detail-container">
+      <div class="detail-container">
         <div
-                class="d-flex w-100 justify-content-center align-items-center pt-3"
-                style="position: absolute"
+          class="d-flex w-100 justify-content-center align-items-center pt-3"
+          style="position: absolute; z-index: 999"
         >
-            <div
-                    class="toast align-items-center text-white bg-primary border-0"
-                    role="alert"
-                    aria-live="assertive"
-                    aria-atomic="true"
-                    data-bs-delay="3000"
-                    id="toastMessage"
-            >
-                <div class="d-flex">
-                    <div class="toast-body"></div>
-                    <button
-                            type="button"
-                            class="btn-close btn-close-white me-2 m-auto"
-                            data-bs-dismiss="toast"
-                            aria-label="Close"
-                    ></button>
-                </div>
+          <div
+            class="toast align-items-center text-white bg-primary border-0"
+            role="alert"
+            aria-live="assertive"
+            aria-atomic="true"
+            data-bs-delay="3000"
+            id="toastMessage"
+          >
+            <div class="d-flex">
+              <div class="toast-body"></div>
+              <button
+                type="button"
+                class="btn-close btn-close-white me-2 m-auto"
+                data-bs-dismiss="toast"
+                aria-label="Close"
+              ></button>
             </div>
+          </div>
         </div>
         <div class="dp-product-img position-relative">
-            <!-- Sold Out badge on top of the image -->
-            <div th:if="${not product.isAvailable}" class="sold-out-badge">
-                Sold Out
-            </div>
+          <!-- Sold Out badge on top of the image -->
+          <div th:if="${not product.isAvailable}" class="sold-out-badge">
+            Sold Out
+          </div>
 
-            <img
-                    th:src="${product.imageURL}"
-                    class="card-img-top"
-                    th:alt="${product.productName}"
-            />
+          <img
+            th:src="${product.imageURL}"
+            class="img-detail"
+            th:alt="${product.productName}"
+          />
         </div>
 
-
         <div class="dp-product-details">
-            <div class="dp-product-name">
+          <div class="dp-product-name">
             <span class="dp-pr-cat" th:text="${product.category?.name}"
-            >Food</span
+              >Food</span
             >
-                <h2 class="dp-pr-name" th:text="${product.productName}">
-                    Salad Italia
-                </h2>
-                <span th:if="${product.discountedPriceIDR != null}" class="d-flex pt-4 flex-column">
-        <!-- Display original price with strikethrough -->
-        <span class="original-price" style="font-size: 1.2rem; color: red">
-            <s th:text="${'Rp' + product.priceIDR}"></s>
-        </span>
-                    <!-- Display discounted price -->
-        <span class="dp-price" style="margin-top: -30px">
-            <small class="text-sm">Rp</small>[[${product.discountedPriceIDR}]]
-        </span>
-    </span>
-                <span th:unless="${product.discountedPriceIDR != null}" class="dp-price">Rp[[${product.priceIDR}]]</span>
+            <h2 class="dp-pr-name" th:text="${product.productName}">
+              Salad Italia
+            </h2>
+            <span
+              th:if="${product.discountedPriceIDR != null}"
+              class="d-flex pt-4 flex-column"
+            >
+              <!-- Display original price with strikethrough -->
+              <span
+                class="original-price"
+                style="font-size: 1.2rem; color: red"
+              >
+                <s th:text="${'Rp' + product.priceIDR}"></s>
+              </span>
+              <!-- Display discounted price -->
+              <span class="dp-price" style="margin-top: -30px">
+                <small class="text-sm">Rp</small
+                >[[${product.discountedPriceIDR}]]
+              </span>
+            </span>
+            <span
+              th:unless="${product.discountedPriceIDR != null}"
+              class="dp-price"
+              >Rp[[${product.priceIDR}]]</span
+            >
+          </div>
+          <div class="mb-4">
+            <hr />
+          </div>
+          <p class="dp-description-title">Deskripsi</p>
 
-            </div>
-            <div class="mb-4">
-                <hr/>
-            </div>
-            <p class="dp-description-title">Deskripsi</p>
-
-            <div class="dp-product-desc" th:text="${product.description}"></div>
+          <div class="dp-product-desc" th:text="${product.description}"></div>
         </div>
 
         <div class="dp-form">
-            <h3>Atur Variant dan Jumlah</h3>
-            <form
-                    id="addToCartForm"
-                    th:action="@{/api/cart}"
-                    th:object="${cartItem}"
-                    method="POST"
+          <h3>Atur Variant dan Jumlah</h3>
+          <form
+            id="addToCartForm"
+            th:action="@{/api/cart}"
+            th:object="${cartItem}"
+            method="POST"
+          >
+            <!-- Radio buttons for variants -->
+            <div
+              th:each="variant : ${variants}"
+              class="form-check form-check-inline"
+              style="cursor: pointer"
             >
-                <!-- Radio buttons for variants -->
-                <div
-                        th:each="variant : ${variants}"
-                        class="form-check form-check-inline"
-                        style="cursor: pointer"
-                >
-                    <input
-                            style="cursor: pointer"
-                            class="form-check-input"
-                            type="radio"
-                            name="variantId"
-                            th:id="'variant' + ${variant.variantId}"
-                            th:value="${variant.variantId}"
-                    />
-                    <label
-                            style="cursor: pointer"
-                            class="form-check-label"
-                            th:for="'variant' + ${variant.variantId}"
-                            th:text="${variant.name}"
-                    ></label>
+              <input
+                style="cursor: pointer"
+                class="form-check-input"
+                type="radio"
+                name="variantId"
+                th:id="'variant' + ${variant.variantId}"
+                th:value="${variant.variantId}"
+              />
+              <label
+                style="cursor: pointer"
+                class="form-check-label"
+                th:for="'variant' + ${variant.variantId}"
+                th:text="${variant.name}"
+              ></label>
+            </div>
+            <!-- Hidden input field for productId -->
+            <input
+              type="hidden"
+              name="productId"
+              th:value="${product.productId}"
+            />
+            <div class="mb-3">
+              <hr />
+            </div>
+            <!-- Quantity adjustment -->
+            <div class="d-flex align-items-center justify-content-center">
+              <div
+                class="d-flex p-0 flex-row align-items-center justify-content-center gap-3"
+              >
+                <div class="d-flex">
+                  <button
+                    type="button"
+                    class="btn btn-primary btn-quantity border-0 px-3"
+                    style="background-color: #04d4f0"
+                    onclick="adjustQuantity(-1)"
+                  >
+                    -
+                  </button>
                 </div>
-                <!-- Hidden input field for productId -->
                 <input
-                        type="hidden"
-                        name="productId"
-                        th:value="${product.productId}"
+                  type="number"
+                  name="qty"
+                  id="quantity"
+                  value="1"
+                  class="rounded"
                 />
-                <div class="mb-3">
-                    <hr/>
+                <div class="d-flex">
+                  <button
+                    type="button"
+                    class="btn btn-primary btn-quantity border-0 px-3"
+                    style="background-color: #04d4f0"
+                    onclick="adjustQuantity(1)"
+                  >
+                    +
+                  </button>
                 </div>
-                <!-- Quantity adjustment -->
-                <div class="d-flex align-items-center justify-content-center">
-                    <div
-                            class="d-flex p-0 flex-row align-items-center justify-content-center gap-3"
-                    >
-                        <div class="d-flex">
-                            <button
-                                    type="button"
-                                    class="btn btn-primary btn-quantity border-0 px-3"
-                                    style="background-color: #04d4f0"
-                                    onclick="adjustQuantity(-1)"
-                            >
-                                -
-                            </button>
-                        </div>
-                        <input
-                                type="number"
-                                name="qty"
-                                id="quantity"
-                                value="1"
-                                class="rounded"
-                        />
-                        <div class="d-flex">
-                            <button
-                                    type="button"
-                                    class="btn btn-primary btn-quantity border-0 px-3"
-                                    style="background-color: #04d4f0"
-                                    onclick="adjustQuantity(1)"
-                            >
-                                +
-                            </button>
-                        </div>
-                    </div>
-                </div>
+              </div>
+            </div>
 
-                <!--Note Section-->
-                <div class="note-section mt-3">
-                    <div
-                            class="d-flex align-items-center justify-content-between mb-2"
-                    >
-                        <h6 class="mb-0 fst-italic text-decoration-underline">Note</h6>
-                        <button type="button" class="btn btn-link p-0" id="noteToggle">
-                            <i class="fas fa-pencil-alt"></i>
-                        </button>
-                    </div>
-                    <div class="note-input" id="noteInput">
+            <!--Note Section-->
+            <div class="note-section mt-3">
+              <div
+                class="d-flex align-items-center justify-content-between mb-2"
+              >
+                <h6 class="mb-0 fst-italic text-decoration-underline">Note</h6>
+                <button type="button" class="btn btn-link p-0" id="noteToggle">
+                  <i class="fas fa-pencil-alt"></i>
+                </button>
+              </div>
+              <div class="note-input" id="noteInput">
                 <textarea
-                        class="form-control"
-                        name="note"
-                        rows="2"
-                        placeholder="Add a note..."
+                  class="form-control"
+                  name="note"
+                  rows="2"
+                  placeholder="Add a note..."
                 ></textarea>
-                    </div>
-                </div>
-                <!-- Add to cart button -->
-                <div class="d-flex align-items-center justify-content-center mt-3">
-                    <button th:disabled="${not product.isAvailable}" type="submit" class="btn-custom w-100">
-                        Add To Cart
-                    </button>
-                </div>
-            </form>
+              </div>
+            </div>
+            <!-- Add to cart button -->
+            <div class="d-flex align-items-center justify-content-center mt-3">
+              <button
+                th:disabled="${not product.isAvailable}"
+                type="submit"
+                class="btn-custom w-100"
+              >
+                Add To Cart
+              </button>
+            </div>
+          </form>
         </div>
+      </div>
     </div>
-</div>
-
-<script>
+    <div th:replace="~{components/footer :: footer}"></div>
+    <script>
       function adjustQuantity(change) {
         var quantityInput = document.getElementById("quantity");
         var currentQuantity = parseInt(quantityInput.value);
@@ -200,67 +210,60 @@
           quantityInput.value = newQuantity;
         }
       }
-</script>
-<script>
+    </script>
+    <script>
       const noteInput = document.getElementById("noteInput");
       const noteToggle = document.getElementById("noteToggle");
 
       noteToggle.addEventListener("click", () => {
         noteInput.classList.toggle("expanded");
       });
+    </script>
+    <script th:src="@{/js/navbar.js}"></script>
+    <script>
+      document
+        .getElementById("addToCartForm")
+        .addEventListener("submit", function (event) {
+          event.preventDefault(); // Prevent the default form submission
+          const formData = new FormData(this);
 
-
-</script>
-<script th:src="@{/js/navbar.js}"></script>
-<script>
-    document.getElementById("addToCartForm").addEventListener("submit", function (event) {
-        event.preventDefault(); // Prevent the default form submission
-        const formData = new FormData(this);
-
-        fetch(this.action, {
+          fetch(this.action, {
             method: this.method,
             body: formData,
             headers: {
-                "X-Requested-With": "XMLHttpRequest", // Add this header to identify AJAX requests
+              "X-Requested-With": "XMLHttpRequest", // Add this header to identify AJAX requests
             },
-        })
+          })
             .then((response) => response.json())
             .then((data) => {
-                // Handle the response data here
-                console.log(data);
+              // Handle the response data here
+              console.log(data);
 
-                // Show the toast with the received message
-                const toastMessage = document.getElementById("toastMessage");
-                if (data.message) {
-                    const toastBody = toastMessage.querySelector(".toast-body");
-                    toastBody.textContent = data.message;
-                }
+              // Show the toast with the received message
+              const toastMessage = document.getElementById("toastMessage");
+              if (data.message) {
+                const toastBody = toastMessage.querySelector(".toast-body");
+                toastBody.textContent = data.message;
+              }
 
-                // Show the toast
-                 var $j = jQuery.noConflict();
-      $j(function () {
-        $j(".toast").toast("show");
-      });
+              // Show the toast
+              var $j = jQuery.noConflict();
+              $j(function () {
+                $j(".toast").toast("show");
+              });
 
-
-                // If the operation was successful, you might update the UI or show a message
-                // If not successful, handle errors accordingly
+              // If the operation was successful, you might update the UI or show a message
+              // If not successful, handle errors accordingly
             })
             .catch((error) => {
-                // Handle any errors that occurred during the fetch
-                console.error("Error:", error);
+              // Handle any errors that occurred during the fetch
+              console.error("Error:", error);
             });
-    });
+        });
+    </script>
 
-</script>
+    <script th:src="@{/js/popper@2.11.8.min.js}"></script>
 
-<script
-        th:src="@{/js/popper@2.11.8.min.js}"
-
-></script>
-
-<script
-        th:src="@{/js/bootstrap@5.3.1.min.js}"
-></script>
-</body>
+    <script th:src="@{/js/bootstrap@5.3.1.min.js}"></script>
+  </body>
 </html>

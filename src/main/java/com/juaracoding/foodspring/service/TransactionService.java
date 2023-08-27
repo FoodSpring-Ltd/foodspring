@@ -32,17 +32,10 @@ public class TransactionService {
        UUID idRand = UUID.randomUUID();
        Map<String, Object> params = new HashMap<>();
 
-       Map<String, String> transactionDetails = new HashMap<>();
-       transactionDetails.put("order_id", String.valueOf(idRand));
-       transactionDetails.put("gross_amount", "265000");
-
-       Map<String, String> creditCard = new HashMap<>();
-       creditCard.put("secure", "true");
-
-       params.put("transaction_details", transactionDetails);
-       params.put("credit_card", creditCard);
 
        String token = midtransSnapApi.createTransactionToken(params);
        return new ResponseHandler().generateModelAttribut("Token Created", HttpStatus.OK, token, null, request);
    }
+
+
 }

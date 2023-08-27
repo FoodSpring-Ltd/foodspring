@@ -51,9 +51,9 @@
                   th:replace="~{components/cart-item :: cart-item(item=${item})}"
           ></div>
         </div>
-        <div th:if="${#lists.isEmpty(cart.cartItems)}" class="d-flex justify-content-center align-items-center">
-          <i class="fa fa-shopping-cart fa-5x mb-3"></i>
-          <p class="text-center">You have no cart items.</p>
+        <div th:if="${#lists.isEmpty(cart.cartItems)}" class="d-flex flex-column justify-content-center align-items-center p-4">
+          <i style="color: lightgrey; opacity: 0.7" class="fa fa-shopping-cart fa-5x mb-3"></i>
+          <h4 style="font-weight: 700; color: lightgrey" class="text-center">You have no cart items</h4>
         </div>
       </div>
       <div class="card col-2 border border-info" style="max-height: 150px">
@@ -66,48 +66,16 @@
         </div>
         <div class="card-footer p-0 border-0">
           <a
-            th:attr="data-snapToken=${snapToken}"
             class="btn btn-primary rounded-top-0 col-12 pay-btn"
             id="pay-button"
-            href="#"
+            th:href="@{/checkout/payment}"
             >CHECKOUT</a
           >
         </div>
       </div>
     </div>
+    <div th:replace="~{components/footer :: footer}"></div>
 
-    <script
-      th:src="${SNAP_URL}"
-      th:attr="data-client-key=${MIDTRANS_CLIENT_KEY}"
-    ></script>
-    <script type="text/javascript">
-      const token = document
-        .getElementById("pay-button")
-        .getAttribute("data-snapToken");
-      document.getElementById("pay-button").onclick = function () {
-        // SnapToken acquired from previous step
-        snap.pay(token, {
-          // Optional
-          onSuccess: function (result) {
-            /* You may add your own js here, this is just example */ document.getElementById(
-              "result-json"
-            ).innerHTML += JSON.stringify(result, null, 2);
-          },
-          // Optional
-          onPending: function (result) {
-            /* You may add your own js here, this is just example */ document.getElementById(
-              "result-json"
-            ).innerHTML += JSON.stringify(result, null, 2);
-          },
-          // Optional
-          onError: function (result) {
-            /* You may add your own js here, this is just example */ document.getElementById(
-              "result-json"
-            ).innerHTML += JSON.stringify(result, null, 2);
-          },
-        });
-      };
-    </script>
     <script>
       var $j = jQuery.noConflict();
       const message = document.getElementById('toastBody');

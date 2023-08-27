@@ -40,3 +40,14 @@ input::-webkit-inner-spin-button {
 input[type=number] {
   -moz-appearance: textfield;
 }
+
+
+      .subscribe-btn {
+          background-color: #04d4f0;
+          border: none;
+
+           &:hover {
+             opacity: 0.6;
+             background-color: #04d4f0;
+           }
+      }

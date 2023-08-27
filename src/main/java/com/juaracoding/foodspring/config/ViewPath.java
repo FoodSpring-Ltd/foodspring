@@ -35,4 +35,6 @@ public class ViewPath {
     public static final String ORDER_UNPAID = "user_order/unpaid-page";
     public static final String ORDER_ON_PROCESS = "user_order/onprocess-page";
     public static final String ORDER_COMPLETED = "user_order/completed-order";
+    public static final String MAIN_ABOUT = "main/about";
+    public static final String CHECKOUT_PAGE = "user_order/checkout-page";
 }

@@ -17,24 +17,26 @@
     ></script>
     <link th:href="@{/css/navbar-top.css}" rel="stylesheet" />
     <script src="https://kit.fontawesome.com/8afc88656e.js" crossorigin="anonymous"></script>
-    <title>Unpaid Order</title>
+    <title>User Orders</title>
 </head>
 <body>
 <div>
-    <div th:replace="~{components/navbar-top :: navbar-top}"></div>
+    <div th:replace="~{components/navbar-top :: navbar-top(status=${status})}"></div>
 </div>
 <div class="container">
-    <div th:each="shopOrder : ${shopOrders}">
+    <div class="d-flex justify-content-center align-items-center mb-4"><h4>Order Status: [[${status}]]</h4></div>
+    <div class="d-flex flex-column p-0 col-12" th:each="shopOrder : ${shopOrders}">
         <div th:replace="~{components/order-card :: order-card(shopOrder=${shopOrder})}"></div>
     </div>
     <div class="d-flex justify-content-center align-items-center mt-2">
         <div
-                th:replace="~{components/pagination-bar :: pagination-bar(path='/order/unpaid', label='Order Unpaid Page')}"
+                th:replace="~{components/pagination-bar :: pagination-bar(path='/order', label='Order Unpaid Page')}"
         ></div>
     </div>
 </div>
 <!-- Footer -->
 <div th:replace="~{components/footer :: footer}"></div>
+<script th:src="@{/js/pagination.js}"></script>
 <script
         src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
         integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"

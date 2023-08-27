@@ -13,6 +13,7 @@ Version 1.0
 import com.foodspring.annotation.BasicAccess;
 import com.juaracoding.foodspring.config.ServicePath;
 import com.juaracoding.foodspring.config.ViewPath;
+import com.juaracoding.foodspring.enums.OrderStatus;
 import com.juaracoding.foodspring.model.ShopOrder;
 import com.juaracoding.foodspring.service.OrderService;
 import com.juaracoding.foodspring.utils.MappingAttribute;
@@ -22,6 +23,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.context.request.WebRequest;
 
 import java.util.HashMap;
@@ -43,16 +45,18 @@ public class UserOrderController {
     private String[] strExceptions = new String[2];
 
     public UserOrderController() {
-        strExceptions[0] = " UserOrderController";
+        strExceptions[0] = "UserOrderController";
     }
 
-    @GetMapping(value = ServicePath.UNPAID)
+    @GetMapping(value = "")
     public String unpaidOrder(PageProperty pageProperty,
+                              @RequestParam OrderStatus status,
                               Model model,
                               WebRequest request) {
-        objectMapper = orderService.getAllOrder(pageProperty.getPageable(), request);
+        objectMapper = orderService.getAllOrderByStatus(pageProperty.getPageable(), status, request);
         objectMapper = (Map<String, Object>) objectMapper.get("data");
         List<ShopOrder> data = (List<ShopOrder>) objectMapper.get("content");
+        model.addAttribute("status", status.toString());
         model.addAttribute("selectedRow", pageProperty.getLimit());
         model.addAttribute("totalPages", objectMapper.get("totalPages"));
         model.addAttribute("totalElements", objectMapper.get("totalItems"));
@@ -60,20 +64,8 @@ public class UserOrderController {
         model.addAttribute("HIDE_TOP_SEARCH_BAR", true);
         model.addAttribute("shopOrders", data);
         mappingAttribute.setAttribute(model, request);
-        return ViewPath.ORDER_UNPAID;
+        return ViewPath.USER_ORDER;
     }
 
-    @GetMapping(value = ServicePath.COMPLETED)
-    public String completedOrder(Model model, WebRequest request) {
-        model.addAttribute("HIDE_TOP_SEARCH_BAR", true);
-        mappingAttribute.setAttribute(model, request);
-        return ViewPath.ORDER_COMPLETED;
-    }
 
-    @GetMapping(value = ServicePath.ON_PROCESS)
-    public String onProcessOrder(Model model, WebRequest request) {
-        model.addAttribute("HIDE_TOP_SEARCH_BAR", true);
-        mappingAttribute.setAttribute(model, request);
-        return ViewPath.ORDER_ON_PROCESS;
-    }
 }

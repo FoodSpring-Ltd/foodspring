@@ -16,7 +16,6 @@ import com.juaracoding.foodspring.config.ViewPath;
 import com.juaracoding.foodspring.dto.CartResponse;
 import com.juaracoding.foodspring.service.CartService;
 import com.juaracoding.foodspring.service.OrderService;
-import com.juaracoding.foodspring.service.TransactionService;
 import com.juaracoding.foodspring.utils.MappingAttribute;
 import com.midtrans.httpclient.error.MidtransError;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,9 +41,6 @@ public class CartController {
 
     @Autowired
     private MappingAttribute mappingAttribute;
-
-    @Autowired
-    private TransactionService transactionService;
 
     private String[] strExceptions = new String[2];
 

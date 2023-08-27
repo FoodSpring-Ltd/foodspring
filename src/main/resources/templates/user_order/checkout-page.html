@@ -15,35 +15,20 @@
             integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
             crossorigin="anonymous"
     ></script>
-    <link th:href="@{/css/navbar-top.css}" rel="stylesheet"/>
+    <link th:href="@{/css/navbar-top.css}" rel="stylesheet" />
     <script src="https://kit.fontawesome.com/8afc88656e.js" crossorigin="anonymous"></script>
-    <title>Checkout</title>
+    <title>Payment</title>
 </head>
 <body>
 <div>
     <div th:replace="~{components/navbar-top :: navbar-top}"></div>
 </div>
-<div class="d-flex">
-    <div th:replace="~{components/order-card :: order-card(shopOrder=${shopOrder})}"></div>
-    <div class="card col-2 border border-info" style="max-height: 150px">
-        <div class="card-body">
-            <h3 class="card-title">Payment</h3>
-            <div class="mb-3"><hr /></div>
-            <div class="card-text-wrapper mb-2">
-                <h4 class="card-text" style="font-size: 1.2rem"><span style="font-size: 1rem; color: grey">Total Payment</span> Rp[[${shopOrder.grandTotalIDR}]]</h4>
-            </div>
-        </div>
-        <div class="card-footer p-0 border-0">
-            <a
-                    th:attr="data-snapToken=${snapToken}"
-                    class="btn btn-primary rounded-top-0 col-12 pay-btn"
-                    id="pay-button"
-            >PAY</a
-            >
-        </div>
+<div class="container">
+    <div class="d-flex justify-content-center align-items-center mb-4"><h4>PAYMENT</h4></div>
+    <div class="d-flex flex-column p-0 col-12" th:each="shopOrder : ${shopOrders}">
+        <div th:replace="~{components/order-card :: order-card(shopOrder=${shopOrder}, MIDTRANS_CLIENT_KEY=${MIDTRANS_CLIENT_KEY})}"></div>
     </div>
 </div>
-
 <!-- Footer -->
 <div th:replace="~{components/footer :: footer}"></div>
 
@@ -52,34 +37,31 @@
         th:attr="data-client-key=${MIDTRANS_CLIENT_KEY}"
 ></script>
 <script type="text/javascript">
-      const token = document
+    const token = document
         .getElementById("pay-button")
         .getAttribute("data-snapToken");
-      document.getElementById("pay-button").onclick = function () {
+
+    console.log(token);
+
+    document.getElementById("pay-button").onclick = function () {
         // SnapToken acquired from previous step
         snap.pay(token, {
-          // Optional
-          onSuccess: function (result) {
-            /* You may add your own js here, this is just example */ document.getElementById(
-              "result-json"
-            ).innerHTML += JSON.stringify(result, null, 2);
-          },
-          // Optional
-          onPending: function (result) {
-            /* You may add your own js here, this is just example */ document.getElementById(
-              "result-json"
-            ).innerHTML += JSON.stringify(result, null, 2);
-          },
-          // Optional
-          onError: function (result) {
-            /* You may add your own js here, this is just example */ document.getElementById(
-              "result-json"
-            ).innerHTML += JSON.stringify(result, null, 2);
-          },
+            // Optional
+            onSuccess: function (result) {
+                window.location.href = '/order?status=PAID';
+            },
+            // Optional
+            onPending: function (result) {
+                window.location.href = '/order?status=UNPAID';
+            },
+            // Optional
+            onError: function (result) {
+                window.location.href = '/home';
+            },
         });
-      };
-
+    };
 </script>
+
 <script
         src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
         integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"

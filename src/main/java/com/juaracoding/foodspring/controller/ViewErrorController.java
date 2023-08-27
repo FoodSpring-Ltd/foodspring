@@ -42,7 +42,15 @@ public class ViewErrorController {
         return ServicePath.REDIRECT_HOME;
     }
 
-    @ExceptionHandler({DataIntegrityViolationException.class, Exception.class})
+    @ExceptionHandler({DataIntegrityViolationException.class})
+    public String dataIntegrity(Exception ex, RedirectAttributes redirectAttributes) {
+        strException[1] = "dataIntegrity(Exception ex, RedirectAttributes redirectAttributes) -- LINE 32";
+        LoggingFile.exceptionString(strException, ex, AppConfig.getFlagLogging());
+        redirectAttributes.addFlashAttribute("message", ex.getMessage());
+        return ServicePath.REDIRECT_HOME;
+    }
+
+    @ExceptionHandler({Exception.class})
     public String error500(Exception ex) {
         strException[1] = "error500() -- LINE 32";
         LoggingFile.exceptionString(strException, ex, AppConfig.getFlagLogging());

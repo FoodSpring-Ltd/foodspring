@@ -28,13 +28,11 @@ public class ViewPath {
     public static final String ADMIN_UPDATE_PRODUCT_FORM = "admin/update-product-form";
     public static final String MAIN_PRODUCT_DETAILS = "main/product-details";
 
-    public static final String REDIRECT_AUTH_VERIFY = "redirect:/auth/verify";
     public static final String REDIRECT_ADMIN_CATEGORY_DASHBOARD = "redirect:/admin/dashboard/category";
     public static final String ADMIN_DISCOUNT_DASHBOARD = "admin/discount-dashboard";
     public static final String CART = "cart/cart";
-    public static final String ORDER_UNPAID = "user_order/unpaid-page";
-    public static final String ORDER_ON_PROCESS = "user_order/onprocess-page";
-    public static final String ORDER_COMPLETED = "user_order/completed-order";
     public static final String MAIN_ABOUT = "main/about";
     public static final String CHECKOUT_PAGE = "user_order/checkout-page";
+    public static final String ORDER_PAID = "user_order/paid-order";
+    public static final String USER_ORDER = "user_order/user-order";
 }

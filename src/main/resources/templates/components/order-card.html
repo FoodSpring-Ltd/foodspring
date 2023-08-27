@@ -1,14 +1,24 @@
-<div th:fragment="order-card" class="card" xmlns:th="http://www.w3.org/1999/xhtml">
+<div th:fragment="order-card" class="card mb-3" xmlns:th="http://www.w3.org/1999/xhtml">
     <div class="card-header">
         <div class="d-flex flex-column g-0">
-            <p><strong>Order ID:</strong> [[${shopOrder.shopOrderId}]]</p>
-            <p style="margin-top: -15px"><strong>Order Date:</strong> [[${#temporals.format(shopOrder.createdAt, 'dd/MM/yyyy HH:mm') + ' WIB'}]]</p>
-            <p style="margin-top: -15px"><strong>Grand Total:</strong> [[${shopOrder.grandTotal}]]</p>
+            <p><strong>Order Date:</strong> [[${#temporals.format(shopOrder.createdAt, 'dd/MM/yyyy HH:mm') + ' WIB'}]]</p>
+            <p style="margin-top: -15px"><strong>Grand Total:</strong> Rp[[${shopOrder.grandTotalIDR}]]</p>
         </div>
     </div>
-    <div class="card-body">
-       <div th:each="item : ${shopOrder.orderItems}">
-           <div th:replace="~{components/order-item :: order-item(item=${item})}"></div>
-       </div>
+    <div class="card-body p-1">
+      <div class="d-flex gap-3 p-0 flex-wrap">
+          <div style="max-height: 200px" class="col-5" th:each="item : ${shopOrder.orderItems}">
+              <div th:replace="~{components/order-item :: order-item(item=${item})}"></div>
+          </div>
+      </div>
+    </div>
+    <div th:if="${not shopOrder.isPaid}" class="card-footer bg-transparent">
+        <div class="d-flex justify-content-end">
+            <a th:if="${MIDTRANS_CLIENT_KEY == null}" th:href="@{/checkout/payment/{orderId}(orderId=${shopOrder.shopOrderId})}" class="btn btn-primary w-50">PAY</a>
+            <a th:if="${MIDTRANS_CLIENT_KEY != null}"
+               th:attr="data-snapToken=${shopOrder.snapToken}"
+               id="pay-button"
+               class="btn btn-primary w-50">PAY</a>
+        </div>
     </div>
 </div>

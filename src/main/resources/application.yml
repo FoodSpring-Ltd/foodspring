@@ -1,8 +1,4 @@
 spring:
   profiles:
     active: local
-  rabbitmq:
-    host: rabbitmq
-    port: 5673
-    username: guest
-    password: guest
+

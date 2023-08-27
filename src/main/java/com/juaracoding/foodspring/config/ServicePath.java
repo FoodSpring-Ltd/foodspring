@@ -63,5 +63,7 @@ public class ServicePath {
     public static final String MIDTRANS = "/midtrans";
     public static final String NOTIFICATION = "/notification" ;
     public static final String CHECKOUT_PAYMENT = "/checkout/payment";
-    public static final String REDIRECT_ORDER_UNPAID = "redirect:/order/unpaid";
+    public static final String REDIRECT_ORDER_UNPAID = "redirect:/order?status=UNPAID";
+    public static final String PAID = "/paid";
+    public static final String ORDER_ID = "/{orderId}";
 }

@@ -114,5 +114,10 @@ public class ConstantMessage {
     public static final String ERROR_CREATE_ORDER = "Something went wrong, can't proceed order";
     public static final String CART_EMPTY = "Cart is empty";
     public static final String SUCCESS_CREATE_ORDER = "Order created successfully";
+    public static final String ERROR_UPDATE_ORDER_STATUS = "Failed to update order status";
+    public static final String SUCCESS_UPDATE_ORDER_STATUS = "Success update order status";
+    public static final String ERROR_NO_ORDER_FOUND = "No such shop order found";
+    public static final String ORDER_STATUS_NOT_CHANGED = "No transaction status matched condition checking. Order status no updated.";
+    public static final String ERROR_INVALID_DATA = "Data invalid";
 }
 

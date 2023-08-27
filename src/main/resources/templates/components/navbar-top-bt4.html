@@ -17,9 +17,11 @@
                     <i class="fas fa-shopping-bag fa-lg"></i>
                 </a>
                 <div  class="dropdown-menu">
-                    <a class="dropdown-item" th:href="@{/order/unpaid}">Unpaid</a>
-                    <a class="dropdown-item" th:href="@{/order/onprocess}">On Process</a>
-                    <a class="dropdown-item" th:href="@{/order/completed}">Completed</a>
+                    <a class="dropdown-item" th:href="@{/order?status=UNPAID}">Unpaid</a>
+                    <a class="dropdown-item" th:href="@{/order?status=PAID}">Paid</a>
+                    <a class="dropdown-item" th:href="@{/order?status=ON_PROCESS}">On Process</a>
+                    <a class="dropdown-item" th:href="@{/order?status=COMPLETED}">Completed</a>
+                    <a class="dropdown-item" th:href="@{/order?status=CANCELED}">Canceled</a>
                 </div>
             </li>
             <li th:if="${IS_ADMIN != null} and ${IS_ADMIN}" class="nav-item active">

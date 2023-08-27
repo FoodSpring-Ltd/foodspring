@@ -16,6 +16,7 @@ import com.juaracoding.foodspring.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.request.WebRequest;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -28,8 +29,8 @@ public class MidtransWebhook {
     private OrderService orderService;
 
     @PostMapping(value = ServicePath.NOTIFICATION)
-    public ResponseEntity<Map<String, Object>> handleNotification(@RequestBody MidtransNotif notification){
-
+    public ResponseEntity<Map<String, Object>> handleNotification(@RequestBody MidtransNotif notification, WebRequest request){
+        orderService.handleMidtransStatusUpdate(notification, request);
         return ResponseEntity.ok(new HashMap<>());
     }
 }

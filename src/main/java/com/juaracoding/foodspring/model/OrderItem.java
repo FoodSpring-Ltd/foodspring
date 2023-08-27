@@ -74,4 +74,6 @@ public class OrderItem {
     @Column(name = "UpdatedAt")
     @UpdateTimestamp
     private LocalDateTime updatedAt = LocalDateTime.now();
+
+
 }

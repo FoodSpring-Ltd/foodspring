@@ -3,6 +3,10 @@
         <div class="d-flex flex-column g-0">
             <p><strong>Order Date:</strong> [[${#temporals.format(shopOrder.createdAt, 'dd/MM/yyyy HH:mm') + ' WIB'}]]</p>
             <p style="margin-top: -15px"><strong>Grand Total:</strong> Rp[[${shopOrder.grandTotalIDR}]]</p>
+            <div th:if="${shopOrder.adminUsername != null}" class="d-flex flex-column col-3">
+                <p style="font-style: italic; font-size: 12px"><strong>Modified by:</strong> [[${shopOrder.adminUsername}]] </p>
+                <p style="font-style: italic; font-size: 12px; margin-top: -20px"><strong>Updated at: </strong>[[${#temporals.format(shopOrder.updatedAt, 'dd/MM/yyyy HH:mm') + ' WIB'}]]</p>
+            </div>
         </div>
     </div>
     <div class="card-body p-1">

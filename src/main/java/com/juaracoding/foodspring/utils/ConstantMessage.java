@@ -110,7 +110,7 @@ public class ConstantMessage {
     public static final String SUCCESS_RETRIEVE_DATA = "Data retrieval success";
     public static final String ERROR_RETRIEVE_DATA = "Failed to retrieve data";
     public static final String ERROR_UNAUTHORIZE = "You're not logged in";
-    public static final String ERROR_ACCOUNT_INACTIVE = "Your account is activated or deleted";
+    public static final String ERROR_ACCOUNT_INACTIVE = "Your account is not activated or deleted";
     public static final String ERROR_CREATE_ORDER = "Something went wrong, can't proceed order";
     public static final String CART_EMPTY = "Cart is empty";
     public static final String SUCCESS_CREATE_ORDER = "Order created successfully";
@@ -119,5 +119,7 @@ public class ConstantMessage {
     public static final String ERROR_NO_ORDER_FOUND = "No such shop order found";
     public static final String ORDER_STATUS_NOT_CHANGED = "No transaction status matched condition checking. Order status no updated.";
     public static final String ERROR_INVALID_DATA = "Data invalid";
+    public static final String ERROR_TO_PROCEED = "Can't process your request, please try again later";
+    public static final String ERROR_CREATE_PAYMENT = "failed to create payment, please try again later";
 }
 

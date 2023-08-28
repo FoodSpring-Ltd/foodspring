@@ -27,6 +27,7 @@ import com.juaracoding.foodspring.utils.CalcUtils;
 import com.juaracoding.foodspring.utils.ConstantMessage;
 import com.juaracoding.foodspring.utils.PaymentUtils;
 import com.juaracoding.foodspring.utils.TransformToDTO;
+import com.midtrans.httpclient.error.MidtransError;
 import com.midtrans.service.MidtransSnapApi;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,6 +49,8 @@ public class OrderService {
     private final UserRepository userRepository;
     @Autowired
     private OrderItemRepository orderItemRepository;
+
+
     @Autowired
     private MidtransSnapApi midtransSnapApi;
     @Autowired
@@ -61,6 +64,7 @@ public class OrderService {
     @Autowired
     private ModelMapper modelMapper;
     private TransformToDTO<ShopOrder, OrderResponse> transformer = new TransformToDTO<>();
+
     @Autowired
     private ShopOrderRepository shopOrderRepository;
 
@@ -91,17 +95,8 @@ public class OrderService {
             orderItemRepository.saveAllAndFlush(orderItems);
             cartItemRepository.deleteAllInBatch(cartItems);
             int grandTotal = getGrandTotalOrder(orderItems).intValue();
-            List<MidtransItemDetails> midtransItemDetails = OrderItemMapper.INSTANCE.toMidtransItemDetailsList(orderItems);
-            CustomerDetails customerDetails = new CustomerDetails();
-            if (user.isPresent()) {
-                customerDetails = UserMapper.INSTANCE.toCustomerDetails(user.get());
-            }
-            TransactionDetailsMidtrans transactionDetailsMidtrans = new TransactionDetailsMidtrans();
-            transactionDetailsMidtrans.setOrder_id(shopOrder.getShopOrderId());
-            transactionDetailsMidtrans.setGross_amount(grandTotal);
-            Map<String, Object> paymentPayload = PaymentUtils.getPaymentRequestBody(transactionDetailsMidtrans, customerDetails, midtransItemDetails);
-            String snapToken = midtransSnapApi.createTransactionToken(paymentPayload);
             shopOrder.setOrderItems(orderItems);
+            String snapToken = createSnapToken(shopOrder, grandTotal);
             shopOrder.setSnapToken(snapToken);
             shopOrder.setGrandTotalIDR(CurrencyFormatter.toRupiah((double) grandTotal));
             shopOrder.setGrandTotal((double) grandTotal);
@@ -110,6 +105,10 @@ public class OrderService {
         } catch (Exception e) {
             strExceptionArr[1] = "createOrder(WebRequest request)";
             LoggingFile.exceptionString(strExceptionArr, e, "y");
+            if (e instanceof MidtransError) {
+                return new ResponseHandler().generateModelAttribut(ConstantMessage.ERROR_CREATE_PAYMENT,
+                        HttpStatus.INTERNAL_SERVER_ERROR, null, "OS0001", request);
+            }
             return new ResponseHandler().generateModelAttribut(ConstantMessage.ERROR_CREATE_ORDER,
                     HttpStatus.INTERNAL_SERVER_ERROR, null, "OS0001", request);
         }
@@ -119,13 +118,14 @@ public class OrderService {
 
 
     @Transactional(rollbackFor = Exception.class)
-    public Map<String, Object> handleMidtransStatusUpdate(MidtransNotif midtransNotif, WebRequest request) {
+    public void handleMidtransStatusUpdate(MidtransNotif midtransNotif, WebRequest request) {
         Optional<ShopOrder> shopOrder;
         try {
             shopOrder = shopOrderRepository.findById(midtransNotif.getOrderId());
             if (shopOrder.isEmpty()) {
-                return new ResponseHandler().generateModelAttribut(ConstantMessage.ERROR_NO_ORDER_FOUND,
+                new ResponseHandler().generateModelAttribut(ConstantMessage.ERROR_NO_ORDER_FOUND,
                         HttpStatus.NOT_ACCEPTABLE, null, "OS0003", request);
+                return;
             }
             ShopOrder order = shopOrder.get();
             if (midtransNotif.getTransactionStatus().equals("settlement") || midtransNotif.getTransactionStatus().equals("capture")) {
@@ -133,45 +133,31 @@ public class OrderService {
                 order.setUpdatedAt(LocalDateTime.now());
                 order.setMidtransTransactionId(midtransNotif.getTransactionId());
                 order.setPaymentType(midtransNotif.getPaymentType());
-            } else if (midtransNotif.getTransactionStatus().equals("deny") || midtransNotif.getTransactionStatus().equals("expired")) {
+            } else if (midtransNotif.getTransactionStatus().equals("deny")
+                    || midtransNotif.getTransactionStatus().equals("expire")
+                    || midtransNotif.getTransactionStatus().equals("cancel")) {
                 order.setOrderStatus(OrderStatus.CANCELED);
                 order.setUpdatedAt(LocalDateTime.now());
                 order.setMidtransTransactionId(midtransNotif.getTransactionId());
                 order.setPaymentType(midtransNotif.getPaymentType());
             } else {
-                return new ResponseHandler().generateModelAttribut(ConstantMessage.ORDER_STATUS_NOT_CHANGED,
+                new ResponseHandler().generateModelAttribut(ConstantMessage.ORDER_STATUS_NOT_CHANGED,
                         HttpStatus.OK, order, null, request);
+                return;
             }
             shopOrderRepository.save(order);
         } catch (Exception e) {
             strExceptionArr[1] = "updateOrderPaymentStatus(MidtransNotif midtransNotif, WebRequest request) --LINE 139";
             LoggingFile.exceptionString(strExceptionArr, e, "y");
-            return new ResponseHandler().generateModelAttribut(ConstantMessage.ERROR_UPDATE_ORDER_STATUS,
+            new ResponseHandler().generateModelAttribut(ConstantMessage.ERROR_UPDATE_ORDER_STATUS,
                     HttpStatus.INTERNAL_SERVER_ERROR, null, "OS0003", request);
+            return;
         }
-        return new ResponseHandler().generateModelAttribut(ConstantMessage.SUCCESS_UPDATE_ORDER_STATUS,
+        new ResponseHandler().generateModelAttribut(ConstantMessage.SUCCESS_UPDATE_ORDER_STATUS,
                 HttpStatus.OK, shopOrder.orElse(null), "OS0003", request);
     }
 
-    @Transactional(rollbackFor = Exception.class)
-    public Map<String, Object> updateOrderStatus(OrderStatusDTO orderStatusRequest, WebRequest request) {
-        Long adminId = (Long) request.getAttribute("USR_ID", WebRequest.SCOPE_SESSION);
-        if (Objects.isNull(orderStatusRequest.getOrderStatus()) || Objects.isNull(orderStatusRequest.getOrderId())) {
-            return new ResponseHandler().generateModelAttribut(ConstantMessage.ERROR_INVALID_DATA,
-                    HttpStatus.BAD_REQUEST, null, "OS0006", request);
-        }
-        Optional<ShopOrder> shopOrder = shopOrderRepository.findById(orderStatusRequest.getOrderId());
-        if (shopOrder.isEmpty()) {
-            return new ResponseHandler().generateModelAttribut(ConstantMessage.ERROR_NO_ORDER_FOUND,
-                    HttpStatus.NOT_FOUND, null, "OS0006", request);
-        }
-        shopOrder.get().setOrderStatus(orderStatusRequest.getOrderStatus());
-        shopOrder.get().setModifiedBy(adminId);
-        shopOrder.get().setUpdatedAt(LocalDateTime.now());
-        shopOrderRepository.save(shopOrder.get());
-        return new ResponseHandler().generateModelAttribut(ConstantMessage.SUCCESS_UPDATE_ORDER_STATUS,
-                HttpStatus.OK, shopOrder.orElse(null), null, request);
-    }
+
     public Map<String, Object> getAllOrderByStatus(Pageable pageable, OrderStatus status, WebRequest request) {
         Long userId = (Long) request.getAttribute("USR_ID", WebRequest.SCOPE_SESSION);
         Page<ShopOrder> shopOrders;
@@ -181,6 +167,7 @@ public class OrderService {
             List<OrderResponse> response = convertToOrderResponseList(shopOrders.getContent());
             result = transformer.transformObject(new HashMap<>(), response, shopOrders);
         } catch (Exception e) {
+            e.printStackTrace();
             strExceptionArr[1] = "getAllOrder(Pageable pageable, WebRequest request) --LINE 94";
             return new ResponseHandler().generateModelAttribut(ConstantMessage.ERROR_CREATE_ORDER,
                     HttpStatus.INTERNAL_SERVER_ERROR, null, "OS0002", request);
@@ -205,14 +192,14 @@ public class OrderService {
         for (OrderItem item : items) {
             double price = item.getUnitPrice() * item.getQty();
             if (item.getDiscountPercentage() != null) {
-                price = CalcUtils.getDiscountedPrice(item.getUnitPrice(), item.getDiscountPercentage());
+                price = CalcUtils.getDiscountedPrice(item.getUnitPrice(), item.getDiscountPercentage()) * item.getQty();
             }
             total += price;
         }
         return total;
     }
 
-    private List<OrderResponse> convertToOrderResponseList(List<ShopOrder> shopOrders) {
+    protected List<OrderResponse> convertToOrderResponseList(List<ShopOrder> shopOrders) {
         List<OrderResponse> result = new ArrayList<>();
         for (ShopOrder order : shopOrders) {
             OrderResponse res = new OrderResponse();
@@ -221,7 +208,12 @@ public class OrderService {
                     .stream()
                     .mapToDouble(OrderItemResponse::getTotalPrice)
                     .sum();
+            if (order.getModifiedBy() != null) {
+                User user = shopOrderRepository.findUserByModifiedBy(order.getModifiedBy());
+                res.setAdminUsername(user.getUsername());
+            }
             res.setOrderItems(orderItems);
+            res.setUpdatedAt(order.getUpdatedAt());
             res.setGrandTotal(grandTotal);
             res.setGrandTotalIDR(CurrencyFormatter.toRupiah(grandTotal));
             res.setShopOrderId(order.getShopOrderId());
@@ -230,6 +222,43 @@ public class OrderService {
             res.setSnapToken(order.getSnapToken());
             result.add(res);
         }
-        return  result;
+        return result;
     }
+
+    public String createSnapToken(String orderId, Integer grandTotal) throws MidtransError {
+        Optional<ShopOrder> order = shopOrderRepository.findById(orderId);
+        if (order.isEmpty()) {
+            throw new MidtransError("Order doesn't exist");
+        }
+        List<MidtransItemDetails> midtransItemDetails = OrderItemMapper.INSTANCE.toMidtransItemDetailsList(order.get().getOrderItems());
+        CustomerDetails customerDetails = new CustomerDetails();
+        if (order.get().getUser() != null) {
+            customerDetails = UserMapper.INSTANCE.toCustomerDetails(order.get().getUser());
+        }
+        TransactionDetailsMidtrans transactionDetailsMidtrans = new TransactionDetailsMidtrans();
+        transactionDetailsMidtrans.setOrder_id(order.get().getShopOrderId());
+        transactionDetailsMidtrans.setGross_amount(grandTotal);
+        Map<String, Object> paymentPayload = PaymentUtils.getPaymentRequestBody(transactionDetailsMidtrans, customerDetails, midtransItemDetails);
+        String snapToken = midtransSnapApi.createTransactionToken(paymentPayload);
+        order.get().setSnapToken(snapToken);
+        shopOrderRepository.save(order.get());
+        return snapToken;
+
+    }
+    public String createSnapToken(ShopOrder order, Integer grandTotal) throws MidtransError {
+        List<MidtransItemDetails> midtransItemDetails = OrderItemMapper.INSTANCE.toMidtransItemDetailsList(order.getOrderItems());
+        CustomerDetails customerDetails = new CustomerDetails();
+        if (order.getUser() != null) {
+            customerDetails = UserMapper.INSTANCE.toCustomerDetails(order.getUser());
+        }
+        TransactionDetailsMidtrans transactionDetailsMidtrans = new TransactionDetailsMidtrans();
+        transactionDetailsMidtrans.setOrder_id(order.getShopOrderId());
+        transactionDetailsMidtrans.setGross_amount(grandTotal);
+        Map<String, Object> paymentPayload = PaymentUtils.getPaymentRequestBody(transactionDetailsMidtrans, customerDetails, midtransItemDetails);
+        return midtransSnapApi.createTransactionToken(paymentPayload);
+
+    }
+
+
+
 }

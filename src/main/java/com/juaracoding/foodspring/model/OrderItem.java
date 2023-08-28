@@ -54,7 +54,7 @@ public class OrderItem {
     private String discountName;
 
     @Column(name = "DiscountPercentage")
-    private Float discountPercentage;
+    private Integer discountPercentage;
 
     @Column(name = "UnitPrice")
     private Double unitPrice;

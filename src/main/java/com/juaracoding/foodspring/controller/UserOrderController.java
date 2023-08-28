@@ -49,14 +49,14 @@ public class UserOrderController {
     }
 
     @GetMapping(value = "")
-    public String unpaidOrder(PageProperty pageProperty,
+    public String showOrders(PageProperty pageProperty,
                               @RequestParam OrderStatus status,
                               Model model,
                               WebRequest request) {
         objectMapper = orderService.getAllOrderByStatus(pageProperty.getPageable(), status, request);
         objectMapper = (Map<String, Object>) objectMapper.get("data");
         List<ShopOrder> data = (List<ShopOrder>) objectMapper.get("content");
-        model.addAttribute("status", status.toString());
+        model.addAttribute("userOrderStatus", status.toString());
         model.addAttribute("selectedRow", pageProperty.getLimit());
         model.addAttribute("totalPages", objectMapper.get("totalPages"));
         model.addAttribute("totalElements", objectMapper.get("totalItems"));

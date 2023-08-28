@@ -66,4 +66,10 @@ public class ServicePath {
     public static final String REDIRECT_ORDER_UNPAID = "redirect:/order?status=UNPAID";
     public static final String PAID = "/paid";
     public static final String ORDER_ID = "/{orderId}";
+    public static final String ADMIN_UPDATE_STATUS = "/admin/update-order-status";
+    public static final String ORDER_MANAGEMENT = "/order-management";
+    public static final String REDIRECT_ADMIN = "redirect:/admin";
+    public static final String UPDATE_ORDER_STATUS = "/update-order-status";
+
+    public static final String REDIRECT_ORDER_MANAGEMENT_STATUS = "redirect:/admin/order-management?status=";
 }

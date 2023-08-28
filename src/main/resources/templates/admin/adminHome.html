@@ -8,11 +8,38 @@
     <link th:href="@{/css/adminHome.css}" rel="stylesheet">
     <link th:href="@{/css/navbar-top.css}" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <script
+            th:src="@{/js/jquery@3.5.1.slim.min.js}"
 
+    ></script>
     <title>Food Spring App by STARLINE</title>
 </head>
 <body>
 <div th:replace="~{components/navbar-top :: navbar-top}" class="navbar-container">
+</div>
+<div
+        class="d-flex w-100 justify-content-center align-items-center pt-3"
+        style="position: absolute; z-index: 999"
+>
+    <div
+
+            class="toast align-items-center text-white bg-primary border-0"
+            role="alert"
+            aria-live="assertive"
+            aria-atomic="true"
+            data-bs-delay="3000"
+            id="toastMessage"
+    >
+        <div class="d-flex">
+            <div class="toast-body" id="toastBody">[[${message}]]</div>
+            <button
+                    type="button"
+                    class="btn-close btn-close-white me-2 m-auto"
+                    data-bs-dismiss="toast"
+                    aria-label="Close"
+            ></button>
+        </div>
+    </div>
 </div>
 <div class="welcome-header">
     <div class="welcome-container">
@@ -54,8 +81,17 @@
         <div class="card">
             <div class="card-body">
                 <h5 class="card-title">Incoming Order</h5>
-                <p class="card-text">Manage your incoming or ongoing order</p>
-                <a href="/admin/dashboard/orders" class="btn manage">Manage</a>
+                <p class="card-text">Manage your incoming or ongoing orders</p>
+                <a th:href="@{/admin/order-management?status=PAID}" class="btn manage">Manage</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-3">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">On Process Order</h5>
+                <p class="card-text">Manage your on process orders</p>
+                <a th:href="@{/admin/order-management?status=ON_PROCESS}" class="btn manage">Manage</a>
             </div>
         </div>
     </div>
@@ -63,13 +99,22 @@
         <div class="card">
             <div class="card-body">
                 <h5 class="card-title">Completed Order</h5>
-                <p class="card-text">Manage your completed order</p>
-                <a href="/admin/dashboard/orders/completed" class="btn manage" style="pointer-events: none">Manage</a>
+                <p class="card-text">Manage your completed orders</p>
+                <a th:href="@{/admin/order-management?status=COMPLETED}" class="btn manage">Manage</a>
             </div>
         </div>
     </div>
 </div>
+<script>
+      var $j = jQuery.noConflict();
+      const message = document.getElementById('toastBody');
+      if (message.textContent.length != 0) {
+         $j(function () {
+        $j(".toast").toast("show");
+      });
 
+      }
+    </script>
 <script th:src="@{/js/navbar.js}"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
         integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"

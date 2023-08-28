@@ -33,6 +33,6 @@ public class ViewPath {
     public static final String CART = "cart/cart";
     public static final String MAIN_ABOUT = "main/about";
     public static final String CHECKOUT_PAGE = "user_order/checkout-page";
-    public static final String ORDER_PAID = "user_order/paid-order";
     public static final String USER_ORDER = "user_order/user-order";
+    public static final String ADMIN_ORDERS_PAGE = "admin/admin-order-page";
 }

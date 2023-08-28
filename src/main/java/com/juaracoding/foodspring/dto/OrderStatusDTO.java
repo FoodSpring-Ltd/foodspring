@@ -11,13 +11,17 @@ Version 1.0
 */
 
 import com.juaracoding.foodspring.enums.OrderStatus;
+import lombok.Builder;
 import lombok.Data;
 
 import java.io.Serializable;
 
 @Data
+@Builder
 public class OrderStatusDTO implements Serializable {
 
     private OrderStatus orderStatus;
     private String orderId;
+    private String updateStatusPath;
+    private String buttonName;
 }

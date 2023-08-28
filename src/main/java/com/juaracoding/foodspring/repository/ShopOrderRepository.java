@@ -12,13 +12,18 @@ Version 1.0
 
 import com.juaracoding.foodspring.enums.OrderStatus;
 import com.juaracoding.foodspring.model.ShopOrder;
+import com.juaracoding.foodspring.model.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ShopOrderRepository extends JpaRepository<ShopOrder, String> {
 
     Page<ShopOrder> findAllByUserUserIdAndOrderStatus(Long userId, OrderStatus orderStatus, Pageable pageable);
+    Page<ShopOrder> findAllByOrderStatus(OrderStatus orderStatus, Pageable pageable);
+    @Query("SELECT u FROM User u JOIN ShopOrder so ON u.userId = so.modifiedBy WHERE so.modifiedBy = :userId")
+    User findUserByModifiedBy(Long userId);
 }

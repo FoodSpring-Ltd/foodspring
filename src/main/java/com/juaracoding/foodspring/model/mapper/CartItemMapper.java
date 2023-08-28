@@ -91,7 +91,7 @@ public interface CartItemMapper {
         return item.getVariant() != null ? item.getVariant().getName() : "None";
     }
 
-    default Float getDiscountAmount(CartItem item) {
+    default Integer getDiscountAmount(CartItem item) {
         if (item.getProduct() != null && item.getProduct().getDiscount() != null && isDiscountApplicable(item.getProduct().getDiscount())) {
             return item.getProduct().getDiscount().getPercentDiscount();
         }
@@ -114,11 +114,11 @@ public interface CartItemMapper {
     default Double getTotalPrice(CartItem item) {
         if (item.getProduct() != null) {
             Double productPrice = item.getProduct().getPrice();
-            double discountPercent = item.getProduct().getDiscount() != null && isDiscountApplicable(item.getProduct().getDiscount()) ? item.getProduct().getDiscount().getPercentDiscount() : 0.0;
+            int discountPercent = item.getProduct().getDiscount() != null && isDiscountApplicable(item.getProduct().getDiscount()) ? item.getProduct().getDiscount().getPercentDiscount() : 0;
 
             double totalPrice = productPrice * item.getQty();
             if (discountPercent > 0) {
-                Double discountedPrice = CalcUtils.getDiscountedPrice(productPrice, (float) discountPercent);
+                Double discountedPrice = CalcUtils.getDiscountedPrice(productPrice, discountPercent);
                 totalPrice = discountedPrice * item.getQty();
                 return totalPrice;
             }

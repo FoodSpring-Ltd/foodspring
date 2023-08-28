@@ -29,7 +29,7 @@ public class CartItemResponse {
     private String unitPriceIDR;
     private Double totalPrice;
     private String totalPriceIDR;
-    private Float discountAmount;
+    private Integer discountAmount;
     private String productName;
     private String note;
     private String productImg;

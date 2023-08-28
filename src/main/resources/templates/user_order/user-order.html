@@ -24,7 +24,7 @@
     <div th:replace="~{components/navbar-top :: navbar-top(status=${status})}"></div>
 </div>
 <div class="container">
-    <div class="d-flex justify-content-center align-items-center mb-4"><h4>Order Status: [[${status}]]</h4></div>
+    <div class="d-flex justify-content-center align-items-center mb-4"><h4>Order Status: [[${userOrderStatus}]]</h4></div>
     <div class="d-flex flex-column p-0 col-12" th:each="shopOrder : ${shopOrders}">
         <div th:replace="~{components/order-card :: order-card(shopOrder=${shopOrder})}"></div>
     </div>

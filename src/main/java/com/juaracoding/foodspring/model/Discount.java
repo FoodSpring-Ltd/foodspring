@@ -43,7 +43,7 @@ public class Discount {
     @Column(name = "PercentDiscount")
     @NotNull(message = "Percent Discount can't be null")
     @Comment(value = "Discount in percent")
-    private Float percentDiscount;
+    private Integer percentDiscount;
 
     @OneToMany
     @OnDelete(action = OnDeleteAction.SET_NULL)

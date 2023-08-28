@@ -15,6 +15,8 @@ import com.foodspring.utils.LoggingFile;
 import com.juaracoding.foodspring.config.ServicePath;
 import com.juaracoding.foodspring.config.ViewPath;
 import com.juaracoding.foodspring.dto.*;
+import com.juaracoding.foodspring.enums.OrderStatus;
+import com.juaracoding.foodspring.service.AdminOrderService;
 import com.juaracoding.foodspring.service.CategoryService;
 import com.juaracoding.foodspring.service.DiscountService;
 import com.juaracoding.foodspring.service.ProductService;
@@ -46,6 +48,9 @@ public class AdminController {
 
     @Autowired
     private ProductService productService;
+
+    @Autowired
+    private AdminOrderService adminOrderService;
 
     @Autowired
     private CategoryService categoryService;
@@ -314,4 +319,38 @@ public class AdminController {
         redirectAttributes.addFlashAttribute("message", "Can't delete selected discount");
         return ServicePath.REDIRECT_ADMIN_DASHBOARD_DISCOUNT;
     }
+
+    @GetMapping(value = ServicePath.ORDER_MANAGEMENT)
+    public String ordersManagement(PageProperty pageProperty,
+                             @RequestParam OrderStatus status,
+                             Model model,
+                             RedirectAttributes redirectAttributes,
+                             WebRequest request) {
+        pageProperty.setDefaultSortBy("createdAt");
+        objectMapper = adminOrderService.getAllOrderByStatus(pageProperty.getPageable(), status, request);
+        if (!(Boolean) objectMapper.get("success")) {
+            redirectAttributes.addFlashAttribute("message", objectMapper.get("message"));
+            return ServicePath.REDIRECT_ADMIN;
+        }
+        objectMapper = (Map<String, Object>) objectMapper.get("data");
+        List<OrderResponse> data = (List<OrderResponse>) objectMapper.get("content");
+        model.addAttribute("button", adminOrderService.getOrderUpdateStatusPath(status));
+        model.addAttribute("status", status.toString());
+        model.addAttribute("selectedRow", pageProperty.getLimit());
+        model.addAttribute("totalPages", objectMapper.get("totalPages"));
+        model.addAttribute("totalElements", objectMapper.get("totalItems"));
+        model.addAttribute("currentPage", ((int) objectMapper.get("currentPage")) + 1);
+        model.addAttribute("HIDE_TOP_SEARCH_BAR", true);
+        model.addAttribute("shopOrders", data);
+        mappingAttribute.setAttribute(model, request);
+        return ViewPath.ADMIN_ORDERS_PAGE;
+    }
+
+    @PostMapping(value = ServicePath.UPDATE_ORDER_STATUS)
+    public String updateOrderStatus(OrderStatusDTO orderStatusDTO,
+                                    WebRequest request) {
+        objectMapper = adminOrderService.updateOrderStatus(orderStatusDTO, request);
+        return ServicePath.REDIRECT_ORDER_MANAGEMENT_STATUS.concat(orderStatusDTO.getOrderStatus().toString());
+    }
+
 }

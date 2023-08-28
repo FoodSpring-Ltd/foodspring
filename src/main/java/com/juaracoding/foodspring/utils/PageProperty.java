@@ -10,9 +10,7 @@ Created on 8/24/2023 2:08 PM
 Version 1.0
 */
 
-import lombok.Builder;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -24,6 +22,8 @@ import java.util.Objects;
 @Builder
 @Setter
 @ToString
+@NoArgsConstructor
+@AllArgsConstructor
 public class PageProperty {
     private String sortBy;
     private String sortType;
@@ -33,6 +33,8 @@ public class PageProperty {
     private static Integer defaultLimit = 10;
     private static Direction defaultDirection = Direction.ASC;
     private static Integer defaultPage = 0;
+    private String defaultSortBy = "updatedAt";
+
 
     public String getSortBy() {
         return sortBy;
@@ -74,10 +76,11 @@ public class PageProperty {
     /**
      * Return a Pageable object constructed from the properties of PageProperty.
      * SortBy column is set to updatedAt by default when sortBy property is not set.
+     * You can change the defaultSortBy column to match your requirements.
     * */
     public Pageable getPageable() {
         return PageRequest.of(getPage(),
                 getLimit(),
-                Sort.by(getSortType(), Objects.isNull(getSortBy()) ? "updatedAt" : getSortBy()));
+                Sort.by(getSortType(), Objects.isNull(getSortBy()) ? defaultSortBy : getSortBy()));
     }
 }

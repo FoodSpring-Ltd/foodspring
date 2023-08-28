@@ -24,4 +24,6 @@ public class OrderResponse {
     private Boolean isPaid;
     private LocalDateTime createdAt;
     private String snapToken;
+    private String adminUsername;
+    private LocalDateTime updatedAt;
 }

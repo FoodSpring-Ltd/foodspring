@@ -14,14 +14,13 @@ import com.foodspring.utils.CurrencyFormatter;
 
 public class CalcUtils {
 
-    public static double getDiscountedPrice(Double initialPrice, Float discountPercent) {
-        float percentDiscount = discountPercent / 100;
+    public static double getDiscountedPrice(Double initialPrice, Integer discountPercent) {
+        double percentDiscount = discountPercent / 100.0;
         double deductionAmount = Math.round(initialPrice * percentDiscount);
-        double discountedPrice = initialPrice - deductionAmount;
-        return discountedPrice;
+        return initialPrice - deductionAmount;
     }
 
-    public static String getDiscountedPriceIDR(Double initialPrice, Float discountPercent) {
+    public static String getDiscountedPriceIDR(Double initialPrice, Integer discountPercent) {
         return CurrencyFormatter.toRupiah(getDiscountedPrice(initialPrice, discountPercent));
     }
 }

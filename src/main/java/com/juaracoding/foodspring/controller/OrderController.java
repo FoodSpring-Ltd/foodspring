@@ -18,6 +18,7 @@ import com.juaracoding.foodspring.dto.OrderResponse;
 import com.juaracoding.foodspring.service.OrderService;
 import com.juaracoding.foodspring.utils.ConstantMessage;
 import com.juaracoding.foodspring.utils.MappingAttribute;
+import com.midtrans.httpclient.error.MidtransError;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -52,6 +53,10 @@ public class OrderController {
         if (objectMapper.get("message").equals(ConstantMessage.CART_EMPTY)) {
             return ServicePath.REDIRECT_ORDER_UNPAID;
         }
+        if (!(Boolean) objectMapper.get("success")) {
+            redirectAttributes.addFlashAttribute("message", objectMapper.get("message"));
+            return ServicePath.REDIRECT_HOME;
+        }
         OrderResponse shopOrder = (OrderResponse) objectMapper.get("data");
         if (!(Boolean) objectMapper.get("success")) {
             redirectAttributes.addFlashAttribute("message", objectMapper.get("message"));
@@ -70,16 +75,19 @@ public class OrderController {
     public String checkoutByOrderId(Model model,
                                   @PathVariable String orderId,
                                   RedirectAttributes redirectAttributes,
-                                  WebRequest request) {
+                                  WebRequest request) throws MidtransError {
         objectMapper = orderService.getShopOrderById(orderId, request);
         OrderResponse shopOrder = (OrderResponse) objectMapper.get("data");
         if (!(Boolean) objectMapper.get("success")) {
             redirectAttributes.addFlashAttribute("message", objectMapper.get("message"));
             return ServicePath.REDIRECT_ORDER_UNPAID;
         }
+        if (shopOrder.getSnapToken() == null || shopOrder.getSnapToken().length() == 0) {
+            String newToken = orderService.createSnapToken(shopOrder.getShopOrderId(), shopOrder.getGrandTotal().intValue());
+            shopOrder.setSnapToken(newToken);
+        }
         model.addAttribute("SNAP_URL", MidtransConfig.getSnapURL());
         model.addAttribute("MIDTRANS_CLIENT_KEY", MidtransConfig.getClientKey());
-        System.out.println(MidtransConfig.getClientKey());
         model.addAttribute("HIDE_TOP_SEARCH_BAR", true);
         model.addAttribute("shopOrders", List.of(shopOrder));
         mappingAttribute.setAttribute(model, request);

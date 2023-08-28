@@ -7,32 +7,14 @@
     </button>
 
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <ul class="navbar-nav mr-auto">
-            <li class="nav-item active m-auto">
-              <a class="nav-link active" aria-current="page" th:href="@{/}"><i class="fas fa-home fa-lg"></i></a>
-            </li>
-
-            <li th:if="${USR_ID != null}" class="nav-item dropdown m-auto">
-                <a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-expanded="false">
-                    <i class="fas fa-shopping-bag fa-lg"></i>
-                </a>
-                <div  class="dropdown-menu">
-                    <a class="dropdown-item" th:href="@{/order?status=UNPAID}">Unpaid</a>
-                    <a class="dropdown-item" th:href="@{/order?status=PAID}">Paid</a>
-                    <a class="dropdown-item" th:href="@{/order?status=ON_PROCESS}">On Process</a>
-                    <a class="dropdown-item" th:href="@{/order?status=COMPLETED}">Completed</a>
-                    <a class="dropdown-item" th:href="@{/order?status=CANCELED}">Canceled</a>
-                </div>
-            </li>
-            <li th:if="${IS_ADMIN != null} and ${IS_ADMIN}" class="nav-item active">
-                <a class="nav-link active" aria-current="page" th:href="@{/admin}"> <i class="fas fa-user-shield fa-lg"></i></a>
-            </li>
-        </ul>
         <form th:if="${HIDE_TOP_SEARCH_BAR != true}" class="form-inline my-2 my-lg-0">
             <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
             <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
         </form>
         <ul class="navbar-nav mr-auto">
+            <li th:if="${IS_ADMIN != null} and ${IS_ADMIN}" class="nav-item active">
+                <a class="nav-link active" aria-current="page" th:href="@{/admin}"> <i class="fas fa-user-shield fa-lg"></i></a>
+            </li>
             <li th:if="${USR_ID != null}" class="nav-item">
                 <a class="nav-link" th:href="@{/cart}">Cart</a>
             </li>
@@ -41,6 +23,7 @@
             </li>
             <li th:if="${USR_ID != null}" class="nav-item">
                 <a class="nav-link" th:href="@{/auth/logout}">Logout</a>
+                <a class="nav-link" th:href="@{/order?status=UNPAID}">My Purchase</a>
             </li>
         </ul>
         <a class="nav-link" href="#"> <i class="fas fa-user-circle fa-lg me-2"></i>[[${USERNAME}]]</a>

@@ -1,13 +1,13 @@
 <div th:fragment="admin-order-card" class="card mb-3" xmlns:th="http://www.w3.org/1999/xhtml">
-  <div class="card-header">
+  <div class="card-header bg-transparent">
     <div class="d-flex flex-column g-0">
       <p><strong>Order Date:</strong> [[${#temporals.format(shopOrder.createdAt, 'dd/MM/yyyy HH:mm') + ' WIB'}]]</p>
       <p style="margin-top: -15px"><strong>Grand Total:</strong> Rp[[${shopOrder.grandTotalIDR}]]</p>
     </div>
   </div>
   <div class="card-body p-1">
-    <div class="d-flex gap-3 p-0 flex-wrap">
-      <div style="max-height: 200px" class="col-5" th:each="item : ${shopOrder.orderItems}">
+    <div class="d-flex flex-column gap-1 p-0 flex-wrap">
+      <div class="col-12 p-0" th:each="item : ${shopOrder.orderItems}">
         <div th:replace="~{components/admin-order-item :: admin-order-item(item=${item})}"></div>
       </div>
     </div>
@@ -15,8 +15,8 @@
   <div class="card-footer bg-transparent">
     <div class="d-flex justify-content-between">
       <div class="d-flex flex-column col-3">
-        <p style="font-style: italic; font-size: 12px"><strong>Modified by:</strong> [[${shopOrder.adminUsername}]] </p>
-        <p style="font-style: italic; font-size: 12px; margin-top: -20px"><strong>Updated at: </strong>[[${#temporals.format(shopOrder.updatedAt, 'dd/MM/yyyy HH:mm') + ' WIB'}]]</p>
+        <p style="font-size: 12px"><strong>Modified by:</strong> [[${shopOrder.adminUsername}]] </p>
+        <p style="font-size: 12px; margin-top: -20px"><strong>Updated at: </strong>[[${#temporals.format(shopOrder.updatedAt, 'dd/MM/yyyy HH:mm') + ' WIB'}]]</p>
       </div>
       <div th:if="${button != null && button.buttonName != null}" class="d-flex justify-content-end align-items-center col-6">
         <form class="d-flex justify-content-end col-12" th:action="@{${button.updateStatusPath}}" method="POST">

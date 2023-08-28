@@ -4,34 +4,59 @@
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <link
-            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css"
+            th:href="@{/css/bootstrap@5.3.1.min.css}"
             rel="stylesheet"
-            integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9"
-            crossorigin="anonymous"
     />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+
     <script
-            src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"
-            integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
-            crossorigin="anonymous"
+            th:src="@{/js/jquery@3.5.1.slim.min.js}"
+
     ></script>
     <link th:href="@{/css/navbar-top.css}" rel="stylesheet" />
-    <script src="https://kit.fontawesome.com/8afc88656e.js" crossorigin="anonymous"></script>
+    <style>
+        .menu-item {
+           height: 60px;
+           display: flex;
+           align-items: center;
+           justify-content: center;
+           cursor: pointer;
+        }
+
+        .menu-item.active {
+           border-bottom: 4px solid #04d4f0;
+        }
+
+        .bar-link {
+           color: #333;
+           text-decoration: none;
+           font-weight: 600;
+        }
+    </style>
     <title>User Orders</title>
 </head>
-<body>
-<div>
-    <div th:replace="~{components/navbar-top :: navbar-top(status=${status})}"></div>
-</div>
+<body style="background-color: #f0f0f0">
+<div th:replace="~{components/navbar-top :: navbar-top}"></div>
+
 <div class="container">
-    <div class="d-flex justify-content-center align-items-center mb-4"><h4>Order Status: [[${userOrderStatus}]]</h4></div>
-    <div class="d-flex flex-column p-0 col-12" th:each="shopOrder : ${shopOrders}">
-        <div th:replace="~{components/order-card :: order-card(shopOrder=${shopOrder})}"></div>
+    <div class="d-flex align-items-center justify-content-center mt-3 mb-3">
+        <div class="d-flex justify-content-between align-items-center bg-white px-4 position-fixed w-75" style="z-index: 999; height: max-content">
+            <div th:classappend="${userOrderStatus == 'UNPAID' ? 'active' : ''}" class="menu-item"><a class="bar-link" th:href="@{/order?status=UNPAID}">To Pay</a></div>
+            <div th:classappend="${userOrderStatus == 'PAID' ? 'active' : ''}" class="menu-item"><a class="bar-link" th:href="@{/order?status=PAID}">To Receive</a></div>
+            <div th:classappend="${userOrderStatus == 'ON_PROCESS' ? 'active' : ''}" class="menu-item"><a class="bar-link" th:href="@{/order?status=ON_PROCESS}">On Process</a></div>
+            <div th:classappend="${userOrderStatus == 'COMPLETED' ? 'active' : ''}" class="menu-item"><a class="bar-link" th:href="@{/order?status=COMPLETED}">Completed</a></div>
+            <div th:classappend="${userOrderStatus == 'CANCELED' ? 'active' : ''}" class="menu-item"><a class="bar-link" th:href="@{/order?status=CANCELED}">Canceled</a></div>
+        </div>
     </div>
-    <div class="d-flex justify-content-center align-items-center mt-2">
-        <div
-                th:replace="~{components/pagination-bar :: pagination-bar(path='/order', label='Order Unpaid Page')}"
-        ></div>
+    <div class="d-flex flex-column align-items-center p-4">
+        <div class="d-flex align-items-center flex-column p-0 col-11" th:each="shopOrder : ${shopOrders}">
+            <div th:replace="~{components/order-card :: order-card(shopOrder=${shopOrder})}"></div>
+        </div>
+        <div class="d-flex justify-content-center align-items-center mt-2">
+            <div
+                    th:replace="~{components/pagination-bar :: pagination-bar(path='/order', label='Order Unpaid Page')}"
+            ></div>
+        </div>
     </div>
 </div>
 <!-- Footer -->

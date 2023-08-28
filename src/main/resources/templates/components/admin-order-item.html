@@ -1,12 +1,13 @@
-<div th:fragment="admin-order-item" style="height: 100%; overflow: hidden" class="card col-12" xmlns:th="http://www.w3.org/1999/xhtml">
-  <div class="row g-0">
-    <div class="col-md-3" style="overflow: hidden">
+<div th:fragment="admin-order-item" class="card col-12 p-0" xmlns:th="http://www.w3.org/1999/xhtml">
+  <div class="d-flex">
+    <div class="col-sm-2" style="overflow: hidden">
       <img th:src="${item.productImageURL}" style="object-fit: cover; width:  100%; height: 100%;" class="rounded-start" th:alt="${item.productName}">
     </div>
-    <div class="col-md-9 p-0" style="">
-      <div class="d-flex justify-content-center mb-0">
-        <h5 style="font-size: 12px" class="card-title text-decoration-underline">[[${item.productName}]]</h5>
+    <div class="d-flex flex-column col-md-10 p-0">
+      <div class="d-flex justify-content-start" style="padding-left: 0.5em">
+        <h5 style="font-size: 1rem; font-weight: 470" class="card-title">[[${item.productName}]]</h5>
       </div>
+      <div class="p-0 m-0"><hr></div>
       <div class="card-body p-0">
         <table class="table">
           <thead>
@@ -22,12 +23,12 @@
           </thead>
           <tbody>
           <tr>
-            <td style="font-size: 10px" th:text="${item.variant != null ? item.variant : 'N/A'}"></td>
-            <td style="font-size: 10px" th:text="${item.productCategory != null ? item.productCategory : 'N/A'}"></td>
-            <td style="font-size: 10px" th:text="'Rp' + ${item.unitPriceIDR}">Rp25000</td>
-            <td style="font-size: 10px" th:text="${item.discountPercentage != null ? item.discountPercentage + '%' : 'None'}">20%</td>
-            <td style="font-size: 10px" th:text="${item.qty}"></td>
-            <td style="font-size: 10px" th:text="${'Rp' + item.totalPriceIDR}">Rp20000</td>
+            <td style="font-size: 0.8rem; font-weight:450" th:text="${item.variant != null ? item.variant : 'N/A'}"></td>
+            <td style="font-size: 0.8rem; font-weight:450" th:text="${item.productCategory != null ? item.productCategory : 'N/A'}"></td>
+            <td style="font-size: 0.8rem; font-weight:450" th:text="'Rp' + ${item.unitPriceIDR}">Rp25000</td>
+            <td style="font-size: 0.8rem; font-weight:450" th:text="${item.discountPercentage != null ? item.discountPercentage + '%' : 'None'}">20%</td>
+            <td style="font-size: 0.8rem; font-weight:450" th:text="${item.qty}"></td>
+            <td style="font-size: 0.8rem; font-weight:450" th:text="${'Rp' + item.totalPriceIDR}">Rp20000</td>
           </tr>
           <!-- You can repeat the above <tr> structure for each item in your data -->
           </tbody>
@@ -35,7 +36,7 @@
       </div>
     </div>
   </div>
-  <div th:if="${item.note != null AND item.note.length != 0}" style="width: 100vw; height: 100vh"  class="card-footer">
-    <div style="margin-top: -5px"><p class="fst-italic" style="font-size: 12px"><strong>Note:</strong>[[${item.note}]]</p></div>
+  <div th:if="${item.note != null AND item.note.length != 0}"  class="card-footer p-1">
+    <div class="p-0"><p class="fst-italic" style="font-size: 12px"><strong>Note: </strong>[[${item.note}]]</p></div>
   </div>
 </div>

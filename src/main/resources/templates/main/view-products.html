@@ -21,11 +21,10 @@
   </head>
   <body>
   <div th:replace="~{components/navbar-top :: navbar-top}"></div>
-    <div class="main-page">
+  <div class="main-page">
       <div
         class="d-flex w-100 justify-content-center align-items-center pt-3"
-        style="position: absolute; z-index: 999"
-      >
+        style="position: absolute; z-index: 999">
         <div
 
           class="toast align-items-center text-white bg-primary border-0"
@@ -128,13 +127,14 @@
               </ul>
             </div>
           </div>
-          <div
-            class="d-flex p-2 flex-wrap flex-grow-1 justify-content-center gap-3"
-          >
+          <div class="d-flex p-2 flex-wrap flex-grow-1 justify-content-center gap-3">
             <div th:each="product : ${products}">
               <div
                 th:replace="~{components/product-card :: product-card(product=${product})}"
               ></div>
+            </div>
+            <div th:if="${#lists.isEmpty(products)}" class="col-12 text-center" role="alert">
+             <h3 style="font-weight: 600; text-transform: uppercase; color: lightgrey"> No products found.</h3>
             </div>
           </div>
           <div class="d-flex justify-content-center align-items-center mt-2">
@@ -144,7 +144,7 @@
           </div>
         </div>
       </div>
-    </div>
+  </div>
   <!-- Footer -->
   <div th:replace="~{components/footer :: footer}"></div>
   <!-- Footer -->

@@ -17,21 +17,46 @@
   ></script>
   <link th:href="@{/css/navbar-top.css}" rel="stylesheet" />
   <script src="https://kit.fontawesome.com/8afc88656e.js" crossorigin="anonymous"></script>
+  <style>
+        .menu-item {
+           height: 60px;
+           display: flex;
+           align-items: center;
+           justify-content: center;
+           cursor: pointer;
+        }
+
+        .menu-item.active {
+           border-bottom: 4px solid #04d4f0;
+        }
+
+        .bar-link {
+           color: #333;
+           text-decoration: none;
+           font-weight: 600;
+        }
+    </style>
   <title>[[${status}]] Orders</title>
 </head>
-<body>
-<div>
-  <div th:replace="~{components/navbar-top :: navbar-top(status=${status})}"></div>
-</div>
+<body style="background-color: #f0f0f0">
+<div th:replace="~{components/navbar-top :: navbar-top(status=${status})}"></div>
 <div class="container">
-  <div class="d-flex justify-content-center align-items-center mb-4"><h4>Order Status: [[${status}]]</h4></div>
-  <div class="d-flex flex-column p-0 col-12" th:each="shopOrder : ${shopOrders}">
-    <div th:replace="~{components/admin-order-card :: admin-order-card(shopOrder=${shopOrder}, button=${button}, status=${status})}"></div>
+  <div class="d-flex align-items-center justify-content-center mt-3 mb-3">
+    <div class="d-flex justify-content-between align-items-center bg-white px-4 position-fixed w-50" style="z-index: 999; height: max-content">
+      <div th:classappend="${status == 'PAID' ? 'active' : ''}" class="menu-item"><a class="bar-link" th:href="@{/admin/order-management?status=PAID}">To Process</a></div>
+      <div th:classappend="${status == 'ON_PROCESS' ? 'active' : ''}" class="menu-item"><a class="bar-link" th:href="@{/admin/order-management?status=ON_PROCESS}">To Complete</a></div>
+      <div th:classappend="${status == 'COMPLETED' ? 'active' : ''}" class="menu-item"><a class="bar-link" th:href="@{/admin/order-management?status=COMPLETED}">Completed</a></div>
+    </div>
   </div>
-  <div class="d-flex justify-content-center align-items-center mt-2">
-    <div
-            th:replace="~{components/pagination-bar :: pagination-bar(label='Order Management Page')}"
-    ></div>
+  <div class="d-flex flex-column align-items-center p-4">
+    <div class="d-flex align-items-center flex-column p-0 col-9" th:each="shopOrder : ${shopOrders}">
+      <div th:replace="~{components/admin-order-card :: admin-order-card(shopOrder=${shopOrder}, button=${button}, status=${status})}"></div>
+    </div>
+    <div class="d-flex justify-content-center align-items-center mt-2">
+      <div
+              th:replace="~{components/pagination-bar :: pagination-bar(label='Order Management Page')}"
+      ></div>
+    </div>
   </div>
 </div>
 <!-- Footer -->

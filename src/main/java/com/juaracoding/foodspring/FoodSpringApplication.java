@@ -10,12 +10,12 @@ import java.util.concurrent.Executor;
 
 @SpringBootApplication
 @EnableAsync
-public class FoodspringApplication {
+public class FoodSpringApplication {
 
 
 	public static void main(String[] args) {
 
-		SpringApplication.run(FoodspringApplication.class, args);
+		SpringApplication.run(FoodSpringApplication.class, args);
 	}
 
 	@Bean

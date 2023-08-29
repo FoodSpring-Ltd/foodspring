@@ -12,22 +12,34 @@
         <input type="hidden" name="limit" th:value="${selectedRow}"> <!-- Set the initial limit value -->
         <button class="btn btn-outline-success" type="submit">Search</button>
       </form>
-     <div class="d-flex justify-content-start align-items-center gap-5">
-       <a th:if="${IS_ADMIN != null && IS_ADMIN && USR_ID != null}" class="nav-link" th:href="@{/admin}"> <i class="fas fa-user-shield fa-lg"></i></a>
-       <a th:if="${USR_ID != null}" class="nav-link" th:href="@{/cart}"><i class="fas fa-shopping-cart fa-lg"></i></a>
-       <div th:if="${USR_ID != null}" class="nav-item dropdown">
-         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-           <i class="fas fa-user-circle fa-lg me-2"></i>[[${USERNAME}]]
-         </a>
-         <ul  class="dropdown-menu">
-           <li><a class="dropdown-item" th:href="@{/auth/logout}">Logout</a></li>
-           <li><a class="dropdown-item" th:href="@{/order?status=UNPAID}">My Purchase</a></li>
-         </ul>
-       </div>
-       <a th:if="${USR_ID == null}" class="nav-link" th:href="@{/auth/login}"><i class="fas fa-sign-in-alt fa-lg"></i> Login</a>
-     </div>
-     </div>
+      <div class="d-flex justify-content-start align-items-center gap-5">
+        <a class="nav-link" style="cursor: pointer" data-bs-toggle="modal" data-bs-target="#notifModal">
+          <div class="badge-container">
+            <i class="fas fa-bell fa-lg me-2 shake" id="notificationBell"></i>
+            <div class="badge-dot"></div>
+          </div>
+        </a>
+        <a th:if="${IS_ADMIN != null && IS_ADMIN && USR_ID != null}" class="nav-link" th:href="@{/admin}">
+          <i class="fas fa-user-shield fa-lg"></i>
+        </a>
+        <a th:if="${USR_ID != null}" class="nav-link" th:href="@{/cart}">
+          <i class="fas fa-shopping-cart fa-lg"></i>
+        </a>
+        <div th:if="${USR_ID != null}" class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="fas fa-user-circle fa-lg me-2"></i>[[${USERNAME}]]
+          </a>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" th:href="@{/auth/logout}">Logout</a></li>
+            <li><a class="dropdown-item" th:href="@{/order?status=UNPAID}">My Purchase</a></li>
+          </ul>
+        </div>
+        <a th:if="${USR_ID == null}" class="nav-link" th:href="@{/auth/login}">
+          <i class="fas fa-sign-in-alt fa-lg"></i> Login
+        </a>
+      </div>
 
+    </div>
     </div>
   </div>
 </nav>

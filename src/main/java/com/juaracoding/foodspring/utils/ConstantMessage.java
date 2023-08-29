@@ -121,5 +121,6 @@ public class ConstantMessage {
     public static final String ERROR_INVALID_DATA = "Data invalid";
     public static final String ERROR_TO_PROCEED = "Can't process your request, please try again later";
     public static final String ERROR_CREATE_PAYMENT = "failed to create payment, please try again later";
+    public static final String NOT_CRITICAL = "Not Critical";
 }
 

@@ -17,3 +17,37 @@
 .nav-link {
   color: white;
 }
+
+/* Define the shake animation */
+@keyframes shake {
+    0%, 100% {
+        transform: translateX(0);
+    }
+    10%, 30%, 50%, 70%, 90% {
+        transform: translateX(-2px);
+    }
+    20%, 40%, 60%, 80% {
+        transform: translateX(2px);
+    }
+}
+
+/* Apply the shake animation to the badge with the 'shake' class */
+.shake {
+    animation: shake 0.4s ease-in-out;
+}
+
+.badge-container {
+    position: relative;
+}
+
+.badge-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: red;
+    position: absolute;
+    top: 0;
+    right: 0;
+    transform: translate(50%, -50%);
+    display: none; /* Initially hide the dot */
+}

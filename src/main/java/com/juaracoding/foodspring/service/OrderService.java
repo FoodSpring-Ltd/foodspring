@@ -12,6 +12,8 @@ Version 1.0
 
 import com.foodspring.utils.CurrencyFormatter;
 import com.foodspring.utils.LoggingFile;
+import com.juaracoding.foodspring.config.ServicePath;
+import com.juaracoding.foodspring.config.WebSocketPath;
 import com.juaracoding.foodspring.dto.*;
 import com.juaracoding.foodspring.enums.OrderStatus;
 import com.juaracoding.foodspring.handler.ResponseHandler;
@@ -34,6 +36,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.request.WebRequest;
@@ -50,7 +53,8 @@ public class OrderService {
     @Autowired
     private OrderItemRepository orderItemRepository;
 
-
+    @Autowired
+    private SimpMessagingTemplate simpMessagingTemplate;
     @Autowired
     private MidtransSnapApi midtransSnapApi;
     @Autowired
@@ -133,6 +137,12 @@ public class OrderService {
                 order.setUpdatedAt(LocalDateTime.now());
                 order.setMidtransTransactionId(midtransNotif.getTransactionId());
                 order.setPaymentType(midtransNotif.getPaymentType());
+                //Broadcast message to admin
+                OrderNotification notification = new OrderNotification();
+                notification.setOrderId(order.getShopOrderId());
+                notification.setStatus(OrderStatus.PAID.toString());
+                notification.setTargetURL(ServicePath.ADMIN_ORDER_MANAGEMENT.concat(OrderStatus.PAID.toString()));
+                sendOrderNotificationToAdmin(notification);
             } else if (midtransNotif.getTransactionStatus().equals("deny")
                     || midtransNotif.getTransactionStatus().equals("expire")
                     || midtransNotif.getTransactionStatus().equals("cancel")) {
@@ -236,8 +246,8 @@ public class OrderService {
             customerDetails = UserMapper.INSTANCE.toCustomerDetails(order.get().getUser());
         }
         TransactionDetailsMidtrans transactionDetailsMidtrans = new TransactionDetailsMidtrans();
-        transactionDetailsMidtrans.setOrder_id(order.get().getShopOrderId());
-        transactionDetailsMidtrans.setGross_amount(grandTotal);
+        transactionDetailsMidtrans.setOrderId(order.get().getShopOrderId());
+        transactionDetailsMidtrans.setGrossAmount(grandTotal);
         Map<String, Object> paymentPayload = PaymentUtils.getPaymentRequestBody(transactionDetailsMidtrans, customerDetails, midtransItemDetails);
         String snapToken = midtransSnapApi.createTransactionToken(paymentPayload);
         order.get().setSnapToken(snapToken);
@@ -252,13 +262,20 @@ public class OrderService {
             customerDetails = UserMapper.INSTANCE.toCustomerDetails(order.getUser());
         }
         TransactionDetailsMidtrans transactionDetailsMidtrans = new TransactionDetailsMidtrans();
-        transactionDetailsMidtrans.setOrder_id(order.getShopOrderId());
-        transactionDetailsMidtrans.setGross_amount(grandTotal);
+        transactionDetailsMidtrans.setOrderId(order.getShopOrderId());
+        transactionDetailsMidtrans.setGrossAmount(grandTotal);
         Map<String, Object> paymentPayload = PaymentUtils.getPaymentRequestBody(transactionDetailsMidtrans, customerDetails, midtransItemDetails);
         return midtransSnapApi.createTransactionToken(paymentPayload);
 
     }
 
-
+    protected void sendOrderNotificationToAdmin(OrderNotification orderNotification) {
+        try {
+            simpMessagingTemplate.convertAndSend(WebSocketPath.TOPIC_NEW_ORDER.toString(), orderNotification);
+        } catch (Exception e) {
+            strExceptionArr[1] = "sendOrderNotificationToAdmin(OrderNotification orderNotification) --LINE 269";
+            LoggingFile.exceptionString(strExceptionArr, e, "y", ConstantMessage.NOT_CRITICAL);
+        }
+    }
 
 }

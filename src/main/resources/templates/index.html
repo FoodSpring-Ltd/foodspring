@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <link
+            th:href="@{/css/bootstrap@5.3.1.min.css}"
+            rel="stylesheet"
+    />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+
+    <script
+            th:src="@{/js/jquery@3.5.1.slim.min.js}"
+
+    ></script>
+    <script
+            th:src="@{/js/sockjs.min.js}"
+
+    ></script>
+    <script
+            th:src="@{/js/stomp.min.js}"
+
+    ></script>
+    <script th:src="@{/js/websocket.js}"></script>
+
+    <title>Title</title>
+</head>
+<body>
+<div th:replace="~{components/audio-notification :: notification}"></div>
+<div class="container">
+    <div class="d-flex flex-column w-100">
+        <div class="d-flex col-md-4"><h4>Websocket Test</h4></div>
+        <div class="d-flex flex-column col-md-8">
+           <div class="col-8">
+               <form>
+                   <div class="form-group mb-3">
+                       <label for="messageContent">Message</label>
+                       <input class="form-control" placeholder="Type your message..." name="message" type="text" id="messageContent"/>
+                   </div>
+                   <button id="send" class="btn btn-primary">Send</button>
+               </form>
+           </div>
+        </div>
+    </div>
+    <div class="d-flex flex-column w-100">
+        <div class="d-flex flex-column col-12">
+            <div class="col-12 mt-4">
+                <table id="messageHistory" class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th>Order ID</th>
+                        <th>Target URL</th>
+                        <th>Status</th>
+                    </tr>
+                    </thead>
+                    <tbody id="messages"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script th:src="@{/js/popper@2.11.8.min.js}"></script>
+<script th:src="@{/js/bootstrap@5.3.1.min.js}"></script>
+</body>
+</html>

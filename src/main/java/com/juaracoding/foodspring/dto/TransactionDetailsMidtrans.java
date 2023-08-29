@@ -11,16 +11,19 @@ Version 1.0
 */
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.Data;
 
 import java.io.Serializable;
 
 @Data
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class TransactionDetailsMidtrans implements Serializable {
 
     @JsonProperty("order_id")
-    private String order_id;
+    private String orderId;
 
     @JsonProperty("gross_amount")
-    private Integer gross_amount;
+    private Integer grossAmount;
 }

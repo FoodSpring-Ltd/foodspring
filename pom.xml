@@ -81,6 +81,13 @@
 			<version>${project.parent.version}</version>
 		</dependency>
 
+		<!-- https://mavenlibs.com/maven/dependency/org.springframework.boot/spring-boot-starter-websocket -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-websocket</artifactId>
+			<version>${project.parent.version}</version>
+		</dependency>
+
 		<!-- https://mavenlibs.com/maven/dependency/com.cloudinary/cloudinary-http44 -->
 		<dependency>
 			<groupId>com.cloudinary</groupId>

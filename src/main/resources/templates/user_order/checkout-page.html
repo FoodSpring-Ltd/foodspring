@@ -16,13 +16,10 @@
             crossorigin="anonymous"
     ></script>
     <link th:href="@{/css/navbar-top.css}" rel="stylesheet" />
-    <script src="https://kit.fontawesome.com/8afc88656e.js" crossorigin="anonymous"></script>
     <title>Payment</title>
 </head>
 <body>
-<div>
-    <div th:replace="~{components/navbar-top :: navbar-top}"></div>
-</div>
+<div th:replace="~{components/navbar-top :: navbar-top}"></div>
 <div class="container">
     <div class="d-flex justify-content-center align-items-center mb-4"><h4>PAYMENT</h4></div>
     <div class="d-flex flex-column p-0 col-12" th:each="shopOrder : ${shopOrders}">

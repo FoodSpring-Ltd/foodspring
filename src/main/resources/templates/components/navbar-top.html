@@ -13,7 +13,7 @@
         <button class="btn btn-outline-success" type="submit">Search</button>
       </form>
      <div class="d-flex justify-content-start align-items-center gap-5">
-       <a class="nav-link" th:href="@{/admin}"> <i class="fas fa-user-shield fa-lg"></i></a>
+       <a th:if="${IS_ADMIN != null && IS_ADMIN && USR_ID != null}" class="nav-link" th:href="@{/admin}"> <i class="fas fa-user-shield fa-lg"></i></a>
        <a th:if="${USR_ID != null}" class="nav-link" th:href="@{/cart}"><i class="fas fa-shopping-cart fa-lg"></i></a>
        <div th:if="${USR_ID != null}" class="nav-item dropdown">
          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">

@@ -14,8 +14,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-import java.util.Objects;
-
 public class WebUtils {
 
     public static String getCurrentUrl() {
@@ -35,12 +33,5 @@ public class WebUtils {
         return currentRequest.getRequestURI(); // This will give you the path without the host
     }
 
-    public static PageProperty getSortProperty() {
-        HttpServletRequest currentRequest = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
-        if (!Objects.isNull(currentRequest)){
-            String queryString = currentRequest.getQueryString();
-            System.out.println(queryString);
-        }
-        return null;
-    }
+
 }

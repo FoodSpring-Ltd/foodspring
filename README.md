@@ -23,7 +23,7 @@ Follow these steps to run the FoodSpring application on your local machine:
 
 1. **Clone the Repository:**
    ```bash
-   git clone https://github.com/hakimamarullah/foodspring.git
+   git clone https://github.com/FoodSpring-Ltd/foodspring.git
    cd foodspring
    ```
 

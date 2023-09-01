@@ -10,6 +10,15 @@
     />
 
     <script th:src="@{/js/jquery@3.5.1.slim.min.js}"></script>
+    <script
+            th:src="@{/js/sockjs.min.js}"
+
+    ></script>
+    <script
+            th:src="@{/js/stomp.min.js}"
+
+    ></script>
+    <script th:src="@{/js/websocket.js}"></script>
     <link th:href="@{/css/product-detail.css}" rel="stylesheet" />
     <link th:href="@{/css/navbar-top.css}" rel="stylesheet" />
     <title th:text="${product.productName}"></title>
@@ -17,7 +26,8 @@
   <body style="overflow-x: hidden">
     <div class="detail-page">
       <div th:replace="~{components/navbar-top :: navbar-top}"></div>
-
+      <div th:replace="~{components/audio-notification :: notification}"></div>
+      <div th:replace="~{components/notif-modal :: notif-modal}"></div>
       <div class="detail-container">
         <div
           class="d-flex w-100 justify-content-center align-items-center pt-3"

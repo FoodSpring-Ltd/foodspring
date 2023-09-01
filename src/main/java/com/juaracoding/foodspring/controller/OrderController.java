@@ -18,7 +18,6 @@ import com.juaracoding.foodspring.dto.OrderResponse;
 import com.juaracoding.foodspring.service.OrderService;
 import com.juaracoding.foodspring.utils.ConstantMessage;
 import com.juaracoding.foodspring.utils.MappingAttribute;
-import com.midtrans.httpclient.error.MidtransError;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -51,7 +50,8 @@ public class OrderController {
                               WebRequest request) {
         objectMapper = orderService.createOrder(request);
         if (objectMapper.get("message").equals(ConstantMessage.CART_EMPTY)) {
-            return ServicePath.REDIRECT_ORDER_UNPAID;
+            redirectAttributes.addFlashAttribute("message", ConstantMessage.CART_EMPTY);
+            return ServicePath.REDIRECT_CART;
         }
         if (!(Boolean) objectMapper.get("success")) {
             redirectAttributes.addFlashAttribute("message", objectMapper.get("message"));
@@ -75,16 +75,21 @@ public class OrderController {
     public String checkoutByOrderId(Model model,
                                   @PathVariable String orderId,
                                   RedirectAttributes redirectAttributes,
-                                  WebRequest request) throws MidtransError {
+                                  WebRequest request) {
         objectMapper = orderService.getShopOrderById(orderId, request);
         OrderResponse shopOrder = (OrderResponse) objectMapper.get("data");
         if (!(Boolean) objectMapper.get("success")) {
             redirectAttributes.addFlashAttribute("message", objectMapper.get("message"));
             return ServicePath.REDIRECT_ORDER_UNPAID;
         }
-        if (shopOrder.getSnapToken() == null || shopOrder.getSnapToken().length() == 0) {
-            String newToken = orderService.createSnapToken(shopOrder.getShopOrderId(), shopOrder.getGrandTotal().intValue());
-            shopOrder.setSnapToken(newToken);
+        try {
+            if (shopOrder.getSnapToken() == null || shopOrder.getSnapToken().length() == 0) {
+                String newToken = orderService.createSnapToken(shopOrder.getShopOrderId(), shopOrder.getGrandTotal().intValue());
+                shopOrder.setSnapToken(newToken);
+            }
+        } catch(Exception e) {
+            redirectAttributes.addFlashAttribute("message", ConstantMessage.ERROR_CREATE_PAYMENT);
+            return ServicePath.REDIRECT_ORDER_UNPAID;
         }
         model.addAttribute("SNAP_URL", MidtransConfig.getSnapURL());
         model.addAttribute("MIDTRANS_CLIENT_KEY", MidtransConfig.getClientKey());

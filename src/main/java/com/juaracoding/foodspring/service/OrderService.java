@@ -246,8 +246,8 @@ public class OrderService {
             customerDetails = UserMapper.INSTANCE.toCustomerDetails(order.get().getUser());
         }
         TransactionDetailsMidtrans transactionDetailsMidtrans = new TransactionDetailsMidtrans();
-        transactionDetailsMidtrans.setOrderId(order.get().getShopOrderId());
-        transactionDetailsMidtrans.setGrossAmount(grandTotal);
+        transactionDetailsMidtrans.setOrder_id(order.get().getShopOrderId());
+        transactionDetailsMidtrans.setGross_amount(grandTotal);
         Map<String, Object> paymentPayload = PaymentUtils.getPaymentRequestBody(transactionDetailsMidtrans, customerDetails, midtransItemDetails);
         String snapToken = midtransSnapApi.createTransactionToken(paymentPayload);
         order.get().setSnapToken(snapToken);
@@ -262,8 +262,8 @@ public class OrderService {
             customerDetails = UserMapper.INSTANCE.toCustomerDetails(order.getUser());
         }
         TransactionDetailsMidtrans transactionDetailsMidtrans = new TransactionDetailsMidtrans();
-        transactionDetailsMidtrans.setOrderId(order.getShopOrderId());
-        transactionDetailsMidtrans.setGrossAmount(grandTotal);
+        transactionDetailsMidtrans.setOrder_id(order.getShopOrderId());
+        transactionDetailsMidtrans.setGross_amount(grandTotal);
         Map<String, Object> paymentPayload = PaymentUtils.getPaymentRequestBody(transactionDetailsMidtrans, customerDetails, midtransItemDetails);
         return midtransSnapApi.createTransactionToken(paymentPayload);
 

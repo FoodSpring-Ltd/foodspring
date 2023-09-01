@@ -10,11 +10,16 @@
           crossorigin="anonymous"
   />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+  <script th:src="@{/js/jquery@3.5.1.slim.min.js}"></script>
   <script
-          src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"
-          integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
-          crossorigin="anonymous"
+          th:src="@{/js/sockjs.min.js}"
+
   ></script>
+  <script
+          th:src="@{/js/stomp.min.js}"
+
+  ></script>
+  <script th:src="@{/js/websocket.js}"></script>
   <link th:href="@{/css/navbar-top.css}" rel="stylesheet" />
   <script src="https://kit.fontawesome.com/8afc88656e.js" crossorigin="anonymous"></script>
   <style>
@@ -40,12 +45,14 @@
 </head>
 <body style="background-color: #f0f0f0">
 <div th:replace="~{components/navbar-top :: navbar-top(status=${status})}"></div>
+<div th:replace="~{components/audio-notification :: notification}"></div>
+<div th:replace="~{components/notif-modal :: notif-modal}"></div>
 <div class="container">
   <div class="d-flex align-items-center justify-content-center mt-3 mb-3">
     <div class="d-flex justify-content-between align-items-center bg-white px-4 position-fixed w-50" style="z-index: 999; height: max-content">
-      <div th:classappend="${status == 'PAID' ? 'active' : ''}" class="menu-item"><a class="bar-link" th:href="@{/admin/order-management?status=PAID}">To Process</a></div>
-      <div th:classappend="${status == 'ON_PROCESS' ? 'active' : ''}" class="menu-item"><a class="bar-link" th:href="@{/admin/order-management?status=ON_PROCESS}">To Complete</a></div>
-      <div th:classappend="${status == 'COMPLETED' ? 'active' : ''}" class="menu-item"><a class="bar-link" th:href="@{/admin/order-management?status=COMPLETED}">Completed</a></div>
+      <div th:onclick="goTo('/admin/order-management?status=PAID')" th:classappend="${status == 'PAID' ? 'active' : ''}" class="menu-item"><a class="bar-link" th:href="@{/admin/order-management?status=PAID}">To Process</a></div>
+      <div th:onclick="goTo('/admin/order-management?status=ON_PROCESS')" th:classappend="${status == 'ON_PROCESS' ? 'active' : ''}" class="menu-item"><a class="bar-link" th:href="@{/admin/order-management?status=ON_PROCESS}">To Complete</a></div>
+      <div th:onclick="goTo('/admin/order-management?status=COMPLETED')" th:classappend="${status == 'COMPLETED' ? 'active' : ''}" class="menu-item"><a class="bar-link" th:href="@{/admin/order-management?status=COMPLETED}">Completed</a></div>
     </div>
   </div>
   <div class="d-flex flex-column align-items-center p-4">
@@ -62,6 +69,11 @@
 <!-- Footer -->
 <div th:replace="~{components/footer :: footer}"></div>
 <script th:src="@{/js/pagination.js}"></script>
+<script>
+  function goTo(url) {
+      window.location.href = url;
+  }
+</script>
 <script
         src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
         integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"

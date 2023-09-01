@@ -13,6 +13,15 @@
             th:src="@{/js/jquery@3.5.1.slim.min.js}"
 
     ></script>
+    <script
+            th:src="@{/js/sockjs.min.js}"
+
+    ></script>
+    <script
+            th:src="@{/js/stomp.min.js}"
+
+    ></script>
+    <script th:src="@{/js/websocket.js}"></script>
     <link th:href="@{/css/navbar-top.css}" rel="stylesheet" />
     <style>
         .menu-item {
@@ -31,21 +40,46 @@
            color: #333;
            text-decoration: none;
            font-weight: 600;
+           cursor: pointer;
         }
     </style>
     <title>User Orders</title>
 </head>
 <body style="background-color: #f0f0f0">
 <div th:replace="~{components/navbar-top :: navbar-top}"></div>
-
+<div th:replace="~{components/audio-notification :: notification}"></div>
+<div th:replace="~{components/notif-modal :: notif-modal}"></div>
 <div class="container">
+    <div
+            class="d-flex w-100 justify-content-center align-items-center pt-3"
+            style="position: absolute; z-index: 1000">
+        <div
+
+                class="toast align-items-center text-white bg-primary border-0"
+                role="alert"
+                aria-live="assertive"
+                aria-atomic="true"
+                data-bs-delay="3000"
+                id="toastMessage"
+        >
+            <div class="d-flex">
+                <div class="toast-body" id="toastBody">[[${message}]]</div>
+                <button
+                        type="button"
+                        class="btn-close btn-close-white me-2 m-auto"
+                        data-bs-dismiss="toast"
+                        aria-label="Close"
+                ></button>
+            </div>
+        </div>
+    </div>
     <div class="d-flex align-items-center justify-content-center mt-3 mb-3">
-        <div class="d-flex justify-content-between align-items-center bg-white px-4 position-fixed w-75" style="z-index: 999; height: max-content">
-            <div th:classappend="${userOrderStatus == 'UNPAID' ? 'active' : ''}" class="menu-item"><a class="bar-link" th:href="@{/order?status=UNPAID}">To Pay</a></div>
-            <div th:classappend="${userOrderStatus == 'PAID' ? 'active' : ''}" class="menu-item"><a class="bar-link" th:href="@{/order?status=PAID}">To Receive</a></div>
-            <div th:classappend="${userOrderStatus == 'ON_PROCESS' ? 'active' : ''}" class="menu-item"><a class="bar-link" th:href="@{/order?status=ON_PROCESS}">On Process</a></div>
-            <div th:classappend="${userOrderStatus == 'COMPLETED' ? 'active' : ''}" class="menu-item"><a class="bar-link" th:href="@{/order?status=COMPLETED}">Completed</a></div>
-            <div th:classappend="${userOrderStatus == 'CANCELED' ? 'active' : ''}" class="menu-item"><a class="bar-link" th:href="@{/order?status=CANCELED}">Canceled</a></div>
+        <div class="d-flex justify-content-between align-items-center bg-white px-4 position-fixed w-75" style="z-index: 999; height: max-content; cursor: pointer">
+            <div th:onclick="goTo('/order?status=UNPAID')" th:classappend="${userOrderStatus == 'UNPAID' ? 'active' : ''}" class="menu-item"><a class="bar-link" th:href="@{/order?status=UNPAID}">To Pay</a></div>
+            <div th:onclick="goTo('/order?status=PAID')" th:classappend="${userOrderStatus == 'PAID' ? 'active' : ''}" class="menu-item"><a class="bar-link" th:href="@{/order?status=PAID}">To Receive</a></div>
+            <div th:onclick="goTo('/order?status=ON_PROCESS')" th:classappend="${userOrderStatus == 'ON_PROCESS' ? 'active' : ''}" class="menu-item"><a class="bar-link" th:href="@{/order?status=ON_PROCESS}">On Process</a></div>
+            <div th:onclick="goTo('/order?status=COMPLETED')" th:classappend="${userOrderStatus == 'COMPLETED' ? 'active' : ''}" class="menu-item"><a class="bar-link" th:href="@{/order?status=COMPLETED}">Completed</a></div>
+            <div th:onclick="goTo('/order?status=CANCELED')" th:classappend="${userOrderStatus == 'CANCELED' ? 'active' : ''}" class="menu-item"><a class="bar-link" th:href="@{/order?status=CANCELED}">Canceled</a></div>
         </div>
     </div>
     <div class="d-flex flex-column align-items-center p-4">
@@ -62,6 +96,20 @@
 <!-- Footer -->
 <div th:replace="~{components/footer :: footer}"></div>
 <script th:src="@{/js/pagination.js}"></script>
+<script>
+      var $j = jQuery.noConflict();
+      const message = document.getElementById('toastBody');
+      if (message.textContent.length != 0) {
+         $j(function () {
+        $j(".toast").toast("show");
+      });
+
+      }
+         function goTo(url) {
+           window.location.href = url;
+        }
+
+</script>
 <script
         src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
         integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"

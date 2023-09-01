@@ -1,11 +1,16 @@
 let stompClient = null;
-
-$(document).ready(function() {
+var $j = jQuery.noConflict();
+$j(document).ready(function() {
   console.log("Page is loaded");
   connect();
-  $("#send").click(function(event) {
+  $j("#send").click(function(event) {
   event.preventDefault();
     sendMessage();
+  });
+
+  const notifModal = document.getElementById("closeNotif");
+  notifModal.addEventListener("click", function () {
+      hideNotificationDot();
   });
 
 });
@@ -35,7 +40,7 @@ function connect() {
 }
 
 function showMessage(message) {
-    const row = $("#messages");
+    const row = $j("#messages");
     row.append(`
      <tr>
          <td> ${message.orderId} </td>
@@ -118,10 +123,7 @@ function showNotificationDot() {
 
 
 // Add an event listener to the modal close event
-const notifModal = document.getElementById("closeNotif");
-notifModal.addEventListener("click", function () {
-    hideNotificationDot();
-});
+
 
 // Function to hide the notification dot
 function hideNotificationDot() {

@@ -24,6 +24,21 @@ public interface ShopOrderRepository extends JpaRepository<ShopOrder, String> {
 
     Page<ShopOrder> findAllByUserUserIdAndOrderStatus(Long userId, OrderStatus orderStatus, Pageable pageable);
     Page<ShopOrder> findAllByOrderStatus(OrderStatus orderStatus, Pageable pageable);
-    @Query("SELECT u FROM User u JOIN ShopOrder so ON u.userId = so.modifiedBy WHERE so.modifiedBy = :userId")
+    @Query("SELECT u FROM User u JOIN ShopOrder so ON u.userId = so.modifiedBy " +
+            "WHERE so.modifiedBy = :userId")
     User findUserByModifiedBy(Long userId);
+
+    @Query("SELECT COUNT(0) FROM ShopOrder so " +
+            "WHERE CAST(so.createdAt AS java.sql.Date) = CURRENT_DATE " +
+            "AND so.orderStatus = 'PAID'")
+    Integer countTodayActiveOrder();
+
+    @Query("SELECT COUNT(0) FROM ShopOrder so " +
+            "WHERE CAST(so.createdAt AS java.sql.Date) = CURRENT_DATE " +
+            "AND so.orderStatus <> 'UNPAID' AND so.orderStatus <> 'CANCELED'")
+    Integer countTodayTotalOrder();
+
+    @Query("SELECT COUNT(0) FROM ShopOrder so WHERE so.orderStatus = :orderStatus " +
+            "AND CAST(so.createdAt AS java.sql.Date) = CURRENT_DATE")
+    Integer countTodayOrderByOrderStatus(OrderStatus orderStatus);
 }

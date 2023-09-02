@@ -31,7 +31,7 @@ public class PageProperty {
     private Integer limit;
 
     private static Integer defaultLimit = 10;
-    private static Direction defaultDirection = Direction.ASC;
+    private static Direction defaultDirection = Direction.DESC;
     private static Integer defaultPage = 0;
     private String defaultSortBy = "updatedAt";
 
@@ -40,7 +40,7 @@ public class PageProperty {
         return sortBy;
     }
     /**
-     * Returns Sort.Direction. It will return Sort.Direction.ASC if not set.
+     * Returns Sort.Direction. It will return Sort.Direction.DESC if not set.
      * */
     public Direction getSortType() {
         if (Objects.isNull(sortType)) {

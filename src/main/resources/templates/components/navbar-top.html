@@ -13,7 +13,7 @@
         <button class="btn btn-outline-success" type="submit">Search</button>
       </form>
       <div class="d-flex justify-content-start align-items-center gap-5">
-        <a class="nav-link" style="cursor: pointer" data-bs-toggle="modal" data-bs-target="#notifModal">
+        <a th:if="${USR_ID != null}" class="nav-link" style="cursor: pointer" data-bs-toggle="modal" data-bs-target="#notifModal">
           <div class="badge-container">
             <i class="fas fa-bell fa-lg me-2 shake" id="notificationBell"></i>
             <div class="badge-dot"></div>

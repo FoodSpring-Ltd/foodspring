@@ -12,4 +12,5 @@ Version 1.0
 
 public class WebSocketPath {
     public static final Object TOPIC_NEW_ORDER = "/topic/new-order";
+    public static final String TOPIC_NOTIFY_USER = "/topic/notify-user";
 }

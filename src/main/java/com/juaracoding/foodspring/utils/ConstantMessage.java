@@ -122,5 +122,7 @@ public class ConstantMessage {
     public static final String ERROR_TO_PROCEED = "Can't process your request, please try again later";
     public static final String ERROR_CREATE_PAYMENT = "failed to create payment, please try again later";
     public static final String NOT_CRITICAL = "Not Critical";
+    public static final String ORDER_STATUS_ALREADY_CHANGED = "Order status has been modified";
+    public static final String FAILED_GET_ORDER_REPORT = "Failed to get order count report";
 }
 

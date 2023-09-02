@@ -12,8 +12,6 @@ Version 1.0
 
 import com.foodspring.utils.CurrencyFormatter;
 import com.foodspring.utils.LoggingFile;
-import com.juaracoding.foodspring.config.ServicePath;
-import com.juaracoding.foodspring.config.WebSocketPath;
 import com.juaracoding.foodspring.dto.*;
 import com.juaracoding.foodspring.enums.OrderStatus;
 import com.juaracoding.foodspring.handler.ResponseHandler;
@@ -25,10 +23,7 @@ import com.juaracoding.foodspring.model.mapper.CartItemMapper;
 import com.juaracoding.foodspring.model.mapper.OrderItemMapper;
 import com.juaracoding.foodspring.model.mapper.UserMapper;
 import com.juaracoding.foodspring.repository.*;
-import com.juaracoding.foodspring.utils.CalcUtils;
-import com.juaracoding.foodspring.utils.ConstantMessage;
-import com.juaracoding.foodspring.utils.PaymentUtils;
-import com.juaracoding.foodspring.utils.TransformToDTO;
+import com.juaracoding.foodspring.utils.*;
 import com.midtrans.httpclient.error.MidtransError;
 import com.midtrans.service.MidtransSnapApi;
 import org.modelmapper.ModelMapper;
@@ -36,7 +31,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.request.WebRequest;
@@ -54,7 +48,8 @@ public class OrderService {
     private OrderItemRepository orderItemRepository;
 
     @Autowired
-    private SimpMessagingTemplate simpMessagingTemplate;
+    private NotificationUtil notificationUtil;
+
     @Autowired
     private MidtransSnapApi midtransSnapApi;
     @Autowired
@@ -137,12 +132,8 @@ public class OrderService {
                 order.setUpdatedAt(LocalDateTime.now());
                 order.setMidtransTransactionId(midtransNotif.getTransactionId());
                 order.setPaymentType(midtransNotif.getPaymentType());
-                //Broadcast message to admin
-                OrderNotification notification = new OrderNotification();
-                notification.setOrderId(order.getShopOrderId());
-                notification.setStatus(OrderStatus.PAID.toString());
-                notification.setTargetURL(ServicePath.ADMIN_ORDER_MANAGEMENT.concat(OrderStatus.PAID.toString()));
-                sendOrderNotificationToAdmin(notification);
+                notificationUtil.sendOrderPaidNotifToAdmin(order.getShopOrderId());
+                notificationUtil.sendOrderPaidNotifToUser(order.getShopOrderId(), order.getUser().getUsername());
             } else if (midtransNotif.getTransactionStatus().equals("deny")
                     || midtransNotif.getTransactionStatus().equals("expire")
                     || midtransNotif.getTransactionStatus().equals("cancel")) {
@@ -150,6 +141,7 @@ public class OrderService {
                 order.setUpdatedAt(LocalDateTime.now());
                 order.setMidtransTransactionId(midtransNotif.getTransactionId());
                 order.setPaymentType(midtransNotif.getPaymentType());
+                notificationUtil.sendOrderCanceledNotifToUser(order.getShopOrderId(), "Payment " + midtransNotif.getTransactionStatus(), order.getUser().getUsername());
             } else {
                 new ResponseHandler().generateModelAttribut(ConstantMessage.ORDER_STATUS_NOT_CHANGED,
                         HttpStatus.OK, order, null, request);
@@ -269,13 +261,6 @@ public class OrderService {
 
     }
 
-    protected void sendOrderNotificationToAdmin(OrderNotification orderNotification) {
-        try {
-            simpMessagingTemplate.convertAndSend(WebSocketPath.TOPIC_NEW_ORDER.toString(), orderNotification);
-        } catch (Exception e) {
-            strExceptionArr[1] = "sendOrderNotificationToAdmin(OrderNotification orderNotification) --LINE 269";
-            LoggingFile.exceptionString(strExceptionArr, e, "y", ConstantMessage.NOT_CRITICAL);
-        }
-    }
+
 
 }

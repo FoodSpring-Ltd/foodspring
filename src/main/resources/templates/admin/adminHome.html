@@ -54,14 +54,33 @@
         </div>
     </div>
 </div>
-<div class="welcome-header">
-    <div class="welcome-container">
-        <h1>Shop Administrator Page</h1>
-        <h3>This page is supposed to be accessed by admin only. Admin can manage product
-            and category through this dashboard.
-        </h3>
+<div class="report-section">
+   <div class="report-item">
+       <h4>Today Income</h4>
+       <h5 style="color: #04d4f0">Rp[[${totalIncome}]],00</h5>
+   </div>
+    <div class="report-item">
+        <h4>Total Order Today</h4>
+        <h5>[[${orderReport.totalOrder}]]</h5>
+    </div>
+    <div class="report-item">
+        <h4>Active Order</h4>
+        <h5>[[${orderReport.activeOrder}]]</h5>
+    </div>
+    <div class="report-item">
+        <h4>Completed Order</h4>
+        <h5>[[${orderReport.completedOrder}]]</h5>
+    </div>
+    <div class="report-item">
+        <h4>Order In Process</h4>
+        <h4>[[${orderReport.inProcessOrder}]]</h4>
+    </div>
+    <div class="report-item">
+        <h4>Income This Month</h4>
+        <h5>Rp[[${currentMonthIncome}]],00</h5>
     </div>
 </div>
+<div><hr></div>
 <div class="d-flex flex-wrap p-2 gap-2">
     <div class="col-sm-4">
         <div class="card">
@@ -100,6 +119,8 @@
         </div>
     </div>
 </div>
+<!-- Footer -->
+<div th:replace="~{components/footer :: footer}"></div>
 <script>
       var $j = jQuery.noConflict();
       const message = document.getElementById('toastBody');

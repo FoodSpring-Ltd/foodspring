@@ -11,15 +11,13 @@ Version 1.0
 */
 
 import com.foodspring.annotation.AdminAccess;
+import com.foodspring.utils.CurrencyFormatter;
 import com.foodspring.utils.LoggingFile;
 import com.juaracoding.foodspring.config.ServicePath;
 import com.juaracoding.foodspring.config.ViewPath;
 import com.juaracoding.foodspring.dto.*;
 import com.juaracoding.foodspring.enums.OrderStatus;
-import com.juaracoding.foodspring.service.AdminOrderService;
-import com.juaracoding.foodspring.service.CategoryService;
-import com.juaracoding.foodspring.service.DiscountService;
-import com.juaracoding.foodspring.service.ProductService;
+import com.juaracoding.foodspring.service.*;
 import com.juaracoding.foodspring.utils.ConstantMessage;
 import com.juaracoding.foodspring.utils.MappingAttribute;
 import com.juaracoding.foodspring.utils.PageProperty;
@@ -50,6 +48,8 @@ public class AdminController {
     private ProductService productService;
 
     @Autowired
+    private SalesReportService salesReportService;
+    @Autowired
     private AdminOrderService adminOrderService;
 
     @Autowired
@@ -63,7 +63,17 @@ public class AdminController {
     @GetMapping(value = "")
     public String adminHome(Model model, WebRequest request) {
         mappingAttribute.setAttribute(model, request);
+        objectMapper = salesReportService.getTodayOrderCountReport(request);
+        OrderCountReport report = null;
+        if (!(Boolean) objectMapper.get("success")) {
+            model.addAttribute("message", objectMapper.get("message"));
+        }else {
+            report = (OrderCountReport) objectMapper.get("data");
+        }
         model.addAttribute("HIDE_TOP_SEARCH_BAR", true);
+        model.addAttribute("totalIncome", CurrencyFormatter.toRupiah(salesReportService.getTodayTotalIncome()));
+        model.addAttribute("currentMonthIncome", CurrencyFormatter.toRupiah(salesReportService.getCurrentMonthTotalIncome()));
+        model.addAttribute("orderReport", report);
         return ViewPath.ADMIN_HOME;
     }
 

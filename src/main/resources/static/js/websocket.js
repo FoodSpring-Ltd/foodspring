@@ -1,42 +1,55 @@
 let stompClient = null;
+let userStompClient = null;
 var $j = jQuery.noConflict();
-$j(document).ready(function() {
-  console.log("Page is loaded");
-  connect();
-  $j("#send").click(function(event) {
-  event.preventDefault();
-    sendMessage();
-  });
+$j(document).ready(function () {
+    console.log("Page is loaded");
+    connect();
+    $j("#send").click(function (event) {
+        event.preventDefault();
+        sendMessage();
+    });
 
-  const notifModal = document.getElementById("closeNotif");
-  notifModal.addEventListener("click", function () {
-      hideNotificationDot();
-  });
+    const notifModal = document.getElementById("closeNotif");
+    notifModal.addEventListener("click", function () {
+        hideNotificationDot();
+    });
 
 });
 
 
 function connect() {
     const socket = new SockJS("/new-order");
+    const userSocket = new SockJS("/notify-user")
     try {
         stompClient = Stomp.over(socket);
-        stompClient.connect({}, function(frame) {
+        userStompClient = Stomp.over(userSocket);
+        stompClient.connect({}, function (frame) {
             console.log("Connected " + frame);
-            stompClient.subscribe("/topic/new-order", function(message) {
-                const data = JSON.parse(message.body);
-                appendNotification(data);
-                 // Show the badge and add the shake animation class
-                 showNotificationBadge();
-                 addShakeAnimation();
-                 showNotificationDot()
-                document.getElementById("notificationSound").play();
+            stompClient.subscribe("/topic/new-order", function (message) {
+                  displayNotification(message);
 
-                //showMessage(data);
             });
         });
+        userStompClient.connect({}, function (frame) {
+                    console.log("User Socket Connected " + frame);
+                    userStompClient.subscribe("/user/topic/notify-user", function (message) {
+                       displayNotification(message);
+                    });
+                });
     } catch (err) {
         console.error(err.message);
     }
+}
+
+function displayNotification(message) {
+    const data = JSON.parse(message.body);
+    appendNotification(data);
+    // Show the badge and add the shake animation class
+    showNotificationBadge();
+    addShakeAnimation();
+    showNotificationDot()
+    document.getElementById("notificationSound").play();
+
 }
 
 function showMessage(message) {
@@ -53,8 +66,8 @@ function showMessage(message) {
 }
 
 function sendMessage() {
-  console.log("Sending message ...");
-  stompClient.send("/ws/new-order", {}, JSON.stringify({"message" : $("#messageContent").val()}));
+    console.log("Sending message ...");
+    stompClient.send("/ws/new-order", {}, JSON.stringify({"message": $j("#messageContent").val()}));
 }
 
 function appendNotification(data) {
@@ -79,10 +92,13 @@ function appendNotification(data) {
 
     const message = document.createElement("p");
     message.classList.add("mb-1");
-    message.innerText = "Message: " + data?.message; // Replace with actual data
+    message.innerText = data?.message; // Replace with actual data
 
     const author = document.createElement("small");
-    author.innerText = "- " + data?.adminId; // Replace with actual data
+    let adminId = data?.adminId ? data.adminId : "";
+    if (adminId.length !== 0) {
+        author.innerText = "- " + adminId; // Replace with actual data
+    }
 
     listItem.appendChild(titleDiv);
     listItem.appendChild(message);
@@ -97,22 +113,11 @@ function addShakeAnimation() {
     badgeElement.classList.add("shake");
 }
 
-// Function to remove the shake animation class
-function removeShakeAnimation() {
-    const badgeElement = document.getElementById("notificationBell");
-    badgeElement.classList.remove("shake");
-}
 
 // Function to show the notification badge
 function showNotificationBadge() {
     const badgeElement = document.getElementById("notificationBell");
     badgeElement.style.display = "block"; // Show the badge
-}
-
-// Function to hide the notification badge
-function hideNotificationBadge() {
-    const badgeElement = document.getElementById("notificationBell");
-    badgeElement.style.display = "none"; // Hide the badge
 }
 
 // Function to show the notification dot
@@ -122,7 +127,7 @@ function showNotificationDot() {
 }
 
 
-// Add an event listener to the modal close event
+
 
 
 // Function to hide the notification dot

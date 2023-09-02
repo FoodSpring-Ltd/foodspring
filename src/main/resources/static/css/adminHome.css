@@ -3,24 +3,41 @@
   padding: 0;
 }
 
+body {
+ background-color: #f0f0f0;
+}
 
+.report-section {
+  display: flex;
+  height: max-content;
+  width: 100%;
+  justify-content: space-between;
+  padding: 10px;
+  flex-wrap: wrap;
+}
+
+.report-item {
+    background-color: #fff; /* Set the background color if needed */
+    padding: 8px 15px; /* Adjust the padding to your liking */
+    border-radius: 8px; /* Add rounded corners if desired */
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Add the shadow effect */
+    flex-shrink: 0;
+    margin-bottom: 20px;
+}
+
+.report-item h4 {
+  font-weight: 400;
+  font-size: 1.2rem;
+  margin-bottom: 20px;
+  opacity: 0.8;
+
+}
 .card-container {
   padding: 0 10px 0 10px;
 }
 
-.welcome-container {
-  background-color: grey;
-  text-align: center;
-  color: white;
-  padding: 10px 5px 10px 5px;
-  margin-bottom: 1rem;
-  display: flex;
-  flex-direction: column;
-}
 
-.welcome-container h3 {
-  font-size: 1.5rem;
-}
+
 
 .card-container {
   width: 100%;

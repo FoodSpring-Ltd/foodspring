@@ -10,6 +10,10 @@ Created on 8/29/2023 10:33 AM
 Version 1.0
 */
 
+import com.juaracoding.foodspring.handler.UserHandshakeHandler;
+import com.juaracoding.foodspring.interceptor.AdminHandshakeInterceptor;
+import com.juaracoding.foodspring.interceptor.BasicHandshakeInterceptor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
@@ -19,11 +23,19 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 @Configuration
 @EnableWebSocketMessageBroker
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
+
+    @Autowired
+    private UserHandshakeHandler userHandshakeHandler;
+
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
        registry.addEndpoint("/new-order")
+               .addInterceptors(new AdminHandshakeInterceptor())
+               .setHandshakeHandler(userHandshakeHandler)
                .withSockJS();
        registry.addEndpoint("/notify-user")
+               .addInterceptors(new BasicHandshakeInterceptor())
+               .setHandshakeHandler(userHandshakeHandler)
                .withSockJS();
     }
 

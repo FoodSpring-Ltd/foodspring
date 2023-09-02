@@ -10,18 +10,14 @@ Created on 8/29/2023 12:36 PM
 Version 1.0
 */
 
-import com.juaracoding.foodspring.config.ServicePath;
 import jakarta.servlet.http.HttpSession;
-import org.apache.http.HttpHeaders;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
 import org.springframework.http.server.ServletServerHttpRequest;
 import org.springframework.stereotype.Component;
-import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.socket.WebSocketHandler;
 import org.springframework.web.socket.server.HandshakeInterceptor;
 
@@ -38,12 +34,10 @@ public class BasicHandshakeInterceptor implements HandshakeInterceptor {
             HttpSession session = servletRequest.getServletRequest().getSession();
             if (session.getAttribute("USR_ID") == null) {
                 logger.info("Not logged in");
-                response.setStatusCode(HttpStatus.SEE_OTHER);
-                response.getHeaders().set(HttpHeaders.LOCATION, ServicePath.AUTH_LOGOUT);
-                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+                return false;
 
             }
-            logger.info((String) session.getAttribute("USR_ID"));
+            logger.info("Handshake success");
         }
         return true;
     }

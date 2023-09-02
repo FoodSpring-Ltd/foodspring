@@ -73,4 +73,8 @@ public class ServicePath {
 
     public static final String REDIRECT_ORDER_MANAGEMENT_STATUS = "redirect:/admin/order-management?status=";
     public static final String ADMIN_ORDER_MANAGEMENT = "/admin/order-management?status=";
+    public static final String ORDER_PAID = "/order?status=PAID";
+    public static final String ORDER_ON_PROCESS = "/order?status=ON_PROCESS";
+    public static final String ORDER_COMPLETED = "/order?status=COMPLETED";
+    public static final String ORDER_CANCELED = "/order?status=CANCELED";
 }

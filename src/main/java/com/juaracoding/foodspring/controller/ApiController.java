@@ -31,7 +31,7 @@ public class ApiController {
         UUID uuid = UUID.randomUUID();
         OrderNotification notification = new OrderNotification();
         notification.setOrderId(uuid.toString());
-        notification.setMessage("\uD83C\uDF89 Food Alert! Your Order's Up! \uD83C\uDF54 Grab your grub and get ready to dig in. Bon appétit!");
+        notification.setMessage("");
         notification.setStatus(OrderStatus.PAID.toString());
         notification.setTargetURL(ServicePath.ADMIN_ORDER_MANAGEMENT.concat(OrderStatus.PAID.toString()));
         messagingTemplate.convertAndSend("/topic/new-order", notification);

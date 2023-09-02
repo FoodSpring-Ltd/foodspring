@@ -20,8 +20,8 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 public class OrderNotification implements Serializable {
-    private Long adminId;
-    private Long userId;
+    private String adminId;
+    private String customerUsername;
     private String orderId;
     private String status;
     public String targetURL;

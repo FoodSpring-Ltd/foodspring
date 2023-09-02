@@ -18,6 +18,7 @@ import com.juaracoding.foodspring.handler.ResponseHandler;
 import com.juaracoding.foodspring.model.ShopOrder;
 import com.juaracoding.foodspring.repository.*;
 import com.juaracoding.foodspring.utils.ConstantMessage;
+import com.juaracoding.foodspring.utils.NotificationUtil;
 import com.juaracoding.foodspring.utils.TransformToDTO;
 import com.midtrans.service.MidtransSnapApi;
 import org.modelmapper.ModelMapper;
@@ -37,6 +38,9 @@ public class AdminOrderService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private NotificationUtil notificationUtil;
 
     @Autowired
     private OrderItemRepository orderItemRepository;
@@ -67,6 +71,7 @@ public class AdminOrderService {
     @Transactional(rollbackFor = Exception.class)
     public Map<String, Object> updateOrderStatus(OrderStatusDTO orderStatusRequest, WebRequest request) {
         Long adminId = (Long) request.getAttribute("USR_ID", WebRequest.SCOPE_SESSION);
+        String adminUsername = (String) request.getAttribute("USERNAME", WebRequest.SCOPE_SESSION);
         if (Objects.isNull(orderStatusRequest.getOrderStatus()) || Objects.isNull(orderStatusRequest.getOrderId())) {
             return new ResponseHandler().generateModelAttribut(ConstantMessage.ERROR_INVALID_DATA,
                     HttpStatus.BAD_REQUEST, null, "OS0006", request);
@@ -76,10 +81,20 @@ public class AdminOrderService {
             return new ResponseHandler().generateModelAttribut(ConstantMessage.ERROR_NO_ORDER_FOUND,
                     HttpStatus.NOT_FOUND, null, "OS0006", request);
         }
-        shopOrder.get().setOrderStatus(orderStatusRequest.getOrderStatus());
-        shopOrder.get().setModifiedBy(adminId);
-        shopOrder.get().setUpdatedAt(LocalDateTime.now());
-        shopOrderRepository.save(shopOrder.get());
+        if (!shopOrder.get().getOrderStatus().equals(orderStatusRequest.getOrderStatus())) {
+            shopOrder.get().setOrderStatus(orderStatusRequest.getOrderStatus());
+            shopOrder.get().setModifiedBy(adminId);
+            shopOrder.get().setUpdatedAt(LocalDateTime.now());
+            shopOrderRepository.save(shopOrder.get());
+        } else {
+            return new ResponseHandler().generateModelAttribut(ConstantMessage.ORDER_STATUS_ALREADY_CHANGED,
+                    HttpStatus.OK, orderService.convertToOrderResponseList(List.of(shopOrder.get())), null, request);
+        }
+        if (orderStatusRequest.getOrderStatus().equals(OrderStatus.ON_PROCESS)) {
+            notificationUtil.sendOrderProcessedNotifToUser(orderStatusRequest.getOrderId(), adminUsername, shopOrder.get().getUser().getUsername());
+        }else if (orderStatusRequest.getOrderStatus().equals(OrderStatus.COMPLETED)) {
+            notificationUtil.sendOrderCompletedNotifToUser(orderStatusRequest.getOrderId(), adminUsername, shopOrder.get().getUser().getUsername());
+        }
         return new ResponseHandler().generateModelAttribut(ConstantMessage.SUCCESS_UPDATE_ORDER_STATUS,
                 HttpStatus.OK, orderService.convertToOrderResponseList(List.of(shopOrder.get())), null, request);
     }

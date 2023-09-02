@@ -14,6 +14,7 @@ The FoodSpring project utilizes the following technologies:
 - **Bootstrap:** A front-end framework used for designing responsive and visually appealing web pages.
 - **HTML and CSS:** Standard technologies for creating web page structure and styling.
 - **RabbitMQ:** A message broker that enables communication between different parts of the application using messaging patterns.
+- **WebSocket:** provides real-time update by keeping the connection alive for a period of time.
 - **Git:** A version control system for tracking changes in the source code during software development.
 - **[Midtrans Snap API](https://midtrans.com):** An API for integrating with the Midtrans payment gateway to enable secure and seamless online payment processing.
 
@@ -73,7 +74,7 @@ Follow these steps to run the FoodSpring application on your local machine:
     - CRUD Discount **(Admin only)**
     - Manage user's orders **(Admin only)**
     - Checkout and payment using any of payment method provided by [Midtrans](https://midtrans.com)
-    - Enjoy using FoodSpring to discover delicious treats!
+    - Realtime order status update.
 
 6. **Shutdown:**
 

@@ -25,4 +25,9 @@
                class="btn btn-primary w-50">PAY</a>
         </div>
     </div>
+    <div th:if="${shopOrder.status == 'COMPLETED'}" class="card-footer bg-transparent">
+        <div class="d-flex justify-content-end">
+           <a th:href="@{/file/invoice/{orderId} (orderId=${shopOrder.shopOrderId})}" class="btn btn-primary w-50">Invoice</a>
+        </div>
+    </div>
 </div>

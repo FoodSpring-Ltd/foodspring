@@ -11,6 +11,7 @@ Version 1.0
 */
 
 import com.foodspring.utils.CurrencyFormatter;
+import com.juaracoding.foodspring.dto.InvoiceItem;
 import com.juaracoding.foodspring.dto.MidtransItemDetails;
 import com.juaracoding.foodspring.dto.OrderItemResponse;
 import com.juaracoding.foodspring.model.OrderItem;
@@ -39,6 +40,12 @@ public interface OrderItemMapper {
     @Mapping(target = "totalPriceIDR", expression = "java(toRupiah(getFinalPrice(item)))")
     OrderItemResponse toOrderItemResponse(OrderItem item);
 
+    @Mapping(target = "unitPriceIDR", expression =  "java(toRupiah(item.getUnitPrice()))")
+    @Mapping(target = "totalPriceIDR", expression = "java(toRupiah(getFinalPrice(item)))")
+    @Mapping(target = "discount", source = "item.discountPercentage")
+    @Mapping(target = "totalPrice", expression = "java(getFinalPrice(item))")
+    InvoiceItem toInvoiceItem(OrderItem item);
+
     default List<MidtransItemDetails> toMidtransItemDetailsList(List<OrderItem> orderItems) {
         return orderItems.stream()
                 .map(this::toMidtransItemDetails)
@@ -48,6 +55,12 @@ public interface OrderItemMapper {
     default List<OrderItemResponse> toOrderItemResponseList(List<OrderItem> orderItems) {
         return orderItems.stream()
                 .map(this::toOrderItemResponse)
+                .collect(Collectors.toList());
+    }
+
+    default List<InvoiceItem> toInvoiceItemList(List<OrderItem> orderItems) {
+        return orderItems.stream()
+                .map(this::toInvoiceItem)
                 .collect(Collectors.toList());
     }
 

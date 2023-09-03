@@ -13,6 +13,7 @@ Version 1.0
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
 import com.foodspring.core.Crypto;
+import com.foodspring.utils.PDFGeneratorUtil;
 import com.juaracoding.foodspring.utils.MappingAttribute;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,6 +50,11 @@ public class MainConfig {
     @Bean
     public MappingAttribute mappingAttribute() {
         return new MappingAttribute();
+    }
+
+    @Bean
+    public PDFGeneratorUtil pdfGeneratorUtil() {
+        return new PDFGeneratorUtil();
     }
 
     @Bean

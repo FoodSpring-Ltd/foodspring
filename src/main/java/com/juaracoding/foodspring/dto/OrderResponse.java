@@ -26,4 +26,5 @@ public class OrderResponse {
     private String snapToken;
     private String adminUsername;
     private LocalDateTime updatedAt;
+    private String status;
 }

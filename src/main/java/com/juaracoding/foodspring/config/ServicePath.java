@@ -77,4 +77,7 @@ public class ServicePath {
     public static final String ORDER_ON_PROCESS = "/order?status=ON_PROCESS";
     public static final String ORDER_COMPLETED = "/order?status=COMPLETED";
     public static final String ORDER_CANCELED = "/order?status=CANCELED";
+    public static final String INVOICE = "/invoice";
+    public static final String REDIRECT_ORDER_COMPLETED = "redirect:/order?status=COMPLETED";
+    public static final String FILE = "/file";
 }

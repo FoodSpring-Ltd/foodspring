@@ -169,7 +169,6 @@ public class OrderService {
             List<OrderResponse> response = convertToOrderResponseList(shopOrders.getContent());
             result = transformer.transformObject(new HashMap<>(), response, shopOrders);
         } catch (Exception e) {
-            e.printStackTrace();
             strExceptionArr[1] = "getAllOrder(Pageable pageable, WebRequest request) --LINE 94";
             return new ResponseHandler().generateModelAttribut(ConstantMessage.ERROR_CREATE_ORDER,
                     HttpStatus.INTERNAL_SERVER_ERROR, null, "OS0002", request);
@@ -211,9 +210,10 @@ public class OrderService {
                     .mapToDouble(OrderItemResponse::getTotalPrice)
                     .sum();
             if (order.getModifiedBy() != null) {
-                User user = shopOrderRepository.findUserByModifiedBy(order.getModifiedBy());
-                res.setAdminUsername(user.getUsername());
+                Optional<User> user = userRepository.findById(order.getModifiedBy());
+                user.ifPresent(value -> res.setAdminUsername(value.getUsername()));
             }
+
             res.setOrderItems(orderItems);
             res.setUpdatedAt(order.getUpdatedAt());
             res.setGrandTotal(grandTotal);
@@ -221,6 +221,7 @@ public class OrderService {
             res.setShopOrderId(order.getShopOrderId());
             res.setCreatedAt(order.getCreatedAt());
             res.setIsPaid(!order.getOrderStatus().equals(OrderStatus.UNPAID));
+            res.setStatus(order.getOrderStatus().toString());
             res.setSnapToken(order.getSnapToken());
             result.add(res);
         }

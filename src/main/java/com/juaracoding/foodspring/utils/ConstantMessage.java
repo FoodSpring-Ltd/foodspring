@@ -124,5 +124,7 @@ public class ConstantMessage {
     public static final String NOT_CRITICAL = "Not Critical";
     public static final String ORDER_STATUS_ALREADY_CHANGED = "Order status has been modified";
     public static final String FAILED_GET_ORDER_REPORT = "Failed to get order count report";
+    public static final String ERROR_CREATING_INVOICE = "Failed to generate invoice pdf";
+    public static final String SUCCESS_CREATING_INVOICE = "Invoice created successfully";
 }
 

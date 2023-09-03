@@ -173,6 +173,18 @@
 			<artifactId>spring-rabbit</artifactId>
 			<version>3.0.8</version>
 		</dependency>
+
+		<dependency>
+			<groupId>org.xhtmlrenderer</groupId>
+			<artifactId>flying-saucer-pdf</artifactId>
+			<version>9.1.22</version>
+		</dependency>
+
+		<dependency>
+			<groupId>ognl</groupId>
+			<artifactId>ognl</artifactId>
+			<version>3.3.4</version>
+		</dependency>
 	</dependencies>
 
 	<build>

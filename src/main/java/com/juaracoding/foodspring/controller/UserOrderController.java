@@ -15,6 +15,7 @@ import com.juaracoding.foodspring.config.ServicePath;
 import com.juaracoding.foodspring.config.ViewPath;
 import com.juaracoding.foodspring.enums.OrderStatus;
 import com.juaracoding.foodspring.model.ShopOrder;
+import com.juaracoding.foodspring.service.InvoiceService;
 import com.juaracoding.foodspring.service.OrderService;
 import com.juaracoding.foodspring.utils.MappingAttribute;
 import com.juaracoding.foodspring.utils.PageProperty;
@@ -40,6 +41,9 @@ public class UserOrderController {
 
     @Autowired
     private OrderService orderService;
+
+    @Autowired
+    private InvoiceService invoiceService;
 
     private Map<String, Object> objectMapper = new HashMap<>();
     private String[] strExceptions = new String[2];

@@ -1,15 +1,17 @@
 <div th:fragment="order-card" class="card mb-3" xmlns:th="http://www.w3.org/1999/xhtml">
-    <div class="card-header bg-transparent">
-        <div class="d-flex flex-column g-0">
-            <p><strong>Order Date:</strong> [[${#temporals.format(shopOrder.createdAt, 'dd/MM/yyyy HH:mm') + ' WIB'}]]</p>
-            <p style="margin-top: -15px"><strong>Grand Total:</strong> Rp[[${shopOrder.grandTotalIDR}]]</p>
-            <div th:if="${shopOrder.adminUsername != null}" class="d-flex flex-column col-3">
+    <div class="card-header bg-transparent p-0 mb-1">
+        <div class="d-flex justify-content-between g-0 p-0 m-0">
+            <div class="d-flex flex-column p-1 m-0">
+                <p><strong>Order Date:</strong> [[${#temporals.format(shopOrder.createdAt, 'dd/MM/yyyy HH:mm') + ' WIB'}]]</p>
+                <p style="margin-top: -15px"><strong>Grand Total:</strong> Rp[[${shopOrder.grandTotalIDR}]]</p>
+            </div>
+            <div th:if="${shopOrder.adminUsername != null}" class="d-flex flex-column p-1 m-0">
                 <p style="font-size: 12px"><strong>Modified by:</strong> [[${shopOrder.adminUsername}]] </p>
                 <p style="font-size: 12px; margin-top: -20px"><strong>Updated at: </strong>[[${#temporals.format(shopOrder.updatedAt, 'dd/MM/yyyy HH:mm') + ' WIB'}]]</p>
             </div>
         </div>
     </div>
-    <div class="card-body p-1">
+    <div class="card-body p-0 border border-0">
       <div class="d-flex flex-column gap-1 p-0 flex-wrap">
           <div class="col-12 p-0" th:each="item : ${shopOrder.orderItems}">
               <div th:replace="~{components/order-item :: order-item(item=${item})}"></div>
@@ -25,9 +27,9 @@
                class="btn btn-primary w-50">PAY</a>
         </div>
     </div>
-    <div th:if="${shopOrder.status == 'COMPLETED'}" class="card-footer bg-transparent">
-        <div class="d-flex justify-content-end">
-           <a th:href="@{/file/invoice/{orderId} (orderId=${shopOrder.shopOrderId})}" class="btn btn-primary w-50">Invoice</a>
+    <div th:if="${shopOrder.status == 'COMPLETED'}" class="card-footer bg-transparent p-0 border border-0">
+        <div class="d-flex justify-content-end p-1">
+           <a th:href="@{/file/invoice/{orderId} (orderId=${shopOrder.shopOrderId})}" style="color: white; text-transform: uppercase" class="btn btn-info w-30">Invoice</a>
         </div>
     </div>
 </div>

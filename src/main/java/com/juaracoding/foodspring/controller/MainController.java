@@ -10,13 +10,11 @@ Created on 8/10/2023 4:11 PM
 Version 1.0
 */
 
-import com.foodspring.model.EmailVerification;
 import com.foodspring.utils.LoggingFile;
 import com.juaracoding.foodspring.config.ServicePath;
 import com.juaracoding.foodspring.config.ViewPath;
 import com.juaracoding.foodspring.dto.CartItemDTO;
 import com.juaracoding.foodspring.dto.ProductSimpleResponse;
-import com.juaracoding.foodspring.exceptions.EmailPublisherException;
 import com.juaracoding.foodspring.model.Product;
 import com.juaracoding.foodspring.publisher.MailPublisher;
 import com.juaracoding.foodspring.service.CategoryService;
@@ -51,8 +49,8 @@ public class MainController {
     @Autowired
     private MailPublisher mailPublisher;
 
-    private String[] strExceptions = new String[2];
-    private Map<String, String> mapProps = new HashMap<>();
+    private final String[] strExceptions = new String[2];
+    private final Map<String, String> mapProps = new HashMap<>();
 
 
     public MainController() {
@@ -66,11 +64,6 @@ public class MainController {
 
     private Map<String, Object> objectMapper = new HashMap<>();
 
-    @GetMapping("/test")
-    public String test() throws EmailPublisherException {
-        mailPublisher.sendEmailMessage(new EmailVerification(""));
-        return ServicePath.REDIRECT_HOME;
-    }
 
     @GetMapping(value = ServicePath.ABOUT)
     public String about() {

@@ -1,15 +1,15 @@
-<div th:fragment="order-item" style="height: 100%; overflow: hidden" class="card col-12" xmlns:th="http://www.w3.org/1999/xhtml">
+<div th:fragment="order-item" style="height: 100%; overflow: hidden" class="card col-12 p-0 border border-0" xmlns:th="http://www.w3.org/1999/xhtml">
   <div class="d-flex">
     <div class="col-sm-2" style="overflow: hidden">
       <img th:src="${item.productImageURL}" style="object-fit: cover; width:  100%; height: 100%;" class="rounded-start" th:alt="${item.productName}">
     </div>
-    <div class="d-flex flex-column col-md-10 p-0" style="">
+    <div class="d-flex flex-column col-md-10 p-0">
       <div class="d-flex justify-content-start" style="padding-left: 0.5em">
         <h5 style="font-size: 1rem" class="card-title">[[${item.productName}]]</h5>
       </div>
-      <div class="p-0 m-0"><hr></div>
-      <div class="card-body p-0">
-        <table class="table">
+      <div class="p-0"><hr></div>
+      <div class="card-body p-0 mt-0">
+        <table class="table m-0 p-0">
           <thead>
           <tr>
             <th class="fw-bold" style="font-size: 10px">Variant</th>
@@ -30,7 +30,6 @@
             <td style="font-size: 0.8rem; font-weight:450" th:text="${item.qty}"></td>
             <td style="font-size: 0.8rem; font-weight:450" th:text="${'Rp' + item.totalPriceIDR}">Rp20000</td>
           </tr>
-          <!-- You can repeat the above <tr> structure for each item in your data -->
           </tbody>
         </table>
       </div>

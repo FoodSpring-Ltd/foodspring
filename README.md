@@ -75,6 +75,7 @@ Follow these steps to run the FoodSpring application on your local machine:
     - Manage user's orders **(Admin only)**
     - Checkout and payment using any of payment method provided by [Midtrans](https://midtrans.com)
     - Realtime order status update.
+    - Download order's invoice for user.
 
 6. **Shutdown:**
 
